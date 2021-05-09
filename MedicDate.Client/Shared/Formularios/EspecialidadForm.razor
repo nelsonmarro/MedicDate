@@ -1,0 +1,19 @@
+﻿<RadzenCard>
+    <EditForm Model="@EspecialidadModel" OnValidSubmit="OnSubmit">
+        <DataAnnotationsValidator/>
+        <div class="row mb-3">
+            <RadzenLabel Text="Nombre Especialidad"/>
+            <div class="mt-1">
+                <RadzenTextBox @bind-Value="EspecialidadModel.NombreEspecialidad" class="w-100"/>
+                <ValidationMessage For="() => EspecialidadModel.NombreEspecialidad"/>
+            </div>
+        </div>
+        <div class="mb-2">
+            <RadzenButton ButtonType="ButtonType.Submit" ButtonStyle="ButtonStyle.Secondary" Text="Guardar" Icon="save" class="mb-1 mb-md-0"/>
+            <NavLink href="especialidadList">
+                <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="close" Text="Cancelar"/>
+            </NavLink>
+        </div>
+    </EditForm>
+
+</RadzenCard>

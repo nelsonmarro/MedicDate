@@ -1,0 +1,16 @@
+﻿@page "/especialidadList"
+
+<div class="row">
+    <div class="col-auto col-md-6 text-start">
+        <h2 class="text-radzen-secondary">Especialidades</h2>
+    </div>
+    <div class="col-12">
+        <ListadoGenerico TItem="EspecialidadResponse" TotalCount="@_totalCount"
+                         Cabeceras="@_cabecerasTable" Listado="@_especialidadList"
+                         PermitirFiltrado="true" ModoFiltrado="@FilterMode.Simple"
+                         GetUrl="@_getUrl" PermitirAgregar="true"
+                         PermitirEditar="true" PermitirEliminar="true"
+                         AgregarUrl="especialidadCrear" EditarUrl="especialidadEditar"
+                         OnEliminarDatos="@EliminarEspecialidad" NombrePropiedades="@_nombreProps"/>
+    </div>
+</div>
