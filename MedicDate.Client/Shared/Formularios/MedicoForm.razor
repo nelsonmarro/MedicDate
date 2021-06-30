@@ -1,0 +1,40 @@
+﻿<RadzenCard>
+    <EditForm Model="@MedicoRequest" OnValidSubmit="OnSubmit">
+        <DataAnnotationsValidator />
+        <div class="row mb-3">
+            <RadzenLabel Text="Nombres" />
+            <div class="mt-1">
+                <RadzenTextBox @bind-Value="MedicoRequest.Nombre" class="w-100" />
+                <ValidationMessage For="() => MedicoRequest.Nombre" />
+            </div>
+        </div>
+        <div class="row mb-3">
+            <RadzenLabel Text="Apellidos" />
+            <div class="mt-1">
+                <RadzenTextBox @bind-Value="MedicoRequest.Apellidos" class="w-100" />
+                <ValidationMessage For="() => MedicoRequest.Apellidos" />
+            </div>
+        </div>
+        <div class="row mb-3">
+            <RadzenLabel Text="Cédula" />
+            <div class="mt-1">
+                <RadzenTextBox @bind-Value="MedicoRequest.Cedula" class="w-100" />
+                <ValidationMessage For="() => MedicoRequest.Cedula" />
+            </div>
+        </div>
+        <div class="row mb-3">
+            <RadzenLabel Text="Teléfono de contacto" />
+            <div class="mt-1">
+                <RadzenTextBox @bind-Value="MedicoRequest.PhoneNumber" class="w-100" />
+                <ValidationMessage For="() => MedicoRequest.PhoneNumber" />
+            </div>
+        </div>
+        <div class="mb-2">
+            <RadzenButton ButtonType="ButtonType.Submit" ButtonStyle="ButtonStyle.Secondary" Text="Guardar" Icon="save" class="mb-1 mb-md-0" />
+
+            <NavLink href="especialidadList">
+                <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="close" Text="Cancelar" />
+            </NavLink>
+        </div>
+    </EditForm>
+</RadzenCard>

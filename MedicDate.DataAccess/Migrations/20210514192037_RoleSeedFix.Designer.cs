@@ -4,14 +4,16 @@ using MedicDate.DataAccess.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace MedicDate.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210514192037_RoleSeedFix")]
+    partial class RoleSeedFix
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -108,15 +110,15 @@ namespace MedicDate.DataAccess.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "dc48bc16-fab3-48c6-94b8-79426f713a05",
-                            ConcurrencyStamp = "e88ccb92-38e7-4677-96b3-0c083bfbd580",
+                            Id = "fa0d312b-e90d-437e-ba98-c503bd38f5d3",
+                            ConcurrencyStamp = "b99cf1c9-9dbe-4b8d-bb02-4462beb48aca",
                             Name = "Doctor",
                             NormalizedName = "DOCTOR"
                         },
                         new
                         {
-                            Id = "d1e0d647-088f-4e4c-b7d2-9290cd4967cf",
-                            ConcurrencyStamp = "1c9264fc-215f-4e90-8089-38ca969575de",
+                            Id = "6dea9432-502d-4e34-8b26-1fdc51db10ef",
+                            ConcurrencyStamp = "efff719b-4279-40e0-b904-2ba201a8a0f0",
                             Name = "Administrador",
                             NormalizedName = "ADMINISTRADOR"
                         });

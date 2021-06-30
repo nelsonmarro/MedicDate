@@ -8,13 +8,13 @@
             <a href="/" class="text-dark" style="cursor: pointer;">
                 <RadzenLabel Text="Medic Date" class="text-radzen-secondary" Style="cursor: pointer; font-weight: bold"/>
             </a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav mr-auto">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 </ul>
+                <LoginDisplay/>
             </div>
         </nav>
     </ChildContent>
@@ -32,15 +32,27 @@
     <ChildContent>
         <RadzenPanelMenu>
             <p class="pb-2 mb-0 mx-3 mt-2 border-bottom">
-                <RadzenLabel Text="Menú"/>
+                <AuthorizeView>
+                    <Authorized>
+                        <RadzenLabel Text="Menú"/>
+                    </Authorized>
+                    <NotAuthorized>
+                        <RadzenLabel Text="Inicie Sesión"/>
+                    </NotAuthorized>
+                </AuthorizeView>
+  
             </p>
-            <RadzenPanelMenuItem Text="Inicio" Icon="home" Path="/" class="mt-2">
-            </RadzenPanelMenuItem>
-            <RadzenPanelMenuItem Text="Medicos" Icon="supervisor_account" Path="/medicoList">
-            </RadzenPanelMenuItem>
-            <RadzenPanelMenuItem Text="Administrar" Icon="miscellaneous_services">
-                <RadzenPanelMenuItem Text="Especialidades" Path="/especialidadList" Icon="psychology"/>
-            </RadzenPanelMenuItem>
+            <AuthorizeView>
+                <Authorized>
+                    <RadzenPanelMenuItem Text="Inicio" Icon="home" Path="/" class="mt-2">
+                    </RadzenPanelMenuItem>
+                    <RadzenPanelMenuItem Text="Medicos" Icon="supervisor_account" Path="/medicoList">
+                    </RadzenPanelMenuItem>
+                    <RadzenPanelMenuItem Text="Administrar" Icon="miscellaneous_services">
+                        <RadzenPanelMenuItem Text="Especialidades" Path="/especialidadList" Icon="psychology"/>
+                    </RadzenPanelMenuItem>
+                </Authorized>
+            </AuthorizeView>
         </RadzenPanelMenu>
     </ChildContent>
 </RadzenSidebar>

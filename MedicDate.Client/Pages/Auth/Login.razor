@@ -1,0 +1,33 @@
+﻿@page "/login"
+
+<h2 class="text-radzen-secondary">Iniciar Sesión</h2>
+
+@if (_showAuthError)
+{
+    <div class="alert alert-danger" role="alert">
+        <p>@Error</p>
+    </div>
+}
+
+<RadzenCard>
+    <EditForm Model="@_loginRequest" OnValidSubmit="ExecuteLogin">
+        <DataAnnotationsValidator/>
+        <div class="row mb-3">
+            <RadzenLabel Text="Email"/>
+            <div class="mt-1">
+                <RadzenTextBox @bind-Value="_loginRequest.Email" class="w-100"/>
+                <ValidationMessage For="() => _loginRequest.Email"/>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <RadzenLabel Text="Contraseña"/>
+            <div class="mt-1">
+                <RadzenPassword @bind-Value="_loginRequest.Password" class="w-100"/>
+                <ValidationMessage For="() => _loginRequest.Password"/>
+            </div>
+        </div>
+        <div class="mb-2">
+            <RadzenButton ButtonType="ButtonType.Submit" Text="Iniciar Sesión" Icon="login"/>
+        </div>
+    </EditForm>
+</RadzenCard>
