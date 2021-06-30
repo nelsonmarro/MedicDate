@@ -25,6 +25,8 @@ namespace MedicDate.Bussines.Repository.IRepository
             bool isTracking = true, bool needMapping = true
         );
 
+        Task<bool> ResourceExists(int resourceId);
+
         Task AddAsync(TEntity entity);
 
         Task<int> Remove(int id);

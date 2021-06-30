@@ -6,13 +6,17 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="10.1.1" />
-    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="5.0.5" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="5.0.7" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\MedicDate.DataAccess\MedicDate.DataAccess.csproj" />
     <ProjectReference Include="..\MedicDate.Models\MedicDate.Models.csproj" />
     <ProjectReference Include="..\MedicDate.Utility\MedicDate.Utility.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Services\IServices\" />
   </ItemGroup>
 
 </Project>

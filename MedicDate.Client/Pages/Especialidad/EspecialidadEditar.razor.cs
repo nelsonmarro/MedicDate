@@ -10,23 +10,33 @@ using System.Linq;
 using System.Threading.Tasks;
 using MedicDate.Models.DTOs.Especialidad;
 
-
 namespace MedicDate.Client.Pages.Especialidad
 {
-    public partial class EspecialidadEditar
+    public partial class EspecialidadEditar : ComponentBase, IDisposable
     {
         [Inject] public IHttpRepository HttpRepo { get; set; }
         [Inject] public NavigationManager NavigationManager { get; set; }
         [Inject] public INotificationService NotificationService { get; set; }
         [Inject] public DialogService DialogService { get; set; }
+        [Inject] public IHttpInterceptorService HttpInterceptor { get; set; }
 
-        [Parameter] public int Id { get; set; }
+        [Parameter] public string Id { get; set; }
 
         private EspecialidadRequest _especialidadModel = new();
 
-        protected override async Task OnInitializedAsync()
+        protected override void OnInitialized()
+        {
+            HttpInterceptor.RegisterEvent();
+        }
+
+        protected override async Task OnParametersSetAsync()
         {
             var httpResp = await HttpRepo.Get<EspecialidadRequest>($"api/Especialidad/{Id}");
+
+            if (httpResp is null)
+            {
+                return;
+            }
 
             if (httpResp.Error)
             {
@@ -46,6 +56,11 @@ namespace MedicDate.Client.Pages.Especialidad
                 await HttpRepo.Put($"api/Especialidad/editar/{Id}",
                     _especialidadModel);
 
+            if (httpResp is null)
+            {
+                return;
+            }
+
             if (httpResp.Error)
             {
                 NotificationService.ShowError("Error!", await httpResp.GetResponseBody());
@@ -58,6 +73,11 @@ namespace MedicDate.Client.Pages.Especialidad
 
                 NavigationManager.NavigateTo("especialidadList");
             }
+        }
+
+        public void Dispose()
+        {
+            HttpInterceptor.DisposeEvent();
         }
     }
 }

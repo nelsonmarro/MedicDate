@@ -16,10 +16,16 @@ using System.Text;
 using System.Threading.Tasks;
 using MedicDate.Bussines.Repository;
 using MedicDate.Bussines.Repository.IRepository;
+using MedicDate.Bussines.Services;
+using MedicDate.Bussines.Services.IServices;
 using MedicDate.DataAccess.Data;
+using MedicDate.DataAccess.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using MedicDate.API.Services.IServices;
+using MedicDate.API.Services;
+using System.Text.Json.Serialization;
 
 namespace MedicDate.API
 {
@@ -44,14 +50,15 @@ namespace MedicDate.API
 
             services.AddAutoMapper(typeof(Startup));
 
-            var appSettingsSection = Configuration.GetSection("APISettings");
-            services.Configure<APISettings>(appSettingsSection);
+            var appSettingsSection = Configuration.GetSection("JwtSettings");
+            services.Configure<JwtSettings>(appSettingsSection);
 
-            var apiSettings = appSettingsSection.Get<APISettings>();
-            var key = Encoding.ASCII.GetBytes(apiSettings.SecretKey);
+            var apiSettings = appSettingsSection.Get<JwtSettings>();
+            var key = Encoding.UTF8.GetBytes(apiSettings.SecretKey);
 
-            services.AddIdentity<IdentityUser, IdentityRole>()
+            services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
+
             services.AddAuthentication(opts =>
             {
                 opts.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -64,9 +71,10 @@ namespace MedicDate.API
                 x.TokenValidationParameters = new TokenValidationParameters()
                 {
                     ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(key),
                     ValidateAudience = true,
                     ValidateIssuer = true,
+                    ValidateLifetime = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(key),
                     ValidAudience = apiSettings.ValidAudience,
                     ValidIssuer = apiSettings.ValidIssuer,
                     ClockSkew = TimeSpan.Zero
@@ -78,7 +86,7 @@ namespace MedicDate.API
 
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo {Title = "MedicDate_Api", Version = "v1"});
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "MedicDate_Api", Version = "v1" });
                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
                     In = ParameterLocation.Header,
@@ -102,11 +110,14 @@ namespace MedicDate.API
                 });
             });
 
+            services.AddScoped<IDbInitializer, DbInitializer>();
+            services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IEspecialidadRepository, EspecialidadRepository>();
+            services.AddScoped<IMedicoRepository, MedicoRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IDbInitializer dbInitializer)
         {
             if (env.IsDevelopment())
             {
@@ -116,8 +127,9 @@ namespace MedicDate.API
             app.UseSwagger();
             app.UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/v1/swagger.json", "MedicDate_API v1"); });
 
-
             app.UseHttpsRedirection();
+
+            dbInitializer.Initialize();
 
             app.UseCors("MedicDate");
             app.UseRouting();

@@ -1,1 +1,43 @@
 ﻿@page "/medicoList"
+
+<div class="row">
+	<div class="col-auto col-md-6 text-start">
+		<h2 class="text-radzen-secondary">Doctores</h2>
+	</div>
+	<div class="d-flex flex-column flex-md-row mt-3 mb-2 mb-md-0">
+		<div>
+			<span>Filtrar por especialidad</span>
+		</div>
+		<div class="ps-md-3">
+			<RadzenDropDown AllowClear="true" TValue="int" Style="width:300px"
+							Data="@_especialidades" AllowVirtualization="true"
+							Placeholder="Seleccione" Change="@FiltrarPorEspecialidad"
+							TextProperty="NombreEspecialidad" ValueProperty="Id" />
+		</div>
+	</div>
+	<div class="col-12">
+		<ListadoGenerico TItem="MedicoResponse" TotalCount="@_totalCount"
+						 Listado="@_medicoList" PermitirFiltrado="true" ModoFiltrado="@FilterMode.Simple" PermitirOpCrud="@_permitirOp" RutasOp="@_rutasOp" OnEliminarDatos="@EliminarMedico">
+			<GridPersonalizada>
+				<RadzenGridColumn TItem="MedicoResponse" Property="Nombre" Title="Nombre" />
+				<RadzenGridColumn TItem="MedicoResponse" Property="Apellidos" Title="Apellidos" />
+				<RadzenGridColumn TItem="MedicoResponse" Property="Cedula" Title="Cédula" />
+				<RadzenGridColumn TItem="MedicoResponse" Property="PhoneNumber" Title="Teléfono" />
+				<RadzenGridColumn TItem="MedicoResponse" Property="Especialidades" Width="250px" Title="Especialidades" Filterable="false" Sortable="false">
+					<Template Context="medico">
+						<div class="row row-cols-2 g-2">
+							@foreach (var item in medico.Especialidades)
+							{
+								<div class="col pe-0">
+									<h5 class="text-radzen-secondary">
+										@(item.NombreEspecialidad).
+									</h5>
+								</div>
+							}
+						</div>
+					</Template>
+				</RadzenGridColumn>
+			</GridPersonalizada>
+		</ListadoGenerico>
+	</div>
+</div>

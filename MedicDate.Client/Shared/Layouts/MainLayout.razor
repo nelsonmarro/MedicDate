@@ -1,25 +1,12 @@
 ﻿@inherits LayoutComponentBase
+@inject IJSRuntime _jsRuntime
 
 <RadzenHeader>
     <ChildContent>
-        <nav class="navbar navbar-expand-lg navbar-light bg-light p-0 m-0">
-            <RadzenSidebarToggle class="mr-2" Click="@(args => { sidebarExpanded = !sidebarExpanded; bodyExpanded = !bodyExpanded; })">
-            </RadzenSidebarToggle>
-            <a href="/" class="text-dark" style="cursor: pointer;">
-                <RadzenLabel Text="Medic Date" class="text-radzen-secondary" Style="cursor: pointer; font-weight: bold"/>
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                </ul>
-                <LoginDisplay/>
-            </div>
-        </nav>
+        <AppHeader OnToggleClick="@ChangeToggle" />
     </ChildContent>
 </RadzenHeader>
-<div style="width: 100%">
+<div style="width: 100%" class="overflow-auto">
     <RadzenBody @ref="@body0" @bind-Expanded="@bodyExpanded">
         <ChildContent>
             <RadzenContentContainer Name="main">
@@ -30,48 +17,41 @@
 </div>
 <RadzenSidebar @ref="@sidebar0" @bind-Expanded="@sidebarExpanded">
     <ChildContent>
-        <RadzenPanelMenu>
-            <p class="pb-2 mb-0 mx-3 mt-2 border-bottom">
-                <AuthorizeView>
-                    <Authorized>
-                        <RadzenLabel Text="Menú"/>
-                    </Authorized>
-                    <NotAuthorized>
-                        <RadzenLabel Text="Inicie Sesión"/>
-                    </NotAuthorized>
-                </AuthorizeView>
-  
-            </p>
-            <AuthorizeView>
-                <Authorized>
-                    <RadzenPanelMenuItem Text="Inicio" Icon="home" Path="/" class="mt-2">
-                    </RadzenPanelMenuItem>
-                    <RadzenPanelMenuItem Text="Medicos" Icon="supervisor_account" Path="/medicoList">
-                    </RadzenPanelMenuItem>
-                    <RadzenPanelMenuItem Text="Administrar" Icon="miscellaneous_services">
-                        <RadzenPanelMenuItem Text="Especialidades" Path="/especialidadList" Icon="psychology"/>
-                    </RadzenPanelMenuItem>
-                </Authorized>
-            </AuthorizeView>
-        </RadzenPanelMenu>
+        <AppSideBar />
     </ChildContent>
 </RadzenSidebar>
 <RadzenFooter class="bg-light">
     <ChildContent>
-        <RadzenLabel Text="Todos los derechos reservados &copy; 2021" Style="font-size: 14px">
-        </RadzenLabel>
+        <AppFooter />
     </ChildContent>
 </RadzenFooter>
 
-<RadzenDialog/>
-<RadzenNotification Style="position: absolute; top: 10px"/>
-<RadzenContextMenu/>
-<RadzenTooltip/>
+<RadzenDialog />
+<RadzenNotification Style="position: absolute; top: 10px" />
+<RadzenContextMenu />
+<RadzenTooltip />
 
 @code {
     RadzenSidebar sidebar0;
     RadzenBody body0;
     bool sidebarExpanded = true;
     bool bodyExpanded = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var result = await _jsRuntime.InvokeAsync<bool>("isSmWindow");
+
+        if (result)
+        {
+            sidebarExpanded = false;
+            bodyExpanded = true;
+        }
+    }
+
+    private void ChangeToggle()
+    {
+        sidebarExpanded = !sidebarExpanded;
+        bodyExpanded = !bodyExpanded;
+    }
 
 }

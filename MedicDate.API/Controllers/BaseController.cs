@@ -9,11 +9,11 @@ using MedicDate.Bussines.Repository.IRepository;
 using MedicDate.Models.DTOs;
 using MedicDate.Bussines.Helpers;
 using MedicDate.DataAccess.Models;
-using MedicDate.Models.Interfaces;
+using MedicDate.Utility.Interfaces;
 
 namespace MedicDate.API.Controllers
 {
-    public class BaseController<TEntity> : ControllerBase where TEntity : class
+    public class BaseController<TEntity> : ControllerBase where TEntity : class, IId
     {
         private readonly IRepository<TEntity> _repository;
         private readonly IMapper _mapper;
@@ -28,12 +28,18 @@ namespace MedicDate.API.Controllers
         (
             int pageIndex = 0,
             int pageSize = 10,
-            string includeProperties = null)
+            bool traerEspecialidades = false,
+            string includeProperties = "")
         {
             ApiResponseDto<TResponse> apiResponse = new();
             try
             {
-                var entityList = await _repository.GetAllAsync();
+                if (!traerEspecialidades)
+                {
+                    includeProperties = "";
+                }
+
+                var entityList = await _repository.GetAllAsync(null, null, includeProperties);
 
                 var result = ApiResult<TEntity, TResponse>.Create
                 (
@@ -73,11 +79,20 @@ namespace MedicDate.API.Controllers
             }
         }
 
-        protected async Task<ActionResult<TResponse>> ObtenerRegistroPorIdAsync<TResponse>(int id)
+        protected async Task<ActionResult<TResponse>> ObtenerRegistroPorIdAsync<TResponse>(int id, bool traerEspecialidades = false, string includeProperties = "")
         {
             try
             {
-                var entity = await _repository.FindAsync(id);
+                TEntity entity;
+
+                if (traerEspecialidades)
+                {
+                    entity = await _repository.FirstOrDefaultAsync(x => x.Id == id, includeProperties: includeProperties);
+                }
+                else
+                {
+                    entity = await _repository.FindAsync(id);
+                }
 
                 if (entity is null)
                 {
@@ -105,12 +120,13 @@ namespace MedicDate.API.Controllers
 
                 var entityResponse = _mapper.Map<TResponse>(entityDb);
 
-                return new CreatedAtRouteResult(routeResultName, new {id = entityResponse.Id},
+                return CreatedAtRoute(routeResultName, new { id = entityResponse.Id },
                     entityResponse);
             }
             catch (Exception e)
             {
                 Console.WriteLine(e.Message);
+                Console.WriteLine(e.InnerException?.Message);
                 return BadRequest("Error al crear el registro");
             }
         }

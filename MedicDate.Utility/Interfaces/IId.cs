@@ -1,4 +1,4 @@
-﻿namespace MedicDate.Models.Interfaces
+﻿namespace MedicDate.Utility.Interfaces
 {
     public interface IId
     {

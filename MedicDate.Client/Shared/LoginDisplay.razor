@@ -2,9 +2,9 @@
 
 <AuthorizeView>
     <Authorized>
-        Hello, @context.User.Identity.Name!
+        Hola, @context.User.Identity.Name!
         <NavLink href="logout">
-            <RadzenButton ButtonStyle="@ButtonStyle.Warning" class="mx-3" Text="Salir"/>
+            <RadzenButton ButtonStyle="@ButtonStyle.Warning" class="mx-3" Text="Salir" />
         </NavLink>
     </Authorized>
     <NotAuthorized>
@@ -13,6 +13,6 @@
     </NotAuthorized>
 </AuthorizeView>
 
-@code{
+@code {
 
 }

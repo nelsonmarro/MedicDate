@@ -105,7 +105,6 @@ namespace MedicDate.Bussines.Repository
                 Remove(entity);
             }
 
-
             return resp;
         }
 
@@ -122,6 +121,13 @@ namespace MedicDate.Bussines.Repository
         public async Task SaveAsync()
         {
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<bool> ResourceExists(int resourceId)
+        {
+            var resourse = await _dBSet.FindAsync(resourceId);
+
+            return resourse != null;
         }
     }
 }

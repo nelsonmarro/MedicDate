@@ -3,8 +3,8 @@
   "defaultProvider": "jsdelivr",
   "libraries": [
     {
-      "library": "bootstrap@5.0.0-beta3",
-      "destination": "wwwroot/lib/bootstrap/",
+      "library": "bootstrap@5.0.2",
+      "destination": "./wwwroot/lib/bootstrap/",
       "files": [
         "dist/css/bootstrap.min.css",
         "dist/js/bootstrap.bundle.min.js"

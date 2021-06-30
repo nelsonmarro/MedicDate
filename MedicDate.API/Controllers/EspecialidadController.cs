@@ -11,11 +11,13 @@ using MedicDate.DataAccess.Models;
 using MedicDate.Models.DTOs;
 using MedicDate.Models.DTOs.Especialidad;
 using MedicDate.Utility;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MedicDate.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class EspecialidadController : BaseController<Especialidad>
     {
         private readonly IEspecialidadRepository _especialidadRepo;
@@ -31,10 +33,9 @@ namespace MedicDate.API.Controllers
         [HttpGet("listarConPaginacion")]
         public async Task<ActionResult<ApiResponseDto<EspecialidadResponse>>> GetAllWithPaging(
             int pageIndex = 0,
-            int pageSize = 10,
-            string includeProperties = null)
+            int pageSize = 10)
         {
-            return await ListarConPaginacionAsync<EspecialidadResponse>(pageIndex, pageSize, includeProperties);
+            return await ListarConPaginacionAsync<EspecialidadResponse>(pageIndex, pageSize);
         }
 
         [HttpGet("listar")]
@@ -44,7 +45,7 @@ namespace MedicDate.API.Controllers
         }
 
         [HttpGet("{id:int}", Name = "ObtenerEspecialidad")]
-        public async Task<ActionResult<EspecialidadRequest>> GetOne(int id)
+        public async Task<ActionResult<EspecialidadRequest>> GetEspecialidad(int id)
         {
             return await ObtenerRegistroPorIdAsync<EspecialidadRequest>(id);
         }

@@ -12,15 +12,20 @@ using MedicDate.Models.DTOs.Especialidad;
 using MedicDate.Utility;
 using Radzen;
 
-
 namespace MedicDate.Client.Pages.Especialidad
 {
-    public partial class EspecialidadCrear
+    public partial class EspecialidadCrear : ComponentBase, IDisposable
     {
         [Inject] public IHttpRepository HttpRepo { get; set; }
         [Inject] public NavigationManager NavigationManager { get; set; }
         [Inject] public INotificationService NotificationService { get; set; }
         [Inject] public DialogService DialogService { get; set; }
+        [Inject] public IHttpInterceptorService HttpInterceptor { get; set; }
+
+        protected override void OnInitialized()
+        {
+            HttpInterceptor.RegisterEvent();
+        }
 
         private EspecialidadRequest _especialidadModel = new();
 
@@ -31,6 +36,11 @@ namespace MedicDate.Client.Pages.Especialidad
             var httpResp =
                 await HttpRepo.Post("api/Especialidad/crear",
                     _especialidadModel);
+
+            if (httpResp is null)
+            {
+                return;
+            }
 
             if (httpResp.Error)
             {
@@ -44,6 +54,11 @@ namespace MedicDate.Client.Pages.Especialidad
 
                 NavigationManager.NavigateTo("especialidadList");
             }
+        }
+
+        public void Dispose()
+        {
+            HttpInterceptor.DisposeEvent();
         }
     }
 }

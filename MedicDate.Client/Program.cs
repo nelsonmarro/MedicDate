@@ -8,10 +8,14 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using MedicDate.Client.Auth;
 using MedicDate.Client.Data.HttpRepository;
 using MedicDate.Client.Data.HttpRepository.IHttpRepository;
 using MedicDate.Client.Services;
 using MedicDate.Client.Services.IServices;
+using Microsoft.AspNetCore.Components.Authorization;
+using Blazored.LocalStorage;
+using Toolbelt.Blazor.Extensions.DependencyInjection;
 
 namespace MedicDate.Client
 {
@@ -25,7 +29,7 @@ namespace MedicDate.Client
             builder.Services.AddScoped(sp => new HttpClient
             {
                 BaseAddress = new Uri(builder.Configuration.GetValue<string>("BaseAPIUrl"))
-            });
+            }.EnableIntercept(sp));
 
             ConfigureServices(builder.Services);
 
@@ -34,6 +38,10 @@ namespace MedicDate.Client
 
         public static void ConfigureServices(IServiceCollection services)
         {
+            services.AddAuthorizationCore();
+
+            services.AddBlazoredLocalStorage();
+            services.AddScoped<AuthenticationStateProvider, AuthStateProvider>();
             services.AddScoped<IHttpRepository, HttpRepository>();
 
             services.AddScoped<DialogService>();
@@ -42,6 +50,10 @@ namespace MedicDate.Client
             services.AddScoped<ContextMenuService>();
 
             services.AddScoped<INotificationService, RadzenNotificationService>();
+            services.AddScoped<IAuthenticationService, AuthenticationService>();
+            services.AddScoped<IRefreshTokenService, RefreshTokenService>();
+            services.AddHttpClientInterceptor();
+            services.AddScoped<IHttpInterceptorService, HttpInterceptorService>();
         }
     }
 }

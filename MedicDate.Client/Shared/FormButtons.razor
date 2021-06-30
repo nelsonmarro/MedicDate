@@ -1,0 +1,23 @@
+﻿<RadzenButton ButtonType="ButtonType.Submit" ButtonStyle="ButtonStyle.Secondary" Text="@SaveButtonText" Icon="@SaveButtonIcon" class="mb-1 mb-md-0"/>
+
+<NavLink href="@NavLinkRoute">
+	<RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="close" Text="Cancelar"/>
+</NavLink>
+
+@code {
+
+	[Parameter]
+	public string SaveButtonText { get; set; } = "Guardar";
+
+	[Parameter]
+	public string SaveButtonIcon { get; set; } = "save";
+
+	[Parameter]
+	public string NavLinkText { get; set; } = "Cancelar";
+
+	[Parameter]
+	public string NavlinkIcon { get; set; } = "close";
+
+	[Parameter]
+	public string NavLinkRoute { get; set; }
+}

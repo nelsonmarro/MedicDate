@@ -5,33 +5,42 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using MedicDate.Client.Data.HttpRepository.IHttpRepository;
+using MedicDate.Client.Helpers;
 using MedicDate.Client.Services.IServices;
 using MedicDate.Models.DTOs;
 using MedicDate.Models.DTOs.Especialidad;
+using Microsoft.AspNetCore.Authorization;
 using Radzen.Blazor;
-
 
 namespace MedicDate.Client.Pages.Especialidad
 {
-    public partial class EspecialidadList
+    [Authorize]
+    public partial class EspecialidadList : ComponentBase, IDisposable
     {
         [Inject] public IHttpRepository HttpRepo { get; set; }
         [Inject] public INotificationService NotificationService { get; set; }
+        [Inject] public IHttpInterceptorService HttpInterceptor { get; set; }
 
         private List<EspecialidadResponse> _especialidadList;
-        private string[] _cabecerasTable = {"Nombre"};
-        private string[] _nombreProps = {"NombreEspecialidad"};
-        private string _getUrl = "api/Especialidad/listarConPaginacion";
+        private readonly string[] _cabecerasTable = { "Nombre" };
+        private readonly string[] _nombreProps = { "NombreEspecialidad" };
+        private const string GetUrl = "api/Especialidad/listarConPaginacion";
         private int _totalCount;
 
-        protected override async Task OnInitializedAsync()
-        {
-            await CargarEspecialidades();
-        }
+        private PermitirOpCrud _permitirOp = new()
+        { PermitirAgregar = true, PermitirEditar = true, PermitirEliminar = true };
+
+        private RutasOp _rutasOp = new()
+        { AgregarUrl = "especialidadCrear", EditarUrl = "especialidadEditar", GetUrl = GetUrl };
 
         private async Task CargarEspecialidades()
         {
-            var response = await HttpRepo.Get<ApiResponseDto<EspecialidadResponse>>(_getUrl);
+            var response = await HttpRepo.Get<ApiResponseDto<EspecialidadResponse>>(GetUrl);
+
+            if (response is null)
+            {
+                return;
+            }
 
             if (response.Error)
             {
@@ -42,6 +51,16 @@ namespace MedicDate.Client.Pages.Especialidad
                 _especialidadList = response.Response.DataResult;
                 _totalCount = response.Response.TotalCount;
             }
+        }
+
+        protected override void OnInitialized()
+        {
+            HttpInterceptor.RegisterEvent();
+        }
+
+        protected override async Task OnParametersSetAsync()
+        {
+            await CargarEspecialidades();
         }
 
         private async Task EliminarEspecialidad(int id)
@@ -61,6 +80,11 @@ namespace MedicDate.Client.Pages.Especialidad
                     await CargarEspecialidades();
                 }
             }
+        }
+
+        public void Dispose()
+        {
+            HttpInterceptor.DisposeEvent();
         }
     }
 }

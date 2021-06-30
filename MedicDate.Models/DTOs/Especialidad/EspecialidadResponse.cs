@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using MedicDate.Models.Interfaces;
+using MedicDate.Utility.Interfaces;
 
 namespace MedicDate.Models.DTOs.Especialidad
 {

@@ -9,6 +9,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Interfaces\" />
+    <ProjectReference Include="..\MedicDate.Utility\MedicDate.Utility.csproj" />
   </ItemGroup>
 </Project>
