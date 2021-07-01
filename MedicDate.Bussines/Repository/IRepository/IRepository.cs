@@ -22,7 +22,7 @@ namespace MedicDate.Bussines.Repository.IRepository
         Task<TEntity> FirstOrDefaultAsync(
             Expression<Func<TEntity, bool>> filter = null,
             string includeProperties = null,
-            bool isTracking = true, bool needMapping = true
+            bool isTracking = true
         );
 
         Task<bool> ResourceExists(int resourceId);

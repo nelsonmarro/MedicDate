@@ -7,6 +7,7 @@ using MedicDate.Models.DTOs.Medico;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using MedicDate.Models.DTOs.AppUser;
 
 namespace MedicDate.API.Mapper
 {
@@ -24,6 +25,8 @@ namespace MedicDate.API.Mapper
 
             CreateMap<Medico, MedicoRequest>()
                 .ForMember(x => x.EspecialidadesId, opts => opts.MapFrom(MapEspecialidadesIds));
+
+            CreateMap<ApplicationUser, AppUserResponse>();
         }
 
         private List<int> MapEspecialidadesIds(Medico medico, MedicoRequest medicoRequest)

@@ -63,21 +63,24 @@ namespace MedicDate.Client.Pages.Especialidad
             await CargarEspecialidades();
         }
 
-        private async Task EliminarEspecialidad(int id)
+        private async Task EliminarEspecialidad(string id)
         {
-            if (id != 0)
+            if (int.TryParse(id, out var idEspe))
             {
-                var httpResp = await HttpRepo.Delete($"api/Especialidad/eliminar/{id}");
-
-                if (httpResp.Error)
+                if (idEspe > 0)
                 {
-                    NotificationService.ShowError("Error!", await httpResp.GetResponseBody());
-                }
-                else
-                {
-                    NotificationService.ShowSuccess("Operación Exitosa!", await httpResp.GetResponseBody());
+                    var httpResp = await HttpRepo.Delete($"api/Especialidad/eliminar/{idEspe}");
 
-                    await CargarEspecialidades();
+                    if (httpResp.Error)
+                    {
+                        NotificationService.ShowError("Error!", await httpResp.GetResponseBody());
+                    }
+                    else
+                    {
+                        NotificationService.ShowSuccess("Operación Exitosa!", await httpResp.GetResponseBody());
+
+                        await CargarEspecialidades();
+                    }
                 }
             }
         }

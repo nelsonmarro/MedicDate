@@ -2,11 +2,13 @@
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using MedicDate.Bussines.Helpers;
 using MedicDate.Bussines.Repository.IRepository;
 using MedicDate.DataAccess.Data;
 using MedicDate.DataAccess.Models;
 using MedicDate.Models.DTOs.Medico;
 using MedicDate.Utility;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace MedicDate.Bussines.Repository
@@ -31,25 +33,6 @@ namespace MedicDate.Bussines.Repository
             return !(especialidadesIdsDb.Count != especialidadesIds.Count);
         }
 
-        public async Task<TResponse> GetMedicoConEspecialidades<TResponse>(int medicoId)
-        {
-            var medicoDb = await _context.Medico
-                .Include(x => x.MedicosEspecialidades)
-                .ThenInclude(x => x.Especialidad)
-                .FirstOrDefaultAsync(x => x.Id == medicoId);
-
-            return _mapper.Map<TResponse>(medicoDb);
-        }
-
-        public async Task<TRequest> GetMedicoParaEdicion<TRequest>(int medicoId)
-        {
-            var medicoDb = await _context.Medico
-                .Include(x => x.MedicosEspecialidades)
-                .FirstOrDefaultAsync(x => x.Id == medicoId);
-
-            return _mapper.Map<TRequest>(medicoDb);
-        }
-
         public async Task<DataResponse<string>> UpdateMedicoAsync(int id, MedicoRequest medicoRequest)
         {
             var medicoDb = await _context.Medico
@@ -61,7 +44,7 @@ namespace MedicDate.Bussines.Repository
                 return new DataResponse<string>()
                 {
                     Sussces = false,
-                    Message = "No se encontró el médico ha actualizar"
+                    ActionResult = new NotFoundObjectResult("No se encontró el médico ha actualizar")
                 };
             }
 
@@ -71,7 +54,7 @@ namespace MedicDate.Bussines.Repository
             return new DataResponse<string>()
             {
                 Sussces = true,
-                Message = "Médico actualizado exitosamente"
+                ActionResult = new NoContentResult()
             };
         }
     }

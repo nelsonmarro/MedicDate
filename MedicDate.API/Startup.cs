@@ -56,7 +56,7 @@ namespace MedicDate.API
             var apiSettings = appSettingsSection.Get<JwtSettings>();
             var key = Encoding.UTF8.GetBytes(apiSettings.SecretKey);
 
-            services.AddIdentity<ApplicationUser, IdentityRole>()
+            services.AddIdentity<ApplicationUser, AppRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
             services.AddAuthentication(opts =>
@@ -114,6 +114,7 @@ namespace MedicDate.API
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IEspecialidadRepository, EspecialidadRepository>();
             services.AddScoped<IMedicoRepository, MedicoRepository>();
+            services.AddScoped<IAppUserRepository, AppUserRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

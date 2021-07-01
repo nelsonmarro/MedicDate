@@ -36,37 +36,6 @@ namespace MedicDate.API.Controllers
             _jwtSettings = JwtOptions.Value;
         }
 
-        [HttpPost("registrar")]
-        public async Task<ActionResult<RegisterResponse>> RegisterUser(RegisterRequest registerRequest)
-        {
-            if (registerRequest == null)
-            {
-                return BadRequest(new RegisterResponse()
-                    {Errors = new[] {"Peticion inválida al servidor"}, IsRegisterSuccessful = false});
-            }
-
-            var user = new ApplicationUser()
-            {
-                UserName = registerRequest.Email,
-                Email = registerRequest.Email,
-                Nombre = registerRequest.Nombre,
-                Apellidos = registerRequest.Apellidos,
-                PhoneNumber = registerRequest.Telefono
-            };
-
-            var result = await _userManager.CreateAsync(user, registerRequest.Password);
-
-            if (!result.Succeeded)
-            {
-                var errors = result.Errors.Select(e => e.Description);
-                return BadRequest(new RegisterResponse() {Errors = errors, IsRegisterSuccessful = false});
-            }
-
-            await _userManager.AddToRoleAsync(user, Sd.ROLE_ADMIN);
-
-            return Ok(new RegisterResponse() {IsRegisterSuccessful = true});
-        }
-
         [HttpPost("login")]
         public async Task<ActionResult<LoginResponse>> Login(LoginRequest loginRequest)
         {

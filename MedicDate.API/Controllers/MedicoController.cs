@@ -17,6 +17,7 @@ namespace MedicDate.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class MedicoController : BaseController<Medico>
     {
         private readonly IMedicoRepository _medicoRepo;
@@ -39,34 +40,13 @@ namespace MedicDate.API.Controllers
         {
             if (filtrarEspecialidadId is not null)
             {
-                var medicosDb = await _medicoRepo.GetAllAsync(
-                   filter: x => x.MedicosEspecialidades
-                    .Any(y => y.EspecialidadId == filtrarEspecialidadId.Value),
-                    includeProperties: "MedicosEspecialidades.Especialidad"
-                    );
-
-                ApiResponseDto<MedicoResponse> apiResponse = new();
-
-                var result = ApiResult<Medico, MedicoResponse>.Create
-                            (
-                                medicosDb,
-                                pageIndex,
-                                pageSize,
-                                _mapper
-                            );
-
-                apiResponse.DataResult = result.DataResult;
-                apiResponse.TotalCount = result.TotalCount;
-                apiResponse.PageIndex = result.PageIndex;
-                apiResponse.PageSize = result.PageSize;
-                apiResponse.TotalPages = result.TotalPages;
-
-                return apiResponse;
+                return await ListarConPaginacionAsync<MedicoResponse>(pageIndex, pageSize, traerEspecialidades,
+                    "MedicosEspecialidades.Especialidad",
+                    filter: x => x.MedicosEspecialidades.Any(y => y.EspecialidadId == filtrarEspecialidadId));
             }
-            else
-            {
-                return await ListarConPaginacionAsync<MedicoResponse>(pageIndex, pageSize, traerEspecialidades, "MedicosEspecialidades.Especialidad");
-            }
+
+            return await ListarConPaginacionAsync<MedicoResponse>(pageIndex, pageSize, traerEspecialidades,
+                "MedicosEspecialidades.Especialidad");
         }
 
         [HttpGet("{id:int}", Name = "ObtenerMedico")]
@@ -83,16 +63,9 @@ namespace MedicDate.API.Controllers
         }
 
         [HttpGet("obtenerParaEditar/{id:int}")]
-        public async Task<ActionResult<MedicoRequest>> GetPut(int id)
+        public async Task<ActionResult<MedicoRequest>> GetPutMedico(int id)
         {
-            var existeMedico = await _medicoRepo.ResourceExists(id);
-
-            if (!existeMedico)
-            {
-                return NotFound($"No existe un médico con el id : {id}");
-            }
-
-            return await _medicoRepo.GetMedicoParaEdicion<MedicoRequest>(id);
+            return await GetPutAsync<MedicoRequest>(id, "MedicosEspecialidades");
         }
 
         [HttpPost("crear")]
@@ -109,7 +82,9 @@ namespace MedicDate.API.Controllers
                 await _medicoRepo.AddAsync(entityDb);
                 await _medicoRepo.SaveAsync();
 
-                var entityResponse = await _medicoRepo.GetMedicoConEspecialidades<MedicoResponse>(entityDb.Id);
+                var entityResponse = await _medicoRepo
+                    .FirstOrDefaultAsync(x => x.Id == entityDb.Id,
+                        includeProperties: "MedicosEspecialidades.Especialidad");
 
                 return CreatedAtRoute("ObtenerMedico", new { id = entityResponse.Id },
                     entityResponse);
@@ -126,13 +101,13 @@ namespace MedicDate.API.Controllers
         public async Task<ActionResult> Put(int id, MedicoRequest medicoRequest)
         {
             var response = await _medicoRepo.UpdateMedicoAsync(id, medicoRequest);
+            return response.ActionResult;
+        }
 
-            if (!response.Sussces)
-            {
-                return BadRequest(response.Message);
-            }
-
-            return NoContent();
+        [HttpDelete("eliminar/{id:int}")]
+        public async Task<ActionResult> Delete(int id)
+        {
+            return await EliminarRegistroAsync(id);
         }
     }
 }

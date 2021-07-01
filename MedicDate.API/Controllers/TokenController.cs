@@ -42,10 +42,15 @@ namespace MedicDate.API.Controllers
             var principal = _tokenService.GetPrincipalFromExpiredToken(refreshTokenDto.Token, _jwtSettings.SecretKey,
                 _jwtSettings.ValidAudience, _jwtSettings.ValidIssuer);
 
-            var username = principal.Identity.Name;
+            var username = principal.Identity?.Name;
             var user = await _userManager.FindByEmailAsync(username);
 
-            if (user is null || user.RefreshToken != refreshTokenDto.RefreshToken ||
+            if (string.IsNullOrEmpty(user.RefreshToken))
+            {
+                return BadRequest("No se encotro un refresh token en la DB");
+            }
+
+            if (user.RefreshToken != refreshTokenDto.RefreshToken ||
                 user.RefreshTokenExpiryTime <= DateTime.Now)
             {
                 return BadRequest(new LoginResponse()

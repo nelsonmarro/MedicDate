@@ -13,10 +13,10 @@ namespace MedicDate.API.Services
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
-        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly RoleManager<AppRole> _roleManager;
 
         public DbInitializer(ApplicationDbContext context, UserManager<ApplicationUser> userManager,
-            RoleManager<IdentityRole> roleManager)
+            RoleManager<AppRole> roleManager)
         {
             _context = context;
             _userManager = userManager;
@@ -43,8 +43,18 @@ namespace MedicDate.API.Services
                 return;
             }
 
-            _roleManager.CreateAsync(new IdentityRole(Sd.ROLE_ADMIN)).GetAwaiter().GetResult();
-            _roleManager.CreateAsync(new IdentityRole(Sd.ROLE_DOCTOR)).GetAwaiter().GetResult();
+            _roleManager.CreateAsync(new AppRole()
+            {
+                Name = Sd.ROLE_ADMIN,
+                Descripcion = "Tiene permisos para todos los módulos y funciones de la aplicación"
+            }).GetAwaiter().GetResult();
+
+            _roleManager.CreateAsync(new AppRole()
+            {
+                Name = Sd.ROLE_DOCTOR,
+                Descripcion =
+                    "Tiene permisos para todos los módulos de administración de citas y pacientes. No puede administrar los usuarios del sistema ni a otros doctores"
+            }).GetAwaiter().GetResult();
 
             _userManager.CreateAsync(new ApplicationUser
             {

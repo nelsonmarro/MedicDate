@@ -1,0 +1,12 @@
+﻿@page "/medicoEditar/{id:int}"
+
+<h2 class="text-radzen-primary mb-2">Crear Doctor</h2>
+
+@if (_medicoModel is null)
+{
+	<span>Cargando <i class="fas fa-spinner fa-spin"></i></span>
+}
+else
+{
+	<MedicoForm MedicoRequest="_medicoModel" OnSubmit="EditarMedico" />
+}

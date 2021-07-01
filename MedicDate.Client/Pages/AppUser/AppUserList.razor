@@ -1,0 +1,40 @@
+﻿@page "/usuarioList"
+
+<div class="row">
+	<div class="col-auto col-md-6 text-start">
+		<h2 class="text-radzen-secondary">Usuarios del Sistema</h2>
+	</div>
+	<div class="d-flex flex-column flex-md-row mt-3 mb-2 mb-md-0">
+		<div>
+			<span>Filtrar por rol</span>
+		</div>
+		<div class="ps-md-3">
+			<RadzenDropDown AllowClear="true" TValue="string" Style="width: 300px"
+			                Data="@_roles" AllowVirtualization="true"
+			                Placeholder="Seleccione" Change="@FiltrarPorRol"
+			                TextProperty="Nombre" ValueProperty="Id"/>
+		</div>
+	</div>
+	<div class="col-12">
+		<ListadoGenerico TItem="AppUserResponse" TotalCount="@_totalCount"
+		                 Listado="@_usuariosList" PermitirFiltrado="true" ModoFiltrado="@FilterMode.Simple" PermitirOpCrud="@_permitirOp" RutasOp="@_rutasOp" OnEliminarDatos="@EliminarUser">
+			<GridPersonalizada>
+				<RadzenGridColumn TItem="AppUserResponse" Property="Nombre" Title="Nombre"/>
+				<RadzenGridColumn TItem="AppUserResponse" Property="Apellidos" Title="Apellidos"/>
+				<RadzenGridColumn TItem="AppUserResponse" Property="Email" Title="Email" Width="250px"/>
+				<RadzenGridColumn TItem="AppUserResponse" Property="PhoneNumber"
+				                  Title="Teléfono" Width="160px"/>
+				<RadzenGridColumn TItem="AppUserResponse" Title="Roles" Filterable="false" Sortable="false" Width="230px">
+					<Template Context="user">
+						@foreach (var item in user.Roles)
+						{
+							<h5 class="text-radzen-primary">
+								@(item.Nombre)
+							</h5>
+						}
+					</Template>
+				</RadzenGridColumn>
+			</GridPersonalizada>
+		</ListadoGenerico>
+	</div>
+</div>

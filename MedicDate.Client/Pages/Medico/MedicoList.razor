@@ -23,18 +23,14 @@
 				<RadzenGridColumn TItem="MedicoResponse" Property="Apellidos" Title="Apellidos" />
 				<RadzenGridColumn TItem="MedicoResponse" Property="Cedula" Title="Cédula" />
 				<RadzenGridColumn TItem="MedicoResponse" Property="PhoneNumber" Title="Teléfono" />
-				<RadzenGridColumn TItem="MedicoResponse" Property="Especialidades" Width="250px" Title="Especialidades" Filterable="false" Sortable="false">
+				<RadzenGridColumn TItem="MedicoResponse" Property="Especialidades" Width="240px" Title="Especialidades" Filterable="false" Sortable="false">
 					<Template Context="medico">
-						<div class="row row-cols-2 g-2">
-							@foreach (var item in medico.Especialidades)
-							{
-								<div class="col pe-0">
-									<h5 class="text-radzen-secondary">
-										@(item.NombreEspecialidad).
-									</h5>
-								</div>
-							}
-						</div>
+						@foreach (var item in medico.Especialidades)
+						{
+							<h5 class="text-radzen-secondary">
+								@(item.NombreEspecialidad)
+							</h5>
+						}
 					</Template>
 				</RadzenGridColumn>
 			</GridPersonalizada>

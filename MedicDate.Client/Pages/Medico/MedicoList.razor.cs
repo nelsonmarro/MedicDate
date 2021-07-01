@@ -83,26 +83,29 @@ namespace MedicDate.Client.Pages.Medico
             await CargarMedicoList();
         }
 
-        private async Task EliminarMedico(int id)
+        private async Task EliminarMedico(string id)
         {
-            if (id != 0)
+            if (int.TryParse(id, out var idMedico))
             {
-                var httpResp = await HttpRepo.Delete($"api/Medico/eliminar/{id}");
-
-                if (httpResp is null)
+                if (idMedico > 0)
                 {
-                    return;
-                }
+                    var httpResp = await HttpRepo.Delete($"api/Medico/eliminar/{id}");
 
-                if (httpResp.Error)
-                {
-                    NotificationService.ShowError("Error!", await httpResp.GetResponseBody());
-                }
-                else
-                {
-                    NotificationService.ShowSuccess("Operación Exitosa!", await httpResp.GetResponseBody());
+                    if (httpResp is null)
+                    {
+                        return;
+                    }
 
-                    await CargarMedicoList();
+                    if (httpResp.Error)
+                    {
+                        NotificationService.ShowError("Error!", await httpResp.GetResponseBody());
+                    }
+                    else
+                    {
+                        NotificationService.ShowSuccess("Operación Exitosa!", await httpResp.GetResponseBody());
+
+                        await CargarMedicoList();
+                    }
                 }
             }
         }

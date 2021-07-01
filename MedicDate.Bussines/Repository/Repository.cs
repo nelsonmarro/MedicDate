@@ -60,8 +60,7 @@ namespace MedicDate.Bussines.Repository
         }
 
         public async Task<TEntity> FirstOrDefaultAsync(Expression<Func<TEntity, bool>> filter = null,
-            string includeProperties = null, bool isTracking = true,
-            bool needMapping = true)
+            string includeProperties = null, bool isTracking = true)
         {
             IQueryable<TEntity> query = _dBSet;
             if (filter != null)

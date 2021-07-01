@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace MedicDate.Models.DTOs.Auth
+namespace MedicDate.Models.DTOs.AppUser
 {
-    public class RegisterRequest
+    public class AppUserRequest
     {
         [Required(ErrorMessage = "Ingrese su Nombre")]
         public string Nombre { get; set; }
@@ -11,20 +11,9 @@ namespace MedicDate.Models.DTOs.Auth
         [Required(ErrorMessage = "Ingrese sus Apellidos")]
         public string Apellidos { get; set; }
 
-        [Required(ErrorMessage = "El Email es requerido")]
-        [EmailAddress(ErrorMessage = "Ingrese un email correcto")]
-        public string Email { get; set; }
-
         [RegularExpression(@"^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$",
             ErrorMessage = "El formato del teléfono no es correcto")]
         public string PhoneNumber { get; set; }
-
-        [Required(ErrorMessage = "La Contraseña es requerida")]
-        [DataType(DataType.Password)]
-        public string Password { get; set; }
-
-        [Compare("Password", ErrorMessage = "Las contraseñas no coinciden")]
-        public string ConfirmPassword { get; set; }
 
         public List<string> RolesIds { get; set; } = new();
     }

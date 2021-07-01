@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using AutoMapper;
 using MedicDate.Bussines.Repository.IRepository;
@@ -10,6 +11,7 @@ using MedicDate.Models.DTOs;
 using MedicDate.Bussines.Helpers;
 using MedicDate.DataAccess.Models;
 using MedicDate.Utility.Interfaces;
+using MedicDate.Models.DTOs.Medico;
 
 namespace MedicDate.API.Controllers
 {
@@ -29,7 +31,8 @@ namespace MedicDate.API.Controllers
             int pageIndex = 0,
             int pageSize = 10,
             bool traerEspecialidades = false,
-            string includeProperties = "")
+            string includeProperties = "",
+            Expression<Func<TEntity, bool>> filter = null)
         {
             ApiResponseDto<TResponse> apiResponse = new();
             try
@@ -39,7 +42,7 @@ namespace MedicDate.API.Controllers
                     includeProperties = "";
                 }
 
-                var entityList = await _repository.GetAllAsync(null, null, includeProperties);
+                var entityList = await _repository.GetAllAsync(filter, null, includeProperties);
 
                 var result = ApiResult<TEntity, TResponse>.Create
                 (
@@ -143,6 +146,21 @@ namespace MedicDate.API.Controllers
             await _repository.SaveAsync();
 
             return Ok("Registro Eliminado con éxito");
+        }
+
+        protected async Task<ActionResult<TResponse>> GetPutAsync<TResponse>(int id, string includeProperties = null)
+        {
+            var existeEntity = await _repository.ResourceExists(id);
+
+            if (!existeEntity)
+            {
+                return NotFound($"No existe el registro con id : {id}");
+            }
+
+            var entityDb =
+                await _repository.FirstOrDefaultAsync(x => x.Id == id, includeProperties);
+
+            return _mapper.Map<TResponse>(entityDb);
         }
     }
 }

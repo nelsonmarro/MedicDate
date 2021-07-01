@@ -7,7 +7,8 @@ using System.Reflection.Emit;
 
 namespace MedicDate.DataAccess.Data
 {
-    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
+    public class ApplicationDbContext :
+        IdentityDbContext<ApplicationUser, AppRole, string>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
@@ -21,6 +22,7 @@ namespace MedicDate.DataAccess.Data
         }
 
         public DbSet<ApplicationUser> ApplicationUser { get; set; }
+        public DbSet<AppRole> AppRole { get; set; }
         public DbSet<Medico> Medico { get; set; }
         public DbSet<Especialidad> Especialidad { get; set; }
         public DbSet<MedicoEspecialidad> MedicoEspecialidad { get; set; }

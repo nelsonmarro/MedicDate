@@ -45,9 +45,9 @@ namespace MedicDate.API.Controllers
         }
 
         [HttpGet("{id:int}", Name = "ObtenerEspecialidad")]
-        public async Task<ActionResult<EspecialidadRequest>> GetEspecialidad(int id)
+        public async Task<ActionResult<EspecialidadRequest>> GetPutEspecialidad(int id)
         {
-            return await ObtenerRegistroPorIdAsync<EspecialidadRequest>(id);
+            return await GetPutAsync<EspecialidadRequest>(id);
         }
 
         [HttpPost("crear")]
@@ -62,12 +62,7 @@ namespace MedicDate.API.Controllers
         {
             var response = await _especialidadRepo.UpdateEspecialidad(id, especialidadRequest);
 
-            if (!response.Sussces)
-            {
-                return NotFound(response.Message);
-            }
-
-            return Ok(response.Message);
+            return response.ActionResult;
         }
 
         [HttpDelete("eliminar/{id:int}")]

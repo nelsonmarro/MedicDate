@@ -10,7 +10,7 @@
 	<div class="mb-2 row">
 		<div class="col-12 text-end">
 			<NavLink Match="@NavLinkMatch.Prefix" href="@RutasOp.AgregarUrl">
-				<RadzenButton Text="Agregar" Icon="add" />
+				<RadzenButton Text="Agregar" Icon="add"/>
 			</NavLink>
 		</div>
 	</div>
@@ -31,10 +31,10 @@ else
 {
 	<div class="my-3">
 		<RadzenGrid @ref="_dataGrid" Count="@TotalCount" Data="@Listado"
-					LoadData="@((e) => LoadData(e, _dataGrid.CurrentPage))" AllowFiltering="@PermitirFiltrado"
-					FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" FilterMode="@ModoFiltrado" AllowPaging="true"
-					LogicalFilterOperator="LogicalFilterOperator.Or" PageSize="@_pageSize" EmptyText="No hay datos que mostrar"
-					AllowSorting="true" PagerPosition="PagerPosition.TopAndBottom" TItem="TItem">
+		            LoadData="@((e) => LoadData(e, _dataGrid.CurrentPage))" AllowFiltering="@PermitirFiltrado"
+		            FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" FilterMode="@ModoFiltrado" AllowPaging="true"
+		            LogicalFilterOperator="LogicalFilterOperator.Or" PageSize="@_pageSize" EmptyText="No hay datos que mostrar"
+		            AllowSorting="true" PagerPosition="PagerPosition.TopAndBottom" TItem="TItem">
 			<Columns>
 
 				@if (GridPersonalizada is null)
@@ -43,7 +43,7 @@ else
 
 					@foreach (var propiedad in NombrePropiedades)
 					{
-						<RadzenGridColumn TItem="TItem" Property="@propiedad" Title="@Cabeceras[i]" />
+						<RadzenGridColumn TItem="TItem" Property="@propiedad" Title="@Cabeceras[i]"/>
 						i++;
 					}
 				}
@@ -54,10 +54,10 @@ else
 				@if (PermitirOpCrud.PermitirEditar)
 				{
 					<RadzenGridColumn TItem="TItem" Context="item" Filterable="false" Sortable="false"
-									  TextAlign="@TextAlign.Center" Width="70px">
+					                  TextAlign="@TextAlign.Center" Width="70px">
 						<Template>
 							<NavLink Match="@NavLinkMatch.Prefix"
-									 href="@($"{RutasOp.EditarUrl}/{item.GetType().GetProperties()[0].GetValue(item)}")">
+							         href="@($"{RutasOp.EditarUrl}/{item.GetType().GetProperties()[0].GetValue(item)}")">
 								<RadzenButton Icon="edit" ButtonStyle="@ButtonStyle.Secondary"></RadzenButton>
 							</NavLink>
 						</Template>
@@ -66,10 +66,10 @@ else
 				@if (PermitirOpCrud.PermitirEliminar)
 				{
 					<RadzenGridColumn TItem="TItem" Context="item" Filterable="false" Sortable="false"
-									  TextAlign="@TextAlign.Center" Width="70px">
+					                  TextAlign="@TextAlign.Center" Width="70px">
 						<Template>
 							<RadzenButton Icon="delete" ButtonStyle="@ButtonStyle.Danger"
-										  Click="@(() => _dialogService.OpenAsync<ConfirmacionBorrar>("Borrar Registro", new Dictionary<string, object>() { { "Id", item.GetType().GetProperties()[0].GetValue(item) }, { "OnEliminar", OnEliminarDatos } }, new DialogOptions() { Width = "355px", Height = "184px" }))" />
+							              Click="@(() => _dialogService.OpenAsync<ConfirmacionBorrar>("Borrar Registro", new Dictionary<string, object>() {{"Id", item.GetType().GetProperties()[0].GetValue(item)?.ToString()}, {"OnEliminar", OnEliminarDatos}}, new DialogOptions() {Width = "355px", Height = "184px"}))"/>
 						</Template>
 					</RadzenGridColumn>
 				}
@@ -108,7 +108,7 @@ else
 	public RutasOp RutasOp { get; set; }
 
 	[Parameter]
-	public EventCallback<int> OnEliminarDatos { get; set; }
+	public EventCallback<string> OnEliminarDatos { get; set; }
 
 	[Parameter]
 	public int TotalCount { get; set; }
@@ -118,7 +118,16 @@ else
 
 	private async Task LoadData(LoadDataArgs args = null, int pageIndex = 0, int pageSize = 10)
 	{
-		var url = $"{RutasOp.GetUrl}?pageIndex={pageIndex}&pageSize={pageSize}";
+		string url;
+
+		if (RutasOp.GetUrl.Contains("?"))
+		{
+			url = $"{RutasOp.GetUrl}&pageIndex={pageIndex}&pageSize={pageSize}";
+		}
+		else
+		{
+			url = $"{RutasOp.GetUrl}?pageIndex={pageIndex}&pageSize={pageSize}";
+		}
 
 		var response = await _httpRepository.Get<ApiResponseDto<TItem>>(url);
 
@@ -160,7 +169,7 @@ else
 
 	private async Task OnDropDownChange(object value)
 	{
-		_pageSize = (int)value;
+		_pageSize = (int) value;
 		await LoadData(null, 0, _pageSize);
 		_dataGrid.GoToPage(0);
 	}
