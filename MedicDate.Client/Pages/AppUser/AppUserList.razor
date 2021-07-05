@@ -9,22 +9,22 @@
 			<span>Filtrar por rol</span>
 		</div>
 		<div class="ps-md-3">
-			<RadzenDropDown AllowClear="true" TValue="string" Style="width: 300px"
-			                Data="@_roles" AllowVirtualization="true"
-			                Placeholder="Seleccione" Change="@FiltrarPorRol"
-			                TextProperty="Nombre" ValueProperty="Id"/>
+			<RadzenDropDown TValue="string" Style="width: 300px"
+			                Data="@_roles" Placeholder="Seleccione"
+			                Change="@FilterByRole" TextProperty="Nombre"
+			                ValueProperty="Id" AllowClear="true"/>
 		</div>
 	</div>
 	<div class="col-12">
-		<ListadoGenerico TItem="AppUserResponse" TotalCount="@_totalCount"
-		                 Listado="@_usuariosList" PermitirFiltrado="true" ModoFiltrado="@FilterMode.Simple" PermitirOpCrud="@_permitirOp" RutasOp="@_rutasOp" OnEliminarDatos="@EliminarUser">
-			<GridPersonalizada>
-				<RadzenGridColumn TItem="AppUserResponse" Property="Nombre" Title="Nombre"/>
-				<RadzenGridColumn TItem="AppUserResponse" Property="Apellidos" Title="Apellidos"/>
-				<RadzenGridColumn TItem="AppUserResponse" Property="Email" Title="Email" Width="250px"/>
-				<RadzenGridColumn TItem="AppUserResponse" Property="PhoneNumber"
+		<RadzenGenericGrid TItem="AppUserResponse" TotalCount="@_totalCount"
+		                   ItemList="@_usersList" AllowFilter="true" FilterMode="@FilterMode.Simple" AllowCrudOps="@_allowCrudOps" OpRoutes="@_opRoutes" OnDeleteData="@DeleteUser">
+			<CustomGridCols>
+				<RadzenDataGridColumn TItem="AppUserResponse" Property="Nombre" Title="Nombre"/>
+				<RadzenDataGridColumn TItem="AppUserResponse" Property="Apellidos" Title="Apellidos"/>
+				<RadzenDataGridColumn TItem="AppUserResponse" Property="Email" Title="Email" Width="240px"/>
+				<RadzenDataGridColumn TItem="AppUserResponse" Property="PhoneNumber"
 				                  Title="Teléfono" Width="160px"/>
-				<RadzenGridColumn TItem="AppUserResponse" Title="Roles" Filterable="false" Sortable="false" Width="230px">
+				<RadzenDataGridColumn TItem="AppUserResponse" Title="Roles" Filterable="false" Sortable="false" Width="220px">
 					<Template Context="user">
 						@foreach (var item in user.Roles)
 						{
@@ -33,8 +33,21 @@
 							</h5>
 						}
 					</Template>
-				</RadzenGridColumn>
-			</GridPersonalizada>
-		</ListadoGenerico>
+				</RadzenDataGridColumn>
+				<RadzenDataGridColumn TItem="AppUserResponse" Property="EmailConfirmed"
+				                      Title="Estado Cuenta" Filterable="false">
+					<Template Context="user">
+						@if (user.EmailConfirmed)
+						{
+							<span class="text-success">Activa</span>
+						}
+						else
+						{
+							<span class="text-danger">Por confirmar</span>
+						}
+					</Template>
+				</RadzenDataGridColumn>
+			</CustomGridCols>
+		</RadzenGenericGrid>
 	</div>
 </div>

@@ -29,7 +29,7 @@ namespace MedicDate.API.Controllers
         }
 
         [HttpGet("listarConPaginacion")]
-        public async Task<ActionResult<ApiResponseDto<AppUserResponse>>> ListarUsuarios
+        public async Task<ActionResult<ApiResponseDto<AppUserResponse>>> GetAllUsersAsync
         (
             int pageIndex = 0,
             int pageSize = 10,
@@ -41,7 +41,7 @@ namespace MedicDate.API.Controllers
 
             if (traerRoles)
             {
-                var usersConRoles = await _userRepo.GetUsersConRoles(filterRolId);
+                var usersConRoles = await _userRepo.GetUsersWithRoles(filterRolId);
 
                 var count = usersConRoles.Count();
 
@@ -79,11 +79,11 @@ namespace MedicDate.API.Controllers
         }
 
         [HttpGet("obtenerParaEditar/{id}")]
-        public async Task<ActionResult<AppUserRequest>> GetUsuarioParaEditar(string id)
+        public async Task<ActionResult<AppUserRequest>> GetPutAsync(string id)
         {
-            var response = await _userRepo.GetUsuarioParaEditar(id);
+            var response = await _userRepo.GetUserForEdit(id);
 
-            if (!response.Sussces)
+            if (!response.IsSuccess)
             {
                 return response.ActionResult;
             }
@@ -91,36 +91,92 @@ namespace MedicDate.API.Controllers
             return response.Data;
         }
 
-        [HttpPost("crear")]
-        public async Task<ActionResult> CrearUsuario(RegisterRequest registerRequest)
+        [HttpGet("{id}")]
+        public async Task<ActionResult<AppUserResponse>> GetUserById(string id)
         {
-            var resp = await _userRepo.CrearUsuarioAsync(registerRequest);
+            var userDb = await _userRepo.FirstOrDefaultAsync(x => x.Id == id);
+
+            if (userDb is null)
+            {
+                return NotFound($"No se encotro el usuario con id : {id}");
+            }
+
+            return _mapper.Map<AppUserResponse>(userDb);
+        }
+
+        [HttpPost("crear")]
+        public async Task<ActionResult> PostAsync(RegisterRequest registerRequest)
+        {
+            var resp = await _userRepo.CreateUserAsync(registerRequest);
 
             return resp.ActionResult;
         }
 
         [HttpPut("editar/{id}")]
-        public async Task<ActionResult> EditarUsuario(string id, AppUserRequest appUserRequest)
+        public async Task<ActionResult> PutAsync(string id, AppUserRequest appUserRequest)
         {
-            var resp = await _userRepo.EditarUsuarioAsync(id, appUserRequest);
+            var resp = await _userRepo.EditUserAsync(id, appUserRequest);
 
             return resp.ActionResult;
         }
 
-        [HttpPost("lockunlock/{id}")]
-        public async Task<ActionResult> LockUnlockUser(string id)
+        [HttpPost("lockUnlock/{id}")]
+        public async Task<ActionResult> LockUnlockUserAsync(string id)
         {
-            var resp = await _userRepo.LockUnlockUsuarioAsync(id);
+            var resp = await _userRepo.LockUnlockUserAsync(id);
 
             return resp.ActionResult;
         }
+
+        [HttpPost("confirmEmail")]
+        public async Task<ActionResult> ConfirmEmailAsync(ConfirmEmailRequest confirmEmailRequest)
+        {
+            var response = await _userRepo.ConfirmEmailAsync(confirmEmailRequest);
+
+            return !response.IsSuccess ? response.ActionResult : Ok();
+        }
+
+        [HttpPost("sendConfirmationEmail")]
+        public async Task<ActionResult> ResendConfirmEmailAsync([FromBody] string userEmail)
+        {
+            var response = await _userRepo.SendConfirmEmailAsync(userEmail);
+
+            return !response.IsSuccess ? response.ActionResult : Ok();
+        }
+
+        [HttpPost("sendChangeEmailToken")]
+        public async Task<ActionResult> SendChangeEmailTokenAsync(ChangeEmailModel changeEmailModel)
+        {
+            var response = await _userRepo.SendChangeEmailTokenAsync(changeEmailModel);
+
+            if (!response.IsSuccess)
+            {
+                return response.ActionResult;
+            }
+
+            return Ok();
+        }
+
+        [HttpPost("changeEmail/{userId}")]
+        public async Task<ActionResult> ChangeEmailAsync(string userId, ChangeEmailModel changeEmailModel)
+        {
+            var response = await _userRepo.ChangeEmailAsync(userId, changeEmailModel);
+
+            if (!response.IsSuccess)
+            {
+                return response.ActionResult;
+            }
+
+            return Ok();
+        }
+
 
         [HttpGet("roles")]
-        public async Task<ActionResult<List<RolResponse>>> GetRoles()
+        public async Task<ActionResult<List<RoleResponse>>> GetRolesAsync()
         {
-            var rolesListDb = await _userRepo.ObtenerRolesAsync();
+            var rolesListDb = await _userRepo.GetRolesAsync();
 
-            return rolesListDb.Select(x => new RolResponse
+            return rolesListDb.Select(x => new RoleResponse
             {
                 Id = x.Id,
                 Nombre = x.Name,
@@ -129,11 +185,11 @@ namespace MedicDate.API.Controllers
         }
 
         [HttpDelete("eliminar/{id}")]
-        public async Task<ActionResult> DeleteUser(string id)
+        public async Task<ActionResult> DeleteUserAsync(string id)
         {
             var esMasterResp = await _userRepo.CheckIfUserIsWebMasterAsync(id);
 
-            if (!esMasterResp.Sussces)
+            if (!esMasterResp.IsSuccess)
             {
                 return esMasterResp.ActionResult;
             }
@@ -143,7 +199,7 @@ namespace MedicDate.API.Controllers
                 return BadRequest("No puede eliminar al usuario Web Master");
             }
 
-            var resp = await _userRepo.EliminarUsuarioAsync(id);
+            var resp = await _userRepo.DeleteUserAsync(id);
 
             return resp.ActionResult;
         }

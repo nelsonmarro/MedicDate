@@ -28,7 +28,7 @@ namespace MedicDate.Bussines.Repository
             {
                 return new DataResponse<string>()
                 {
-                    Sussces = false,
+                    IsSuccess = false,
                     ActionResult = new NotFoundObjectResult("No se encontró la especialidad")
                 };
             }
@@ -38,7 +38,7 @@ namespace MedicDate.Bussines.Repository
 
             return new DataResponse<string>()
             {
-                Sussces = true,
+                IsSuccess = true,
                 ActionResult = new OkObjectResult("Especialidad actualizada con éxito")
             };
         }

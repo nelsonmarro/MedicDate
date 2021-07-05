@@ -26,6 +26,7 @@ using Microsoft.IdentityModel.Tokens;
 using MedicDate.API.Services.IServices;
 using MedicDate.API.Services;
 using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Identity.UI.Services;
 
 namespace MedicDate.API
 {
@@ -56,8 +57,9 @@ namespace MedicDate.API
             var apiSettings = appSettingsSection.Get<JwtSettings>();
             var key = Encoding.UTF8.GetBytes(apiSettings.SecretKey);
 
-            services.AddIdentity<ApplicationUser, AppRole>()
-                .AddEntityFrameworkStores<ApplicationDbContext>();
+            services.AddIdentity<ApplicationUser, AppRole>(opts => { opts.SignIn.RequireConfirmedEmail = true; })
+                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddDefaultTokenProviders();
 
             services.AddAuthentication(opts =>
             {
@@ -110,6 +112,7 @@ namespace MedicDate.API
                 });
             });
 
+            services.AddTransient<IEmailSender, MailJetEmailSender>();
             services.AddScoped<IDbInitializer, DbInitializer>();
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IEspecialidadRepository, EspecialidadRepository>();

@@ -1,0 +1,35 @@
+﻿@inject DialogService _dialogService
+
+<div class="text-center py-2">
+	<span class="text-@Color">
+		<i class="fas @Icon fa-5x"></i>
+	</span>
+</div>
+
+<h2 class="text-center py-2">@Title</h2>
+
+<p class="py-2 text-center">
+	@Text
+</p>
+
+<div class="text-center">
+	<RadzenButton Text="OK" ButtonStyle="@ButtonStyle.Secondary"
+	              Click="@(() => _dialogService.Close(false))"/>
+</div>
+
+
+@code {
+
+	[Parameter]
+	public string Icon { get; set; }
+
+	[Parameter]
+	public string Title { get; set; }
+
+	[Parameter]
+	public string Text { get; set; }
+
+	[Parameter]
+	public string Color { get; set; }
+
+}

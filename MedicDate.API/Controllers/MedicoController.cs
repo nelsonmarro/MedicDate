@@ -30,7 +30,7 @@ namespace MedicDate.API.Controllers
         }
 
         [HttpGet("listarConPaginacion")]
-        public async Task<ActionResult<ApiResponseDto<MedicoResponse>>> GetAllWithPaging
+        public async Task<ActionResult<ApiResponseDto<MedicoResponse>>> GetAllWithPagingAsync
         (
             int pageIndex = 0,
             int pageSize = 10,
@@ -40,17 +40,18 @@ namespace MedicDate.API.Controllers
         {
             if (filtrarEspecialidadId is not null)
             {
-                return await ListarConPaginacionAsync<MedicoResponse>(pageIndex, pageSize, traerEspecialidades,
+                return await GetAllWithPagingAsync<MedicoResponse>(pageIndex, pageSize, traerEspecialidades,
                     "MedicosEspecialidades.Especialidad",
                     filter: x => x.MedicosEspecialidades.Any(y => y.EspecialidadId == filtrarEspecialidadId));
             }
 
-            return await ListarConPaginacionAsync<MedicoResponse>(pageIndex, pageSize, traerEspecialidades,
+            return await GetAllWithPagingAsync<MedicoResponse>(pageIndex, pageSize, traerEspecialidades,
                 "MedicosEspecialidades.Especialidad");
         }
 
         [HttpGet("{id:int}", Name = "ObtenerMedico")]
-        public async Task<ActionResult<MedicoResponse>> GetMedicoPorId(int id, [FromQuery] bool traerEspecialidades = false)
+        public async Task<ActionResult<MedicoResponse>> GetMedicoByIdAsync(int id,
+            [FromQuery] bool traerEspecialidades = false)
         {
             var existeMedico = await _medicoRepo.ResourceExists(id);
 
@@ -59,21 +60,21 @@ namespace MedicDate.API.Controllers
                 return NotFound($"No existe un médico con el id : {id}");
             }
 
-            return await ObtenerRegistroPorIdAsync<MedicoResponse>(id, traerEspecialidades, "MedicosEspecialidades.Especialidad");
+            return await GetByIdAsync<MedicoResponse>(id, traerEspecialidades, "MedicosEspecialidades.Especialidad");
         }
 
         [HttpGet("obtenerParaEditar/{id:int}")]
-        public async Task<ActionResult<MedicoRequest>> GetPutMedico(int id)
+        public async Task<ActionResult<MedicoRequest>> GetPutMedicoAsync(int id)
         {
             return await GetPutAsync<MedicoRequest>(id, "MedicosEspecialidades");
         }
 
         [HttpPost("crear")]
-        public async Task<ActionResult> Post(MedicoRequest medicoRequest)
+        public async Task<ActionResult> PostAsync(MedicoRequest medicoRequest)
         {
             try
             {
-                if (!await _medicoRepo.ExisteEspecialidadIdParaCrearMedico(medicoRequest.EspecialidadesId))
+                if (!await _medicoRepo.EspecialidadIdExistForMedicoCreation(medicoRequest.EspecialidadesId))
                 {
                     return BadRequest("No existe una de las especialidades asignadas");
                 }
@@ -82,11 +83,13 @@ namespace MedicDate.API.Controllers
                 await _medicoRepo.AddAsync(entityDb);
                 await _medicoRepo.SaveAsync();
 
-                var entityResponse = await _medicoRepo
+                var meidcoDb = await _medicoRepo
                     .FirstOrDefaultAsync(x => x.Id == entityDb.Id,
                         includeProperties: "MedicosEspecialidades.Especialidad");
 
-                return CreatedAtRoute("ObtenerMedico", new { id = entityResponse.Id },
+                var entityResponse = _mapper.Map<MedicoResponse>(meidcoDb);
+
+                return CreatedAtRoute("ObtenerMedico", new {id = entityResponse.Id},
                     entityResponse);
             }
             catch (Exception e)
@@ -98,16 +101,16 @@ namespace MedicDate.API.Controllers
         }
 
         [HttpPut("editar/{id:int}")]
-        public async Task<ActionResult> Put(int id, MedicoRequest medicoRequest)
+        public async Task<ActionResult> PutAsync(int id, MedicoRequest medicoRequest)
         {
             var response = await _medicoRepo.UpdateMedicoAsync(id, medicoRequest);
             return response.ActionResult;
         }
 
         [HttpDelete("eliminar/{id:int}")]
-        public async Task<ActionResult> Delete(int id)
+        public async Task<ActionResult> DeleteAsync(int id)
         {
-            return await EliminarRegistroAsync(id);
+            return await DeleteResourceAsync(id);
         }
     }
 }

@@ -25,7 +25,7 @@ namespace MedicDate.Client.Pages.Medico
             HttpInterceptor.RegisterEvent();
         }
 
-        private async Task CrearMedico()
+        private async Task CreateMedico()
         {
             NotificationService.ShowLoadingDialog(DialogService);
 

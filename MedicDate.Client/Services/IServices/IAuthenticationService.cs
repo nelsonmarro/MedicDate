@@ -7,7 +7,6 @@ namespace MedicDate.Client.Services.IServices
 {
     public interface IAuthenticationService : IHttpRepository
     {
-        Task<RegisterResponse> RegisterUser(RegisterRequest registerRequest);
         Task<LoginResponse> Login(LoginRequest loginRequest);
         Task Logout();
         Task<string> RefreshToken();

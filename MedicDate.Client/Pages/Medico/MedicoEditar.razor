@@ -1,6 +1,6 @@
 ﻿@page "/medicoEditar/{id:int}"
 
-<h2 class="text-radzen-primary mb-2">Crear Doctor</h2>
+<h2 class="text-radzen-primary mb-2">Editar Doctor</h2>
 
 @if (_medicoModel is null)
 {
@@ -8,5 +8,5 @@
 }
 else
 {
-	<MedicoForm MedicoRequest="_medicoModel" OnSubmit="EditarMedico" />
+	<MedicoForm MedicoRequest="_medicoModel" OnSubmit="EditMedico"/>
 }

@@ -8,13 +8,13 @@ namespace MedicDate.DataAccess.Models
     {
         [Key] public int Id { get; set; }
 
-        [Required] public string Nombre { get; set; }
+        [Required] [StringLength(150)] public string Nombre { get; set; }
 
-        [Required] public string Apellidos { get; set; }
+        [Required] [StringLength(150)] public string Apellidos { get; set; }
 
         [Required] [StringLength(10)] public string Cedula { get; set; }
 
-        [Required] public string PhoneNumber { get; set; }
+        [Required] [StringLength(20)] public string PhoneNumber { get; set; }
 
         public List<MedicoEspecialidad> MedicosEspecialidades { get; set; }
     }

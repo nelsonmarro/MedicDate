@@ -18,7 +18,7 @@
 			if (!string.IsNullOrEmpty(Error))
 			{
 				<div class="alert alert-danger" role="alert">
-					<p>@Error</p>
+					<span>@Error</span>
 				</div>
 			}
 		}
@@ -44,6 +44,10 @@
 					<RadzenButton ButtonType="ButtonType.Submit" Text="Iniciar Sesión" Icon="login" />
 				</div>
 			</EditForm>
+
+			<p>
+				<RadzenLink Text="¿Olvidó su contraseña?" Path="usuario/forgotPassword"></RadzenLink>
+			</p>
 		</RadzenCard>
 	</div>
 </div>

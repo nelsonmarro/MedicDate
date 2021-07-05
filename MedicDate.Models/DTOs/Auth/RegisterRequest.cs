@@ -24,6 +24,7 @@ namespace MedicDate.Models.DTOs.Auth
         public string Password { get; set; }
 
         [Compare("Password", ErrorMessage = "Las contraseñas no coinciden")]
+        [DataType(DataType.Password)]
         public string ConfirmPassword { get; set; }
 
         public List<string> RolesIds { get; set; } = new();

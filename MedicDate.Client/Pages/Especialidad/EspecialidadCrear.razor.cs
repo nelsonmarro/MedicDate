@@ -29,7 +29,7 @@ namespace MedicDate.Client.Pages.Especialidad
 
         private EspecialidadRequest _especialidadModel = new();
 
-        private async Task Crear()
+        private async Task CreateEspecialidad()
         {
             NotificationService.ShowLoadingDialog(DialogService);
 

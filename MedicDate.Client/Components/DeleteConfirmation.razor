@@ -1,0 +1,30 @@
+﻿@inject DialogService _dialogService
+
+<p>¿ Está seguro de borrar este registro ?</p>
+<div class="mt-4">
+	<div class="row">
+		<div class="col-6">
+			<RadzenButton Text="Aceptar" class="w-100" Click="@Delete"/>
+		</div>
+		<div class="col-6">
+			<RadzenButton Text="Cancelar" class="w-100" ButtonStyle="@ButtonStyle.Secondary"
+			              Click="@(() => _dialogService.Close(false))"/>
+		</div>
+	</div>
+</div>
+
+@code {
+
+	[Parameter]
+	public string Id { get; set; }
+
+	[Parameter]
+	public EventCallback<string> OnDelete { get; set; }
+
+	private async Task Delete()
+	{
+		_dialogService.Close(false);
+		await OnDelete.InvokeAsync(Id);
+	}
+
+}

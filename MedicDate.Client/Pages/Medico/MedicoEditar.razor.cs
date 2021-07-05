@@ -45,7 +45,7 @@ namespace MedicDate.Client.Pages.Medico
             }
         }
 
-        private async Task EditarMedico()
+        private async Task EditMedico()
         {
             NotificationService.ShowLoadingDialog(DialogService);
 

@@ -9,7 +9,7 @@ namespace MedicDate.DataAccess.Models
     {
         [Key] public int Id { get; set; }
 
-        [Required] public string NombreEspecialidad { get; set; }
+        [Required] [StringLength(150)] public string NombreEspecialidad { get; set; }
 
         public List<MedicoEspecialidad> MedicosEspecialidades { get; set; }
     }

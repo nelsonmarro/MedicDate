@@ -26,7 +26,7 @@ namespace MedicDate.API.Controllers
             _mapper = mapper;
         }
 
-        protected async Task<ActionResult<ApiResponseDto<TResponse>>> ListarConPaginacionAsync<TResponse>
+        protected async Task<ActionResult<ApiResponseDto<TResponse>>> GetAllWithPagingAsync<TResponse>
         (
             int pageIndex = 0,
             int pageSize = 10,
@@ -67,7 +67,7 @@ namespace MedicDate.API.Controllers
             }
         }
 
-        protected async Task<ActionResult<List<TResponse>>> ListarAsync<TResponse>()
+        protected async Task<ActionResult<List<TResponse>>> GetAllAsync<TResponse>()
         {
             try
             {
@@ -82,7 +82,8 @@ namespace MedicDate.API.Controllers
             }
         }
 
-        protected async Task<ActionResult<TResponse>> ObtenerRegistroPorIdAsync<TResponse>(int id, bool traerEspecialidades = false, string includeProperties = "")
+        protected async Task<ActionResult<TResponse>> GetByIdAsync<TResponse>(int id, bool traerEspecialidades = false,
+            string includeProperties = "")
         {
             try
             {
@@ -111,7 +112,7 @@ namespace MedicDate.API.Controllers
             }
         }
 
-        protected async Task<ActionResult> InsertarRegistroAsync<TRequest, TResponse>(TRequest entityRequest,
+        protected async Task<ActionResult> AddResourceAsync<TRequest, TResponse>(TRequest entityRequest,
             string routeResultName)
             where TResponse : IId
         {
@@ -134,7 +135,7 @@ namespace MedicDate.API.Controllers
             }
         }
 
-        protected async Task<ActionResult> EliminarRegistroAsync(int id)
+        protected async Task<ActionResult> DeleteResourceAsync(int id)
         {
             var response = await _repository.Remove(id);
 

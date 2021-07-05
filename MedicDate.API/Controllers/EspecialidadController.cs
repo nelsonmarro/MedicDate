@@ -31,21 +31,21 @@ namespace MedicDate.API.Controllers
         }
 
         [HttpGet("listarConPaginacion")]
-        public async Task<ActionResult<ApiResponseDto<EspecialidadResponse>>> GetAllWithPaging(
+        public async Task<ActionResult<ApiResponseDto<EspecialidadResponse>>> GetAllWithPagingAsync(
             int pageIndex = 0,
             int pageSize = 10)
         {
-            return await ListarConPaginacionAsync<EspecialidadResponse>(pageIndex, pageSize);
+            return await GetAllWithPagingAsync<EspecialidadResponse>(pageIndex, pageSize);
         }
 
         [HttpGet("listar")]
-        public async Task<ActionResult<List<EspecialidadResponse>>> GetAll()
+        public async Task<ActionResult<List<EspecialidadResponse>>> GetAllAsync()
         {
-            return await ListarAsync<EspecialidadResponse>();
+            return await GetAllAsync<EspecialidadResponse>();
         }
 
         [HttpGet("{id:int}", Name = "ObtenerEspecialidad")]
-        public async Task<ActionResult<EspecialidadRequest>> GetPutEspecialidad(int id)
+        public async Task<ActionResult<EspecialidadRequest>> GetPutEspecialidadAsync(int id)
         {
             return await GetPutAsync<EspecialidadRequest>(id);
         }
@@ -53,7 +53,7 @@ namespace MedicDate.API.Controllers
         [HttpPost("crear")]
         public async Task<ActionResult> PostAsync(EspecialidadRequest especialidadResponse)
         {
-            return await InsertarRegistroAsync<EspecialidadRequest, EspecialidadResponse>(especialidadResponse,
+            return await AddResourceAsync<EspecialidadRequest, EspecialidadResponse>(especialidadResponse,
                 "ObtenerEspecialidad");
         }
 
@@ -68,7 +68,7 @@ namespace MedicDate.API.Controllers
         [HttpDelete("eliminar/{id:int}")]
         public async Task<ActionResult> DeleteAsync(int id)
         {
-            return await EliminarRegistroAsync(id);
+            return await DeleteResourceAsync(id);
         }
     }
 }

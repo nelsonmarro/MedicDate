@@ -22,18 +22,18 @@ namespace MedicDate.Client.Pages.Especialidad
         [Inject] public IHttpInterceptorService HttpInterceptor { get; set; }
 
         private List<EspecialidadResponse> _especialidadList;
-        private readonly string[] _cabecerasTable = { "Nombre" };
-        private readonly string[] _nombreProps = { "NombreEspecialidad" };
+        private readonly string[] _tableHeaders = {"Nombre"};
+        private readonly string[] _propNames = {"NombreEspecialidad"};
         private const string GetUrl = "api/Especialidad/listarConPaginacion";
         private int _totalCount;
 
-        private PermitirOpCrud _permitirOp = new()
-        { PermitirAgregar = true, PermitirEditar = true, PermitirEliminar = true };
+        private readonly AllowCrudOps _allowCrudOps = new()
+            {AlowAdd = true, AllowEdit = true, AllowDelete = true};
 
-        private RutasOp _rutasOp = new()
-        { AgregarUrl = "especialidadCrear", EditarUrl = "especialidadEditar", GetUrl = GetUrl };
+        private readonly OpRoutes _opRoutes = new()
+            {AddUrl = "especialidadCrear", EditUrl = "especialidadEditar", GetUrl = GetUrl};
 
-        private async Task CargarEspecialidades()
+        private async Task LoadEspecialidadesAsync()
         {
             var response = await HttpRepo.Get<ApiResponseDto<EspecialidadResponse>>(GetUrl);
 
@@ -60,10 +60,10 @@ namespace MedicDate.Client.Pages.Especialidad
 
         protected override async Task OnParametersSetAsync()
         {
-            await CargarEspecialidades();
+            await LoadEspecialidadesAsync();
         }
 
-        private async Task EliminarEspecialidad(string id)
+        private async Task DeleteEspecialidad(string id)
         {
             if (int.TryParse(id, out var idEspe))
             {
@@ -79,7 +79,7 @@ namespace MedicDate.Client.Pages.Especialidad
                     {
                         NotificationService.ShowSuccess("Operación Exitosa!", await httpResp.GetResponseBody());
 
-                        await CargarEspecialidades();
+                        await LoadEspecialidadesAsync();
                     }
                 }
             }

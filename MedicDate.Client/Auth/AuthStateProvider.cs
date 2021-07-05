@@ -35,10 +35,10 @@ namespace MedicDate.Client.Auth
                 return _anonymous;
             }
 
-            return ConstruirAuthenticationState(token);
+            return BuildAuthenticationState(token);
         }
 
-        private AuthenticationState ConstruirAuthenticationState(string token)
+        private AuthenticationState BuildAuthenticationState(string token)
         {
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", token);
 
@@ -48,7 +48,7 @@ namespace MedicDate.Client.Auth
 
         public void NotifyLogin(string token)
         {
-            var authState = ConstruirAuthenticationState(token);
+            var authState = BuildAuthenticationState(token);
             NotifyAuthenticationStateChanged(Task.FromResult(authState));
         }
 

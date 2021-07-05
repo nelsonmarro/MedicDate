@@ -5,6 +5,8 @@ namespace MedicDate.Models.DTOs.AppUser
 {
     public class AppUserRequest
     {
+        public string Id { get; set; }
+
         [Required(ErrorMessage = "Ingrese su Nombre")]
         public string Nombre { get; set; }
 
@@ -15,6 +17,10 @@ namespace MedicDate.Models.DTOs.AppUser
             ErrorMessage = "El formato del teléfono no es correcto")]
         public string PhoneNumber { get; set; }
 
-        public List<string> RolesIds { get; set; } = new();
+        public bool EmailConfirmed { get; set; }
+
+        public string Email { get; set; }
+
+        public List<RoleResponse> Roles { get; set; } = new();
     }
 }

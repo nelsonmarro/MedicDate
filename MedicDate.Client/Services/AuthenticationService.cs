@@ -30,23 +30,6 @@ namespace MedicDate.Client.Services
             _authStateProvider = authStateProvider;
         }
 
-        public async Task<RegisterResponse> RegisterUser(RegisterRequest registerRequest)
-        {
-            var response = await Post<RegisterRequest, RegisterResponse>("api/Account/registrar", registerRequest);
-
-            if (response is null)
-            {
-                return new RegisterResponse();
-            }
-
-            if (response.Error)
-            {
-                return await response.HttpResponseMessage.Content.ReadFromJsonAsync<RegisterResponse>(new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-            }
-
-            return response.Response;
-        }
-
         public async Task<LoginResponse> Login(LoginRequest loginRequest)
         {
             var response = await Post<LoginRequest, LoginResponse>("api/Account/login", loginRequest);

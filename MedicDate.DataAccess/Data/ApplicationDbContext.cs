@@ -26,5 +26,6 @@ namespace MedicDate.DataAccess.Data
         public DbSet<Medico> Medico { get; set; }
         public DbSet<Especialidad> Especialidad { get; set; }
         public DbSet<MedicoEspecialidad> MedicoEspecialidad { get; set; }
+        public DbSet<Paciente> Paciente { get; set; }
     }
 }

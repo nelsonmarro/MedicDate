@@ -23,17 +23,17 @@ namespace MedicDate.Client.Pages.AppUser
         [Inject] public INotificationService NotificationService { get; set; }
 
         private static string _getUrl = "api/Usuario/listarConPaginacion?traerRoles=true";
-        private List<AppUserResponse> _usuariosList;
+        private List<AppUserResponse> _usersList;
         private int _totalCount;
-        private List<RolResponse> _roles = new();
+        private List<RoleResponse> _roles = new();
 
-        private readonly PermitirOpCrud _permitirOp = new()
-            {PermitirAgregar = true, PermitirEditar = true, PermitirEliminar = true};
+        private readonly AllowCrudOps _allowCrudOps = new()
+            {AlowAdd = true, AllowEdit = true, AllowDelete = true};
 
-        private readonly RutasOp _rutasOp = new()
-            {AgregarUrl = "usuarioCrear", EditarUrl = "usuarioEditar", GetUrl = _getUrl};
+        private readonly OpRoutes _opRoutes = new()
+            {AddUrl = "usuarioCrear", EditUrl = "usuarioEditar", GetUrl = _getUrl};
 
-        private async Task CargarUsuariosList(string filterRolId = null)
+        private async Task LoadUserList(string filterRolId = null)
         {
             var filtrarPorRolQuery = "";
 
@@ -55,7 +55,7 @@ namespace MedicDate.Client.Pages.AppUser
             }
             else
             {
-                _usuariosList = response.Response.DataResult;
+                _usersList = response.Response.DataResult;
                 _totalCount = response.Response.TotalCount;
             }
         }
@@ -64,7 +64,7 @@ namespace MedicDate.Client.Pages.AppUser
         {
             HttpInterceptor.RegisterEvent();
 
-            var httpResponse = await HttpRepo.Get<List<RolResponse>>("api/Usuario/roles");
+            var httpResponse = await HttpRepo.Get<List<RoleResponse>>("api/Usuario/roles");
 
             if (httpResponse is null)
             {
@@ -83,10 +83,10 @@ namespace MedicDate.Client.Pages.AppUser
 
         protected override async Task OnParametersSetAsync()
         {
-            await CargarUsuariosList();
+            await LoadUserList();
         }
 
-        private async Task EliminarUser(string id)
+        private async Task DeleteUser(string id)
         {
             if (!string.IsNullOrEmpty(id))
             {
@@ -105,18 +105,18 @@ namespace MedicDate.Client.Pages.AppUser
                 {
                     NotificationService.ShowSuccess("Operación Exitosa!", await httpResp.GetResponseBody());
 
-                    await CargarUsuariosList();
+                    await LoadUserList();
                 }
             }
         }
 
-        private async Task FiltrarPorRol(object value)
+        private async Task FilterByRole(object value)
         {
             try
             {
                 var rolId = value is string ? value.ToString() : null;
 
-                await CargarUsuariosList(rolId);
+                await LoadUserList(rolId);
             }
             catch (Exception)
             {

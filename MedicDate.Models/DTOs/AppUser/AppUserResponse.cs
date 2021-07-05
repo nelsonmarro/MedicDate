@@ -13,8 +13,10 @@ namespace MedicDate.Models.DTOs.AppUser
 
         public string Email { get; set; }
 
+        public bool EmailConfirmed { get; set; }
+
         public string PhoneNumber { get; set; }
 
-        public List<RolResponse> Roles { get; set; }
+        public List<RoleResponse> Roles { get; set; }
     }
 }

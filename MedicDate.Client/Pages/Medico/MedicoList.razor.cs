@@ -10,10 +10,12 @@ using MedicDate.Client.Services.IServices;
 using MedicDate.Models.DTOs.Medico;
 using MedicDate.Models.DTOs;
 using MedicDate.Models.DTOs.Especialidad;
+using Radzen;
+using MedicDate.Client.Components;
 
 namespace MedicDate.Client.Pages.Medico
 {
-    public partial class MedicoList : ComponentBase, IDisposable
+    public partial class MedicoList : IDisposable
     {
         [Inject] public IHttpInterceptorService HttpInterceptor { get; set; }
         [Inject] public IHttpRepository HttpRepo { get; set; }
@@ -24,13 +26,13 @@ namespace MedicDate.Client.Pages.Medico
         private int _totalCount;
         private List<EspecialidadResponse> _especialidades = new();
 
-        private PermitirOpCrud _permitirOp = new()
-        { PermitirAgregar = true, PermitirEditar = true, PermitirEliminar = true };
+        private readonly AllowCrudOps _allowCrudOps = new()
+            {AlowAdd = true, AllowEdit = true, AllowDelete = true};
 
-        private RutasOp _rutasOp = new()
-        { AgregarUrl = "medicoCrear", EditarUrl = "medicoEditar", GetUrl = _getUrl };
+        private readonly OpRoutes _opRoutes = new()
+            {AddUrl = "medicoCrear", EditUrl = "medicoEditar", GetUrl = _getUrl};
 
-        private async Task CargarMedicoList(int filterEspecialidadId = 0)
+        private async Task LoadMedicoListAsync(int filterEspecialidadId = 0)
         {
             var filtrarEspecialidadesQuery = "";
 
@@ -80,10 +82,10 @@ namespace MedicDate.Client.Pages.Medico
 
         protected override async Task OnParametersSetAsync()
         {
-            await CargarMedicoList();
+            await LoadMedicoListAsync();
         }
 
-        private async Task EliminarMedico(string id)
+        private async Task DeleteMedico(string id)
         {
             if (int.TryParse(id, out var idMedico))
             {
@@ -104,17 +106,17 @@ namespace MedicDate.Client.Pages.Medico
                     {
                         NotificationService.ShowSuccess("Operación Exitosa!", await httpResp.GetResponseBody());
 
-                        await CargarMedicoList();
+                        await LoadMedicoListAsync();
                     }
                 }
             }
         }
 
-        private async Task FiltrarPorEspecialidad(object value)
+        private async Task FilterByEspecialidad(object value)
         {
             try
             {
-                await CargarMedicoList(Convert.ToInt32(value));
+                await LoadMedicoListAsync(Convert.ToInt32(value));
             }
             catch (Exception)
             {

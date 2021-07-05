@@ -24,7 +24,7 @@ namespace MedicDate.Bussines.Repository
             _mapper = mapper;
         }
 
-        public async Task<bool> ExisteEspecialidadIdParaCrearMedico(List<int> especialidadesIds)
+        public async Task<bool> EspecialidadIdExistForMedicoCreation(List<int> especialidadesIds)
         {
             var especialidadesIdsDb = await _context.Especialidad
                 .Where(x => especialidadesIds.Contains(x.Id))
@@ -43,7 +43,7 @@ namespace MedicDate.Bussines.Repository
             {
                 return new DataResponse<string>()
                 {
-                    Sussces = false,
+                    IsSuccess = false,
                     ActionResult = new NotFoundObjectResult("No se encontró el médico ha actualizar")
                 };
             }
@@ -53,7 +53,7 @@ namespace MedicDate.Bussines.Repository
 
             return new DataResponse<string>()
             {
-                Sussces = true,
+                IsSuccess = true,
                 ActionResult = new NoContentResult()
             };
         }

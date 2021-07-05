@@ -52,7 +52,7 @@ namespace MedicDate.Client.Shared.Formularios
             }
         }
 
-        private void SeleccionarEspecialidad(object value)
+        private void SelectEspecialidad(object value)
         {
             MedicoRequest.EspecialidadesId.Clear();
 

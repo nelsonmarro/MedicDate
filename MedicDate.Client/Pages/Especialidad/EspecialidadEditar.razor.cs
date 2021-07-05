@@ -48,13 +48,12 @@ namespace MedicDate.Client.Pages.Especialidad
             }
         }
 
-        private async Task Editar()
+        private async Task EditEspecialidad()
         {
             NotificationService.ShowLoadingDialog(DialogService);
 
-            var httpResp =
-                await HttpRepo.Put($"api/Especialidad/editar/{Id}",
-                    _especialidadModel);
+            var httpResp = await HttpRepo.Put($"api/Especialidad/editar/{Id}",
+                _especialidadModel);
 
             if (httpResp is null)
             {

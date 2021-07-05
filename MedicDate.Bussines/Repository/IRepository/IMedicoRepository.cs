@@ -11,6 +11,6 @@ namespace MedicDate.Bussines.Repository.IRepository
     {
         public Task<DataResponse<string>> UpdateMedicoAsync(int id, MedicoRequest medicoRequest);
 
-        public Task<bool> ExisteEspecialidadIdParaCrearMedico(List<int> especialidadesIds);
+        public Task<bool> EspecialidadIdExistForMedicoCreation(List<int> especialidadesIds);
     }
 }

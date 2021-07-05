@@ -49,7 +49,8 @@ namespace MedicDate.Client
             services.AddScoped<TooltipService>();
             services.AddScoped<ContextMenuService>();
 
-            services.AddScoped<INotificationService, RadzenNotificationService>();
+            services.AddTransient<INotificationService, RadzenNotificationService>();
+            services.AddTransient<IDialogNotificationService, DialogNotificationService>();
             services.AddScoped<IAuthenticationService, AuthenticationService>();
             services.AddScoped<IRefreshTokenService, RefreshTokenService>();
             services.AddHttpClientInterceptor();

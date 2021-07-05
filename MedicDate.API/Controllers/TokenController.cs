@@ -31,7 +31,7 @@ namespace MedicDate.API.Controllers
         }
 
         [HttpPost("refresh")]
-        public async Task<ActionResult<LoginResponse>> Refresh(RefreshTokenDto refreshTokenDto)
+        public async Task<ActionResult<LoginResponse>> RefreshAsync(RefreshTokenDto refreshTokenDto)
         {
             if (refreshTokenDto is null)
             {
