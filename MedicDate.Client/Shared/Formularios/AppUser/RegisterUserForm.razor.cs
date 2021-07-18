@@ -28,11 +28,6 @@ namespace MedicDate.Client.Shared.Formularios.AppUser
         {
             var httpResp = await HttpRepo.Get<List<RoleResponse>>("api/Usuario/roles");
 
-            if (httpResp is null)
-            {
-                return;
-            }
-
             if (httpResp.Error)
             {
                 NotificationService.ShowError("Error!", "Error al obtener los roles");

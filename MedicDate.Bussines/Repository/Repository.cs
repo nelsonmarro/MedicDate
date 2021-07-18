@@ -15,11 +15,13 @@ namespace MedicDate.Bussines.Repository
     public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
     {
         private readonly ApplicationDbContext _context;
+        private readonly IMapper _mapper;
         private readonly DbSet<TEntity> _dBSet;
 
-        public Repository(ApplicationDbContext context)
+        public Repository(ApplicationDbContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
             _dBSet = context.Set<TEntity>();
         }
 
@@ -28,9 +30,20 @@ namespace MedicDate.Bussines.Repository
             return await _dBSet.FindAsync(id);
         }
 
-        public async Task<List<TEntity>> GetAllAsync(Expression<Func<TEntity, bool>> filter = null,
-            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null, string includeProperties = null,
-            bool isTracking = true)
+        public async Task<TResponse> FindAsync<TResponse>(int id)
+        {
+            var entityDb = await FindAsync(id);
+
+            return _mapper.Map<TResponse>(entityDb);
+        }
+
+        public async Task<List<TEntity>> GetAllAsync
+        (
+            Expression<Func<TEntity, bool>> filter = null,
+            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
+            string includeProperties = null,
+            bool isTracking = true
+        )
         {
             IQueryable<TEntity> query = _dBSet;
             if (filter != null)
@@ -59,8 +72,25 @@ namespace MedicDate.Bussines.Repository
             return await query.ToListAsync();
         }
 
-        public async Task<TEntity> FirstOrDefaultAsync(Expression<Func<TEntity, bool>> filter = null,
-            string includeProperties = null, bool isTracking = true)
+        public async Task<List<TResponse>> GetAllAsync<TResponse>
+        (
+            Expression<Func<TEntity, bool>> filter = null,
+            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
+            string includeProperties = null,
+            bool isTracking = true
+        )
+        {
+            var entityList = await GetAllAsync(filter, orderBy, includeProperties, isTracking);
+
+            return _mapper.Map<List<TResponse>>(entityList);
+        }
+
+        public async Task<TEntity> FirstOrDefaultAsync
+        (
+            Expression<Func<TEntity, bool>> filter = null,
+            string includeProperties = null,
+            bool isTracking = true
+        )
         {
             IQueryable<TEntity> query = _dBSet;
             if (filter != null)
@@ -82,6 +112,18 @@ namespace MedicDate.Bussines.Repository
             }
 
             return await query.FirstOrDefaultAsync();
+        }
+
+        public async Task<TResponse> FirstOrDefaultAsync<TResponse>
+        (
+            Expression<Func<TEntity, bool>> filter = null,
+            string includeProperties = null,
+            bool isTracking = true
+        )
+        {
+            var entityDb = await FirstOrDefaultAsync(filter, includeProperties, isTracking);
+
+            return _mapper.Map<TResponse>(entityDb);
         }
 
         public async Task AddAsync(TEntity entity)
@@ -124,7 +166,7 @@ namespace MedicDate.Bussines.Repository
 
         public async Task<bool> ResourceExists(int resourceId)
         {
-            var resourse = await _dBSet.FindAsync(resourceId);
+            var resourse = await FindAsync(resourceId);
 
             return resourse != null;
         }

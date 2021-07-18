@@ -18,9 +18,9 @@ namespace MedicDate.Client.Data.HttpRepository
             PropertyNameCaseInsensitive = true
         };
 
-        public HttpRepository(HttpClient _http, INotificationService notificationService)
+        public HttpRepository(HttpClient http, INotificationService notificationService)
         {
-            this._http = _http;
+            _http = http;
             _notificationService = notificationService;
         }
 
@@ -41,7 +41,7 @@ namespace MedicDate.Client.Data.HttpRepository
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
-                _notificationService.ShowError("Error!", "Error al enviar la información");
+                _notificationService.ShowError("Error!", "Error al enviar la petición al servidor");
                 return null;
             }
         }
@@ -56,7 +56,7 @@ namespace MedicDate.Client.Data.HttpRepository
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
-                _notificationService.ShowError("Error!", "Error al enviar la información");
+                _notificationService.ShowError("Error!", "Error al enviar la petición al servidor");
                 return null;
             }
         }
@@ -76,7 +76,7 @@ namespace MedicDate.Client.Data.HttpRepository
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
-                _notificationService.ShowError("Error!", "Error al enviar la información");
+                _notificationService.ShowError("Error!", "Error al enviar la petición al servidor");
                 return null;
             }
         }
@@ -95,7 +95,7 @@ namespace MedicDate.Client.Data.HttpRepository
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
-                _notificationService.ShowError("Error!", "Error al enviar la información");
+                _notificationService.ShowError("Error!", "Error al enviar la petición al servidor");
                 return null;
             }
         }
@@ -110,7 +110,7 @@ namespace MedicDate.Client.Data.HttpRepository
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
-                _notificationService.ShowError("Error!", "Error al enviar la información");
+                _notificationService.ShowError("Error!", "Error al enviar la petición al servidor");
                 return null;
             }
         }
@@ -125,7 +125,7 @@ namespace MedicDate.Client.Data.HttpRepository
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
-                _notificationService.ShowError("Error!", "Error al enviar la información");
+                _notificationService.ShowError("Error!", "Error al enviar la petición al servidor");
                 return null;
             }
         }
@@ -144,7 +144,7 @@ namespace MedicDate.Client.Data.HttpRepository
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
-                _notificationService.ShowError("Error!", "Error al enviar la información");
+                _notificationService.ShowError("Error!", "Error al enviar la petición al servidor");
                 return null;
             }
         }

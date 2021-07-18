@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace MedicDate.Models.DTOs.AppUser
@@ -18,5 +19,7 @@ namespace MedicDate.Models.DTOs.AppUser
         public string PhoneNumber { get; set; }
 
         public List<RoleResponse> Roles { get; set; }
+
+        public DateTimeOffset? LockoutEnd { get; set; }
     }
 }

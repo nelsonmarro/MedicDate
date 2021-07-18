@@ -8,5 +8,8 @@
 }
 else
 {
-	<MedicoForm MedicoRequest="_medicoModel" OnSubmit="EditMedico"/>
+	<CascadingValue Value="_isBussy">
+		<MedicoForm MedicoRequest="_medicoModel" OnSubmit="EditMedico" />
+	</CascadingValue>
+
 }

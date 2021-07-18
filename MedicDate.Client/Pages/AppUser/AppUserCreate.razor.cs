@@ -19,9 +19,10 @@ namespace MedicDate.Client.Pages.AppUser
         [Inject] public IHttpRepository HttpRepo { get; set; }
         [Inject] public NavigationManager NavigationManager { get; set; }
         [Inject] public INotificationService NotificationService { get; set; }
-        [Inject] public DialogService DialogService { get; set; }
         [Inject] public IHttpInterceptorService HttpInterceptor { get; set; }
         [Inject] public IDialogNotificationService DialogNotificationService { get; set; }
+
+        private bool _isBussy;
 
         protected override void OnInitialized()
         {
@@ -39,16 +40,11 @@ namespace MedicDate.Client.Pages.AppUser
                 return;
             }
 
-            NotificationService.ShowLoadingDialog(DialogService);
+            _isBussy = true;
 
-            var httpResp = await HttpRepo.Post("api/Usuario/crear", _registerModel);
+            var httpResp = await HttpRepo.Post("api/Account/register", _registerModel);
 
-            NotificationService.CloseDialog(DialogService);
-
-            if (httpResp is null)
-            {
-                return;
-            }
+            _isBussy = false;
 
             if (httpResp.Error)
             {

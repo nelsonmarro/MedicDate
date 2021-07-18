@@ -12,17 +12,18 @@ using MedicDate.Models.DTOs.Especialidad;
 
 namespace MedicDate.Client.Pages.Especialidad
 {
-    public partial class EspecialidadEditar : ComponentBase, IDisposable
+    public partial class EspecialidadEditar : IDisposable
     {
         [Inject] public IHttpRepository HttpRepo { get; set; }
         [Inject] public NavigationManager NavigationManager { get; set; }
         [Inject] public INotificationService NotificationService { get; set; }
-        [Inject] public DialogService DialogService { get; set; }
         [Inject] public IHttpInterceptorService HttpInterceptor { get; set; }
 
         [Parameter] public string Id { get; set; }
 
-        private EspecialidadRequest _especialidadModel = new();
+        private bool _isBussy;
+
+        private EspecialidadRequest _especialidadModel;
 
         protected override void OnInitialized()
         {
@@ -32,11 +33,6 @@ namespace MedicDate.Client.Pages.Especialidad
         protected override async Task OnParametersSetAsync()
         {
             var httpResp = await HttpRepo.Get<EspecialidadRequest>($"api/Especialidad/{Id}");
-
-            if (httpResp is null)
-            {
-                return;
-            }
 
             if (httpResp.Error)
             {
@@ -50,10 +46,12 @@ namespace MedicDate.Client.Pages.Especialidad
 
         private async Task EditEspecialidad()
         {
-            NotificationService.ShowLoadingDialog(DialogService);
+            _isBussy = true;
 
             var httpResp = await HttpRepo.Put($"api/Especialidad/editar/{Id}",
                 _especialidadModel);
+
+            _isBussy = false;
 
             if (httpResp is null)
             {
@@ -66,8 +64,6 @@ namespace MedicDate.Client.Pages.Especialidad
             }
             else
             {
-                NotificationService.CloseDialog(DialogService);
-
                 NotificationService.ShowSuccess("Operación Exitosa!", await httpResp.GetResponseBody());
 
                 NavigationManager.NavigateTo("especialidadList");

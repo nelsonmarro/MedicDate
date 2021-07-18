@@ -18,7 +18,7 @@ namespace MedicDate.Bussines.Repository
         private readonly ApplicationDbContext _context;
         private readonly IMapper _mapper;
 
-        public MedicoRepository(ApplicationDbContext context, IMapper mapper) : base(context)
+        public MedicoRepository(ApplicationDbContext context, IMapper mapper) : base(context, mapper)
         {
             _context = context;
             _mapper = mapper;
@@ -31,6 +31,11 @@ namespace MedicDate.Bussines.Repository
                 .Select(x => x.Id).ToListAsync();
 
             return !(especialidadesIdsDb.Count != especialidadesIds.Count);
+        }
+
+        public async Task<bool> CedulaAlreadyRegisted(string numCedula)
+        {
+            return await _context.Medico.AnyAsync(x => x.Cedula == numCedula);
         }
 
         public async Task<DataResponse<string>> UpdateMedicoAsync(int id, MedicoRequest medicoRequest)

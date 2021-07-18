@@ -17,7 +17,6 @@ namespace MedicDate.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
     public class EspecialidadController : BaseController<Especialidad>
     {
         private readonly IEspecialidadRepository _especialidadRepo;
@@ -31,11 +30,17 @@ namespace MedicDate.API.Controllers
         }
 
         [HttpGet("listarConPaginacion")]
-        public async Task<ActionResult<ApiResponseDto<EspecialidadResponse>>> GetAllWithPagingAsync(
+        public async Task<ActionResult<ApiResult<EspecialidadResponse>>> GetAllWithPagingAsync(
             int pageIndex = 0,
             int pageSize = 10)
         {
-            return await GetAllWithPagingAsync<EspecialidadResponse>(pageIndex, pageSize);
+            return await GetAllWithPagingAsync<EspecialidadResponse>
+            (
+                pageIndex,
+                pageSize,
+                sortColumn: "NombreEspecialidad",
+                sortOrder: "ASC"
+            );
         }
 
         [HttpGet("listar")]
@@ -47,7 +52,7 @@ namespace MedicDate.API.Controllers
         [HttpGet("{id:int}", Name = "ObtenerEspecialidad")]
         public async Task<ActionResult<EspecialidadRequest>> GetPutEspecialidadAsync(int id)
         {
-            return await GetPutAsync<EspecialidadRequest>(id);
+            return await GetByIdAsync<EspecialidadRequest>(id);
         }
 
         [HttpPost("crear")]

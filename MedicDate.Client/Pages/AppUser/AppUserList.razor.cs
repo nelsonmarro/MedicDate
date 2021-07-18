@@ -1,15 +1,10 @@
 ﻿using MedicDate.Client.Data.HttpRepository.IHttpRepository;
 using MedicDate.Client.Helpers;
 using MedicDate.Client.Services.IServices;
-using MedicDate.Models.DTOs.Especialidad;
-using MedicDate.Models.DTOs.Medico;
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Rendering;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using MedicDate.Client.Pages.Medico;
 using MedicDate.Models.DTOs;
 using MedicDate.Models.DTOs.AppUser;
 
@@ -84,6 +79,29 @@ namespace MedicDate.Client.Pages.AppUser
         protected override async Task OnParametersSetAsync()
         {
             await LoadUserList();
+        }
+
+        private async Task LockUnlock(string userId)
+        {
+            try
+            {
+                var httpResp = await HttpRepo.Post("api/Account/lockUnlock", userId);
+
+                if (httpResp.Error)
+                {
+                    NotificationService.ShowError("Error!", await httpResp.GetResponseBody());
+                }
+                else
+                {
+                    NotificationService.ShowSuccess("Operación exitosa!", await httpResp.GetResponseBody());
+
+                    await LoadUserList();
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
         }
 
         private async Task DeleteUser(string id)

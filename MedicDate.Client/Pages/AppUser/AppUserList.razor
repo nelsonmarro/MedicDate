@@ -17,25 +17,43 @@
 	</div>
 	<div class="col-12">
 		<RadzenGenericGrid TItem="AppUserResponse" TotalCount="@_totalCount"
-		                   ItemList="@_usersList" AllowFilter="true" FilterMode="@FilterMode.Simple" AllowCrudOps="@_allowCrudOps" OpRoutes="@_opRoutes" OnDeleteData="@DeleteUser">
+		                   ItemList="@_usersList" AllowFilter="true"
+		                   FilterMode="@FilterMode.Simple" AllowCrudOps="@_allowCrudOps" OpRoutes="@_opRoutes" OnDeleteData="@DeleteUser">
 			<CustomGridCols>
-				<RadzenDataGridColumn TItem="AppUserResponse" Property="Nombre" Title="Nombre"/>
-				<RadzenDataGridColumn TItem="AppUserResponse" Property="Apellidos" Title="Apellidos"/>
-				<RadzenDataGridColumn TItem="AppUserResponse" Property="Email" Title="Email" Width="240px"/>
+				<RadzenDataGridColumn TItem="AppUserResponse" Property="Nombre"
+				                      Title="Nombre"/>
+
+				<RadzenDataGridColumn TItem="AppUserResponse" Property="Apellidos"
+				                      Title="Apellidos"/>
+
+				<RadzenDataGridColumn TItem="AppUserResponse" Property="Email"
+				                      Title="Email" Width="220px"/>
+
 				<RadzenDataGridColumn TItem="AppUserResponse" Property="PhoneNumber"
-				                  Title="Teléfono" Width="160px"/>
-				<RadzenDataGridColumn TItem="AppUserResponse" Title="Roles" Filterable="false" Sortable="false" Width="220px">
+				                      Title="Teléfono" Width="130px"/>
+
+				<RadzenDataGridColumn TItem="AppUserResponse" Title="Roles"
+				                      Filterable="false" Sortable="false"
+				                      Width="150px">
 					<Template Context="user">
-						@foreach (var item in user.Roles)
-						{
-							<h5 class="text-radzen-primary">
-								@(item.Nombre)
-							</h5>
-						}
+						<div class="d-flex flex-row flex-wrap">
+							@foreach (var item in user.Roles)
+							{
+								<div>
+									<span class="text-radzen-primary"
+									      style="font-weight: bold;">
+										@(item.Nombre).&nbsp;&nbsp;
+									</span>
+								</div>
+							}
+
+						</div>
 					</Template>
 				</RadzenDataGridColumn>
+
 				<RadzenDataGridColumn TItem="AppUserResponse" Property="EmailConfirmed"
-				                      Title="Estado Cuenta" Filterable="false">
+				                      Title="Estado Cuenta" Filterable="false"
+				                      Sortable="false">
 					<Template Context="user">
 						@if (user.EmailConfirmed)
 						{
@@ -46,6 +64,22 @@
 							<span class="text-danger">Por confirmar</span>
 						}
 					</Template>
+				</RadzenDataGridColumn>
+
+				<RadzenDataGridColumn TItem="AppUserResponse" Filterable="false"
+				                      Sortable="false" TextAlign="@TextAlign.Center"
+				                      Width="70px">
+					<Template Context="user">
+						@if (user.LockoutEnd > DateTime.UtcNow)
+						{
+							<RadzenButton Icon="lock" ButtonStyle="@ButtonStyle.Danger" Click="@(() => LockUnlock(user.Id))"></RadzenButton>
+						}
+						else
+						{
+							<RadzenButton Icon="lock_open" ButtonStyle="@ButtonStyle.Success" Click="@(() => LockUnlock(user.Id))"></RadzenButton>
+						}
+					</Template>
+
 				</RadzenDataGridColumn>
 			</CustomGridCols>
 		</RadzenGenericGrid>

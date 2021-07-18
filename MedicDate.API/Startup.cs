@@ -26,6 +26,7 @@ using Microsoft.IdentityModel.Tokens;
 using MedicDate.API.Services.IServices;
 using MedicDate.API.Services;
 using System.Text.Json.Serialization;
+using MedicDate.Bussines.Helpers;
 using Microsoft.AspNetCore.Identity.UI.Services;
 
 namespace MedicDate.API
@@ -88,7 +89,7 @@ namespace MedicDate.API
 
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "MedicDate_Api", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo {Title = "MedicDate_Api", Version = "v1"});
                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
                     In = ParameterLocation.Header,
@@ -118,6 +119,8 @@ namespace MedicDate.API
             services.AddScoped<IEspecialidadRepository, EspecialidadRepository>();
             services.AddScoped<IMedicoRepository, MedicoRepository>();
             services.AddScoped<IAppUserRepository, AppUserRepository>();
+            services.AddScoped<IAccountRepository, AccountRepository>();
+            services.AddScoped<ITokenRepository, TokenRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -141,10 +144,7 @@ namespace MedicDate.API
             app.UseAuthentication();
             app.UseAuthorization();
 
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-            });
+            app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
         }
     }
 }

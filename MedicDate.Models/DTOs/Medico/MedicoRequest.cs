@@ -15,8 +15,8 @@ namespace MedicDate.Models.DTOs.Medico
         public string Apellidos { get; set; }
 
         [Required(ErrorMessage = "La cédula es requerida")]
-        [MaxLength(10, ErrorMessage = "La cédula debe tener un máximo de 10 caracteres")]
-        [MinLength(10, ErrorMessage = "La cédula debe tener un mínimo de 10 caracteres")]
+        [MaxLength(10, ErrorMessage = "La cédula debe tener un máximo de {1} caracteres")]
+        [MinLength(10, ErrorMessage = "La cédula debe tener un mínimo de {1} caracteres")]
         [RegularExpression(@"^[0-9]+$", ErrorMessage = "La cédula solo puede tener números")]
         public string Cedula { get; set; }
 

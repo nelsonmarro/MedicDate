@@ -1,9 +1,7 @@
 ﻿using MedicDate.DataAccess.EntityConfig;
 using MedicDate.DataAccess.Models;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using System.Reflection.Emit;
 
 namespace MedicDate.DataAccess.Data
 {
@@ -17,6 +15,8 @@ namespace MedicDate.DataAccess.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.ApplyConfiguration(new MedicoEspecialidadConfig());
+            builder.ApplyConfiguration(new PacienteConfig());
+            builder.ApplyConfiguration(new GrupoPacienteConfig());
 
             base.OnModelCreating(builder);
         }
@@ -27,5 +27,8 @@ namespace MedicDate.DataAccess.Data
         public DbSet<Especialidad> Especialidad { get; set; }
         public DbSet<MedicoEspecialidad> MedicoEspecialidad { get; set; }
         public DbSet<Paciente> Paciente { get; set; }
+        public DbSet<ArchivoPaciente> ArchivoPaciente { get; set; }
+        public DbSet<Grupo> Grupo { get; set; }
+        public DbSet<GrupoPaciente> GrupoPaciente { get; set; }
     }
 }

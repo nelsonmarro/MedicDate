@@ -76,7 +76,7 @@
 	{
 		_changeEmailModel.Code = _code;
 
-		var httpResp = await _httpRepo.Post($"api/Usuario/changeEmail/{_userId}", _changeEmailModel);
+		var httpResp = await _httpRepo.Post($"api/Account/changeEmail/{_userId}", _changeEmailModel);
 
 		if (httpResp.Error)
 		{

@@ -14,7 +14,9 @@ namespace MedicDate.Models.DTOs.Paciente
         public string Apellidos { get; set; }
 
         [Required(ErrorMessage = "El campo Cédula es requerido")]
-        [MaxLength(10, ErrorMessage = "La cédula no debe pasar de {1} caracteres")]
+        [MaxLength(10, ErrorMessage = "La cédula debe tener un máximo {1} caracteres")]
+        [MinLength(10, ErrorMessage = "La cédula debe tener un mínimo de {1} caracteres")]
+        [RegularExpression(@"^[0-9]+$", ErrorMessage = "La cédula solo puede tener números")]
         public string Cedula { get; set; }
 
         [Required(ErrorMessage = "El campo {0} es requerido")]
@@ -27,6 +29,8 @@ namespace MedicDate.Models.DTOs.Paciente
         public string Telefono { get; set; }
 
         [MaxLength(300, ErrorMessage = "La dirección no debe pasar de {1} caracteres")]
+        [RegularExpression(@"^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$",
+            ErrorMessage = "El formato del teléfono no es correcto")]
         public string Direccion { get; set; }
 
         [MaxLength(150, ErrorMessage = "El nombre de la ciudad no debe pasar de {1} caracteres")]

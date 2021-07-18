@@ -1,16 +1,16 @@
 ﻿<RadzenCard>
-    <EditForm Model="@EspecialidadModel" OnValidSubmit="OnSubmit">
-        <DataAnnotationsValidator/>
-        <div class="row mb-3">
-            <RadzenLabel Text="Nombre Especialidad"/>
-            <div class="mt-1">
-                <RadzenTextBox @bind-Value="EspecialidadModel.NombreEspecialidad" class="w-100"/>
-                <ValidationMessage For="() => EspecialidadModel.NombreEspecialidad"/>
-            </div>
-        </div>
-        <div class="mb-2">
-            <FormButtons NavLinkRoute="especialidadList"/>
-        </div>
-    </EditForm>
+	<EditForm Model="@EspecialidadModel" OnValidSubmit="OnSubmit">
+		<DataAnnotationsValidator/>
+		<div class="row mb-3">
+			<RadzenLabel Text="Nombre Especialidad"/>
+			<div class="mt-1">
+				<RadzenTextBox @bind-Value="EspecialidadModel.NombreEspecialidad" class="w-100"/>
+				<ValidationMessage For="() => EspecialidadModel.NombreEspecialidad"/>
+			</div>
+		</div>
+		<div class="mb-2">
+			<FormButtons NavLinkRoute="especialidadList"/>
+		</div>
+	</EditForm>
 
 </RadzenCard>

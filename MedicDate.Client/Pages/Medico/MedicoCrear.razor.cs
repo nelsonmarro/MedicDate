@@ -10,15 +10,15 @@ using System.Threading.Tasks;
 
 namespace MedicDate.Client.Pages.Medico
 {
-    public partial class MedicoCrear : ComponentBase, IDisposable
+    public partial class MedicoCrear : IDisposable
     {
         [Inject] public IHttpRepository HttpRepo { get; set; }
         [Inject] public NavigationManager NavigationManager { get; set; }
         [Inject] public INotificationService NotificationService { get; set; }
-        [Inject] public DialogService DialogService { get; set; }
         [Inject] public IHttpInterceptorService HttpInterceptor { get; set; }
 
-        private MedicoRequest _medicoModel = new();
+        private readonly MedicoRequest _medicoModel = new();
+        private bool _isBussy;
 
         protected override void OnInitialized()
         {
@@ -27,16 +27,11 @@ namespace MedicDate.Client.Pages.Medico
 
         private async Task CreateMedico()
         {
-            NotificationService.ShowLoadingDialog(DialogService);
+            _isBussy = true;
 
             var httpResp = await HttpRepo.Post<MedicoRequest, MedicoResponse>("api/Medico/crear", _medicoModel);
 
-            NotificationService.CloseDialog(DialogService);
-
-            if (httpResp is null)
-            {
-                return;
-            }
+            _isBussy = false;
 
             if (httpResp.Error)
             {

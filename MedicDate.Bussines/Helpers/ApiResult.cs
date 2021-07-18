@@ -1,14 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using AutoMapper;
+using System.Linq.Dynamic.Core;
+using MedicDate.Utility;
 
 namespace MedicDate.Bussines.Helpers
 {
-    public class ApiResult<TSource, TResponse>
+    public class ApiResult<T> where T : class
     {
         private ApiResult(
-            List<TResponse> dataResult,
+            object dataResult,
             int count,
             int pageIndex,
             int pageSize)
@@ -17,27 +18,34 @@ namespace MedicDate.Bussines.Helpers
             PageIndex = pageIndex;
             PageSize = pageSize;
             TotalCount = count;
-            TotalPages = (int) Math.Ceiling(count / (double) pageSize);
+            TotalPages = (int)Math.Ceiling(count / (double)pageSize);
         }
 
         #region Methods
 
-        public static ApiResult<TSource, TResponse> Create(
-            List<TSource> source,
+        public static ApiResult<T> Create(
+            List<T> sourceList,
             int pageIndex,
             int pageSize,
-            IMapper mapper)
+            string sortColumn = null,
+            string sortOrder = null)
         {
-            var count = source.Count();
+            var queryable = sourceList.AsQueryable();
+            var count = queryable.Count();
 
-            source = source
+            if (!string.IsNullOrEmpty(sortColumn) && PropertyValidator.IsValidProperty<T>(sortColumn))
+            {
+                sortOrder = !string.IsNullOrEmpty(sortOrder) && sortOrder.ToUpper() == "ASC" ? "ASC" : "DESC";
+
+                queryable = queryable.OrderBy($"{sortColumn} {sortOrder}");
+            }
+
+            var responseList = queryable
                 .Skip(pageIndex * pageSize)
                 .Take(pageSize).ToList();
 
-            var dataResult = mapper.Map<List<TResponse>>(source);
-
-            return new ApiResult<TSource, TResponse>(
-                dataResult,
+            return new ApiResult<T>(
+                responseList,
                 count,
                 pageIndex,
                 pageSize);
@@ -50,7 +58,7 @@ namespace MedicDate.Bussines.Helpers
         /// <summary>
         /// The data result
         /// </summary>
-        public List<TResponse> DataResult { get; private set; }
+        public object DataResult { get; private set; }
 
         /// <summary>
         /// Zero-based index of current page.

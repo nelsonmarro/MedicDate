@@ -1,17 +1,13 @@
 ﻿using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Rendering;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using MedicDate.Client.Data.HttpRepository.IHttpRepository;
 using MedicDate.Client.Helpers;
 using MedicDate.Client.Services.IServices;
-using MedicDate.Models.DTOs.Medico;
 using MedicDate.Models.DTOs;
+using MedicDate.Models.DTOs.Medico;
 using MedicDate.Models.DTOs.Especialidad;
-using Radzen;
-using MedicDate.Client.Components;
 
 namespace MedicDate.Client.Pages.Medico
 {
@@ -27,10 +23,10 @@ namespace MedicDate.Client.Pages.Medico
         private List<EspecialidadResponse> _especialidades = new();
 
         private readonly AllowCrudOps _allowCrudOps = new()
-            {AlowAdd = true, AllowEdit = true, AllowDelete = true};
+        { AlowAdd = true, AllowEdit = true, AllowDelete = true };
 
         private readonly OpRoutes _opRoutes = new()
-            {AddUrl = "medicoCrear", EditUrl = "medicoEditar", GetUrl = _getUrl};
+        { AddUrl = "medicoCrear", EditUrl = "medicoEditar", GetUrl = _getUrl };
 
         private async Task LoadMedicoListAsync(int filterEspecialidadId = 0)
         {

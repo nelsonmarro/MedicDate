@@ -2,11 +2,7 @@
 using MedicDate.Client.Services.IServices;
 using MedicDate.Models.DTOs.Medico;
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Rendering;
-using Radzen;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace MedicDate.Client.Pages.Medico
@@ -16,24 +12,19 @@ namespace MedicDate.Client.Pages.Medico
         [Inject] public IHttpRepository HttpRepo { get; set; }
         [Inject] public NavigationManager NavigationManager { get; set; }
         [Inject] public INotificationService NotificationService { get; set; }
-        [Inject] public DialogService DialogService { get; set; }
         [Inject] public IHttpInterceptorService HttpInterceptor { get; set; }
 
         [Parameter]
         public int Id { get; set; }
 
         private MedicoRequest _medicoModel;
+        private bool _isBussy;
 
         protected override async Task OnInitializedAsync()
         {
             HttpInterceptor.RegisterEvent();
 
             var httpResp = await HttpRepo.Get<MedicoRequest>($"api/Medico/obtenerParaEditar/{Id}");
-
-            if (httpResp is null)
-            {
-                return;
-            }
 
             if (httpResp.Error)
             {
@@ -47,11 +38,11 @@ namespace MedicDate.Client.Pages.Medico
 
         private async Task EditMedico()
         {
-            NotificationService.ShowLoadingDialog(DialogService);
+            _isBussy = true;
 
             var httpResp = await HttpRepo.Put($"api/Medico/editar/{Id}", _medicoModel);
 
-            NotificationService.CloseDialog(DialogService);
+            _isBussy = false;
 
             if (httpResp is null)
             {

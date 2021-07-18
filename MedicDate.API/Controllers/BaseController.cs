@@ -1,17 +1,12 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using AutoMapper;
 using MedicDate.Bussines.Repository.IRepository;
-using MedicDate.Models.DTOs;
 using MedicDate.Bussines.Helpers;
-using MedicDate.DataAccess.Models;
 using MedicDate.Utility.Interfaces;
-using MedicDate.Models.DTOs.Medico;
 
 namespace MedicDate.API.Controllers
 {
@@ -26,39 +21,37 @@ namespace MedicDate.API.Controllers
             _mapper = mapper;
         }
 
-        protected async Task<ActionResult<ApiResponseDto<TResponse>>> GetAllWithPagingAsync<TResponse>
+        protected async Task<ActionResult<ApiResult<TResponse>>> GetAllWithPagingAsync<TResponse>
         (
             int pageIndex = 0,
             int pageSize = 10,
-            bool traerEspecialidades = false,
+            bool loadRealtedData = false,
             string includeProperties = "",
-            Expression<Func<TEntity, bool>> filter = null)
+            Expression<Func<TEntity, bool>> filter = null,
+            string sortColumn = null,
+            string sortOrder = null
+        )
+            where TResponse : class
         {
-            ApiResponseDto<TResponse> apiResponse = new();
             try
             {
-                if (!traerEspecialidades)
+                if (!loadRealtedData)
                 {
                     includeProperties = "";
                 }
 
-                var entityList = await _repository.GetAllAsync(filter, null, includeProperties);
+                var entityList = await _repository.GetAllAsync<TResponse>(filter, null, includeProperties);
 
-                var result = ApiResult<TEntity, TResponse>.Create
+                var result = ApiResult<TResponse>.Create
                 (
                     entityList,
                     pageIndex,
                     pageSize,
-                    _mapper
+                    sortColumn,
+                    sortOrder
                 );
 
-                apiResponse.DataResult = result.DataResult;
-                apiResponse.TotalCount = result.TotalCount;
-                apiResponse.PageIndex = result.PageIndex;
-                apiResponse.PageSize = result.PageSize;
-                apiResponse.TotalPages = result.TotalPages;
-
-                return apiResponse;
+                return result;
             }
             catch (Exception e)
             {
@@ -71,9 +64,7 @@ namespace MedicDate.API.Controllers
         {
             try
             {
-                var entityList = await _repository.GetAllAsync();
-
-                return _mapper.Map<List<TResponse>>(entityList);
+                return await _repository.GetAllAsync<TResponse>();
             }
             catch (Exception e)
             {
@@ -82,28 +73,40 @@ namespace MedicDate.API.Controllers
             }
         }
 
-        protected async Task<ActionResult<TResponse>> GetByIdAsync<TResponse>(int id, bool traerEspecialidades = false,
-            string includeProperties = "")
+        protected async Task<ActionResult<TResponse>> GetByIdAsync<TResponse>
+        (
+            int id,
+            bool loadRealtedData = false,
+            string includeProperties = ""
+        )
         {
             try
             {
-                TEntity entity;
+                var existeEntity = await _repository.ResourceExists(id);
 
-                if (traerEspecialidades)
+                if (!existeEntity)
                 {
-                    entity = await _repository.FirstOrDefaultAsync(x => x.Id == id, includeProperties: includeProperties);
+                    return NotFound($"No existe el registro con id : {id}");
+                }
+
+                TResponse responseEntity;
+
+                if (loadRealtedData)
+                {
+                    responseEntity =
+                        await _repository.FirstOrDefaultAsync<TResponse>(x => x.Id == id, includeProperties);
                 }
                 else
                 {
-                    entity = await _repository.FindAsync(id);
+                    responseEntity = await _repository.FindAsync<TResponse>(id);
                 }
 
-                if (entity is null)
+                if (responseEntity is null)
                 {
                     return NotFound($"No se encontró el registro con Id: {id}");
                 }
 
-                return _mapper.Map<TResponse>(entity);
+                return responseEntity;
             }
             catch (Exception e)
             {
@@ -147,21 +150,6 @@ namespace MedicDate.API.Controllers
             await _repository.SaveAsync();
 
             return Ok("Registro Eliminado con éxito");
-        }
-
-        protected async Task<ActionResult<TResponse>> GetPutAsync<TResponse>(int id, string includeProperties = null)
-        {
-            var existeEntity = await _repository.ResourceExists(id);
-
-            if (!existeEntity)
-            {
-                return NotFound($"No existe el registro con id : {id}");
-            }
-
-            var entityDb =
-                await _repository.FirstOrDefaultAsync(x => x.Id == id, includeProperties);
-
-            return _mapper.Map<TResponse>(entityDb);
         }
     }
 }

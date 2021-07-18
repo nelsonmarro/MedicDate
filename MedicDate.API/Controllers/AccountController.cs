@@ -1,23 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
-using MedicDate.DataAccess.Models;
 using MedicDate.Models.DTOs.Auth;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
-using System.IdentityModel.Tokens.Jwt;
-using Microsoft.IdentityModel.Tokens;
-using System.Security.Claims;
-using System.Text;
-using AutoMapper.Configuration;
-using MedicDate.API.Helpers;
 using MedicDate.Bussines.Repository.IRepository;
-using MedicDate.Bussines.Services.IServices;
-using MedicDate.Utility;
-using Microsoft.Extensions.Options;
+
 
 namespace MedicDate.API.Controllers
 {
@@ -25,66 +10,39 @@ namespace MedicDate.API.Controllers
     [ApiController]
     public class AccountController : ControllerBase
     {
-        private readonly UserManager<ApplicationUser> _userManager;
-        private readonly ITokenService _tokenService;
-        private readonly IAppUserRepository _appUserRepo;
-        private readonly JwtSettings _jwtSettings;
+        private readonly IAccountRepository _accountRepo;
 
-        public AccountController(UserManager<ApplicationUser> userManager, IOptions<JwtSettings> JwtOptions,
-            ITokenService tokenService, IAppUserRepository appUserRepo)
+
+        public AccountController(IAccountRepository accountRepo)
         {
-            _userManager = userManager;
-            _tokenService = tokenService;
-            _appUserRepo = appUserRepo;
-            _jwtSettings = JwtOptions.Value;
+            _accountRepo = accountRepo;
+        }
+
+        [HttpPost("register")]
+        public async Task<ActionResult> PostAsync(RegisterRequest registerRequest)
+        {
+            var resp = await _accountRepo.RegisterUserAsync(registerRequest);
+
+            return resp.ActionResult;
         }
 
         [HttpPost("login")]
         public async Task<ActionResult<LoginResponse>> LoginAsync(LoginRequest loginRequest)
         {
-            var user = await _userManager.FindByEmailAsync(loginRequest.Email);
+            var resp = await _accountRepo.LoginUserAsync(loginRequest);
 
-            if (user is null)
+            if (!resp.IsSuccess)
             {
-                return BadRequest(new LoginResponse()
-                    {ErrorMessage = "El email que ingresó no se encuentra registrado."});
+                return resp.ActionResult;
             }
 
-            var isPasswordCorrect = await _userManager.CheckPasswordAsync(user, loginRequest.Password);
-            var isEmailConfirm = await _userManager.IsEmailConfirmedAsync(user);
-
-            if (!isPasswordCorrect)
-            {
-                return BadRequest(new LoginResponse() {ErrorMessage = "La contraseña ingresada no es correcta"});
-            }
-
-            if (!isEmailConfirm)
-            {
-                return BadRequest(new LoginResponse()
-                    {ErrorMessage = "Su cuenta no ha sido confirmada. Por favor revise su email"});
-            }
-
-            var signingCredentials = _tokenService.GetSigningCredentials(_jwtSettings.SecretKey);
-
-            var claims = await _tokenService.GetClaims(user);
-
-            var tokenOptions = _tokenService.GenerateTokenOptions(signingCredentials, claims,
-                _jwtSettings.ValidAudience, _jwtSettings.ValidIssuer, _jwtSettings.ExpiryInMinutes);
-
-            var token = new JwtSecurityTokenHandler().WriteToken(tokenOptions);
-
-            user.RefreshToken = _tokenService.GenerateRefreshToken();
-            user.RefreshTokenExpiryTime = DateTime.Now.AddDays(7);
-
-            await _userManager.UpdateAsync(user);
-
-            return new LoginResponse() {IsAuthSuccessful = true, Token = token, RefreshToken = user.RefreshToken};
+            return resp.Data;
         }
 
         [HttpPost("forgotPassword")]
         public async Task<ActionResult> ForgotPassword(ForgotPasswordRequest forgotPasswordModel)
         {
-            var resp = await _appUserRepo.SendForgotPasswordRequestAsync(forgotPasswordModel);
+            var resp = await _accountRepo.SendForgotPasswordRequestAsync(forgotPasswordModel);
 
             if (resp)
             {
@@ -97,11 +55,61 @@ namespace MedicDate.API.Controllers
         [HttpPost("resetPassword")]
         public async Task<ActionResult> ResetPassword(ResetPasswordRequest resetPasswordRequest)
         {
-            var resp = await _appUserRepo.ResetPasswordAsync(resetPasswordRequest);
+            var resp = await _accountRepo.ResetPasswordAsync(resetPasswordRequest);
 
             if (!resp.IsSuccess)
             {
                 return resp.ActionResult;
+            }
+
+            return Ok();
+        }
+
+        [HttpPost("lockUnlock")]
+        public async Task<ActionResult> LockUnlockUserAsync([FromBody] string id)
+        {
+            var resp = await _accountRepo.LockUnlockUserAsync(id);
+
+            return resp.ActionResult;
+        }
+
+        [HttpPost("confirmEmail")]
+        public async Task<ActionResult> ConfirmEmailAsync(ConfirmEmailRequest confirmEmailRequest)
+        {
+            var response = await _accountRepo.ConfirmEmailAsync(confirmEmailRequest);
+
+            return !response.IsSuccess ? response.ActionResult : Ok();
+        }
+
+        [HttpPost("sendConfirmationEmail")]
+        public async Task<ActionResult> ResendConfirmEmailAsync([FromBody] string userEmail)
+        {
+            var response = await _accountRepo.SendConfirmEmailAsync(userEmail);
+
+            return !response.IsSuccess ? response.ActionResult : Ok();
+        }
+
+        [HttpPost("sendChangeEmailToken")]
+        public async Task<ActionResult> SendChangeEmailTokenAsync(ChangeEmailModel changeEmailModel)
+        {
+            var response = await _accountRepo.SendChangeEmailTokenAsync(changeEmailModel);
+
+            if (!response.IsSuccess)
+            {
+                return response.ActionResult;
+            }
+
+            return Ok();
+        }
+
+        [HttpPost("changeEmail/{userId}")]
+        public async Task<ActionResult> ChangeEmailAsync(string userId, ChangeEmailModel changeEmailModel)
+        {
+            var response = await _accountRepo.ChangeEmailAsync(userId, changeEmailModel);
+
+            if (!response.IsSuccess)
+            {
+                return response.ActionResult;
             }
 
             return Ok();

@@ -9,13 +9,8 @@ using MedicDate.Bussines.Repository.IRepository;
 using MedicDate.DataAccess.Data;
 using MedicDate.DataAccess.Models;
 using MedicDate.Models.DTOs.AppUser;
-using MedicDate.Models.DTOs.Auth;
-using MedicDate.Utility;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI.Services;
-using Microsoft.AspNetCore.Identity.UI.V4.Pages.Account.Internal;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.EntityFrameworkCore;
 
 namespace MedicDate.Bussines.Repository
@@ -25,31 +20,25 @@ namespace MedicDate.Bussines.Repository
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<AppRole> _roleManager;
         private readonly ApplicationDbContext _context;
-        private readonly IEmailSender _emailSender;
+        private readonly IMapper _mapper;
 
-        public AppUserRepository(UserManager<ApplicationUser> userManager,
-            RoleManager<AppRole> roleManager, ApplicationDbContext context,
-            IEmailSender emailSender) : base(context)
+        public AppUserRepository
+        (
+            UserManager<ApplicationUser> userManager,
+            RoleManager<AppRole> roleManager,
+            ApplicationDbContext context, IMapper mapper) : base(context, mapper)
         {
             _userManager = userManager;
             _roleManager = roleManager;
             _context = context;
-            _emailSender = emailSender;
+            _mapper = mapper;
         }
 
         public async Task<List<AppUserResponse>> GetUsersWithRoles(string filterRolId)
         {
             var userList = await _context.ApplicationUser.ToListAsync();
 
-            var userListResp = userList.Select(x => new AppUserResponse
-            {
-                Nombre = x.Nombre,
-                Apellidos = x.Apellidos,
-                PhoneNumber = x.PhoneNumber,
-                Email = x.Email,
-                EmailConfirmed = x.EmailConfirmed,
-                Id = x.Id
-            }).ToList();
+            var userListResp = _mapper.Map<List<AppUserResponse>>(userList);
 
             var userRole = await _context.UserRoles.ToListAsync();
             var systemRoles = await _context.Roles.ToListAsync();
@@ -70,57 +59,6 @@ namespace MedicDate.Bussines.Repository
             }
 
             return userListResp;
-        }
-
-        public async Task<DataResponse<string>> CreateUserAsync(RegisterRequest registerRequest)
-        {
-            var appUser = new ApplicationUser
-            {
-                Nombre = registerRequest.Nombre,
-                Apellidos = registerRequest.Apellidos,
-                Email = registerRequest.Email,
-                UserName = registerRequest.Email,
-                PhoneNumber = registerRequest.PhoneNumber
-            };
-
-            var result = await _userManager.CreateAsync(appUser, registerRequest.Password);
-
-            if (!result.Succeeded)
-            {
-                var errors = result.Errors.Select(e => e.Description);
-                return new DataResponse<string>()
-                {
-                    IsSuccess = false,
-                    ActionResult = new BadRequestObjectResult(errors)
-                };
-            }
-
-
-            if (registerRequest.RolesIds is not null && registerRequest.RolesIds.Count > 0)
-            {
-                var roleNames = await _roleManager.Roles.Where(x => registerRequest.RolesIds.Contains(x.Id))
-                    .ToListAsync();
-
-                var userRols = await _userManager.AddToRolesAsync(appUser, roleNames.Select(x => x.Name));
-
-                if (!userRols.Succeeded)
-                {
-                    var errors = result.Errors.Select(e => e.Description);
-                    return new DataResponse<string>()
-                    {
-                        IsSuccess = false,
-                        ActionResult = new BadRequestObjectResult(errors)
-                    };
-                }
-            }
-
-            await SendConfirmEmailAsync(appUser);
-
-            return new DataResponse<string>()
-            {
-                IsSuccess = true,
-                ActionResult = new OkObjectResult("Usuario creado correctamente")
-            };
         }
 
         public async Task<DataResponse<string>> EditUserAsync(string userId, AppUserRequest appUserRequest)
@@ -183,193 +121,6 @@ namespace MedicDate.Bussines.Repository
         public async Task<List<AppRole>> GetRolesAsync()
         {
             return await _context.AppRole.ToListAsync();
-        }
-
-        public async Task<bool> SendForgotPasswordRequestAsync(ForgotPasswordRequest forgotPasswordModel)
-        {
-            var userDb = await _userManager.FindByEmailAsync(forgotPasswordModel.Email);
-
-            if (userDb == null)
-            {
-                return true;
-            }
-
-            var code = await _userManager.GeneratePasswordResetTokenAsync(userDb);
-
-            var callbackUrl = $"https://localhost:44367/usuario/resetPassword?code={code}";
-
-            await _emailSender.SendEmailAsync(forgotPasswordModel.Email, "Restrablecer Contraseña - MedicDate",
-                $"Por favor restrablezca su contraseña haciendo click <a href=\"{callbackUrl}\">aquí</a>");
-
-            return true;
-        }
-
-        public async Task<DataResponse<string>> ResetPasswordAsync(ResetPasswordRequest resetPasswordRequest)
-        {
-            var userDb = await _userManager.FindByEmailAsync(resetPasswordRequest.Email);
-
-            if (userDb == null)
-            {
-                return new DataResponse<string>()
-                {
-                    IsSuccess = true
-                };
-            }
-
-            var result =
-                await _userManager.ResetPasswordAsync(userDb, resetPasswordRequest.Code, resetPasswordRequest.Password);
-
-            if (!result.Succeeded)
-            {
-                Console.WriteLine(result.Errors.First().Description);
-
-                return new DataResponse<string>()
-                {
-                    IsSuccess = false,
-                    ActionResult = new BadRequestObjectResult("No se pudo restablecer la contraseña")
-                };
-            }
-
-            return new DataResponse<string>()
-            {
-                IsSuccess = true
-            };
-        }
-
-        public async Task<DataResponse<string>> ConfirmEmailAsync(ConfirmEmailRequest confirmEmailRequest)
-        {
-            var userDb = await _userManager.FindByIdAsync(confirmEmailRequest.UserId);
-
-            if (userDb is null)
-            {
-                return new DataResponse<string>()
-                {
-                    IsSuccess = false,
-                    ActionResult = new NotFoundObjectResult("No se encotró el usuario para confirmar la cuenta")
-                };
-            }
-
-            var result = await _userManager.ConfirmEmailAsync(userDb, confirmEmailRequest.Code);
-
-            if (!result.Succeeded)
-            {
-                return new DataResponse<string>()
-                {
-                    IsSuccess = false,
-                    ActionResult = new BadRequestObjectResult("Error al confirmar la cuenta")
-                };
-            }
-
-            return new DataResponse<string>()
-            {
-                IsSuccess = true
-            };
-        }
-
-        public async Task SendConfirmEmailAsync(ApplicationUser applicationUser)
-        {
-            var code = await _userManager.GenerateEmailConfirmationTokenAsync(applicationUser);
-
-            var callbackUrl = $"https://localhost:44367/usuario/confirmEmail?userId={applicationUser.Id}&code={code}";
-
-            await _emailSender.SendEmailAsync(applicationUser.Email, "Confirme su cuenta - MedicDate",
-                $"Por favor confirma tu cuenta haciendo click <a href=\"{callbackUrl}\">aquí</a>");
-        }
-
-        public async Task<DataResponse<string>> SendConfirmEmailAsync(string userEmail)
-        {
-            var userDb = await _userManager.FindByEmailAsync(userEmail);
-
-            if (userDb is null)
-            {
-                return new DataResponse<string>()
-                {
-                    IsSuccess = false,
-                    ActionResult = new NotFoundObjectResult("No se encotró el usuario para confirmar la cuenta")
-                };
-            }
-
-            var code = await _userManager.GenerateEmailConfirmationTokenAsync(userDb);
-
-            var callbackUrl = $"https://localhost:44367/usuario/confirmEmail?userId={userDb.Id}&code={code}";
-
-            await _emailSender.SendEmailAsync(userDb.Email, "Confirme su cuenta - MedicDate",
-                $"Por favor confirma tu cuenta haciendo click <a href=\"{callbackUrl}\">aquí</a>");
-
-            return new DataResponse<string>()
-            {
-                IsSuccess = true
-            };
-        }
-
-        public async Task<DataResponse<string>> SendChangeEmailTokenAsync(ChangeEmailModel changeEmailModel)
-        {
-            var emailAlreadyExists = await _context.ApplicationUser.AnyAsync(x => x.Email == changeEmailModel.NewEmail);
-
-            if (emailAlreadyExists)
-            {
-                return new DataResponse<string>()
-                {
-                    IsSuccess = false,
-                    ActionResult =
-                        new NotFoundObjectResult(
-                            $"El email \"{changeEmailModel.NewEmail}\" ya se encuetra registrado, elija otro por favor.")
-                };
-            }
-
-            var userDb = await _userManager.FindByEmailAsync(changeEmailModel.CurrentEmail);
-
-            if (userDb is null)
-            {
-                return new DataResponse<string>()
-                {
-                    IsSuccess = false,
-                    ActionResult = new NotFoundObjectResult("No se encotró el usuario para cambiar el email")
-                };
-            }
-
-            var code = await _userManager.GenerateChangeEmailTokenAsync(userDb, changeEmailModel.NewEmail);
-
-            var callbackUrl =
-                $"https://localhost:44367/usuario/emailChangedConfirm?code={code}&userId={userDb.Id}";
-
-            await _emailSender.SendEmailAsync(userDb.Email, "Cambio de email - MedicDate",
-                $"Para proceder con el cambio de email has click <a href=\"{callbackUrl}\">aquí</a>");
-
-            return new DataResponse<string>()
-            {
-                IsSuccess = true
-            };
-        }
-
-        public async Task<DataResponse<string>> ChangeEmailAsync(string userId, ChangeEmailModel changeEmailModel)
-        {
-            var userDb = await _userManager.FindByIdAsync(userId);
-
-            if (userDb is null)
-            {
-                return new DataResponse<string>()
-                {
-                    IsSuccess = false,
-                    ActionResult = new NotFoundObjectResult("No se encotró el usuario para cambiar el email")
-                };
-            }
-
-            var result = await _userManager.ChangeEmailAsync(userDb, changeEmailModel.NewEmail, changeEmailModel.Code);
-
-            if (!result.Succeeded)
-            {
-                return new DataResponse<string>()
-                {
-                    IsSuccess = false,
-                    ActionResult = new BadRequestObjectResult("No se pudo cambiar el email")
-                };
-            }
-
-            return new DataResponse<string>()
-            {
-                IsSuccess = true
-            };
         }
 
         public async Task<DataResponse<AppUserRequest>> GetUserForEdit(string userId)

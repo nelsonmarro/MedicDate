@@ -1,4 +1,6 @@
 ﻿@page "/usuarioCrear"
 
 <h2 class="text-radzen-primary mb-2">Crear Usuario</h2>
-<RegisterUserForm RegisterModel="@_registerModel" OnSubmit="CreateUser"/>
+<CascadingValue Value="@_isBussy">
+	<RegisterUserForm RegisterModel="@_registerModel" OnSubmit="CreateUser"/>
+</CascadingValue>

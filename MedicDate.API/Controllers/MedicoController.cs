@@ -30,7 +30,7 @@ namespace MedicDate.API.Controllers
         }
 
         [HttpGet("listarConPaginacion")]
-        public async Task<ActionResult<ApiResponseDto<MedicoResponse>>> GetAllWithPagingAsync
+        public async Task<ActionResult<ApiResult<MedicoResponse>>> GetAllWithPagingAsync
         (
             int pageIndex = 0,
             int pageSize = 10,
@@ -40,13 +40,29 @@ namespace MedicDate.API.Controllers
         {
             if (filtrarEspecialidadId is not null)
             {
-                return await GetAllWithPagingAsync<MedicoResponse>(pageIndex, pageSize, traerEspecialidades,
+                return await GetAllWithPagingAsync<MedicoResponse>
+                (
+                    pageIndex,
+                    pageSize,
+                    traerEspecialidades,
                     "MedicosEspecialidades.Especialidad",
-                    filter: x => x.MedicosEspecialidades.Any(y => y.EspecialidadId == filtrarEspecialidadId));
+                    m => m.MedicosEspecialidades
+                        .Any(me => me.EspecialidadId == filtrarEspecialidadId),
+                    "Nombre",
+                    "ASC"
+                );
             }
 
-            return await GetAllWithPagingAsync<MedicoResponse>(pageIndex, pageSize, traerEspecialidades,
-                "MedicosEspecialidades.Especialidad");
+            return await GetAllWithPagingAsync<MedicoResponse>
+            (
+                pageIndex,
+                pageSize,
+                traerEspecialidades,
+                "MedicosEspecialidades.Especialidad",
+                null,
+                "Nombre",
+                "ASC"
+            );
         }
 
         [HttpGet("{id:int}", Name = "ObtenerMedico")]
@@ -66,7 +82,7 @@ namespace MedicDate.API.Controllers
         [HttpGet("obtenerParaEditar/{id:int}")]
         public async Task<ActionResult<MedicoRequest>> GetPutMedicoAsync(int id)
         {
-            return await GetPutAsync<MedicoRequest>(id, "MedicosEspecialidades");
+            return await GetByIdAsync<MedicoRequest>(id, true, "MedicosEspecialidades");
         }
 
         [HttpPost("crear")]
@@ -74,6 +90,11 @@ namespace MedicDate.API.Controllers
         {
             try
             {
+                if (await _medicoRepo.CedulaAlreadyRegisted(medicoRequest.Cedula))
+                {
+                    return BadRequest("Ya existe un doctor registrado con la cédula que ingresó");
+                }
+
                 if (!await _medicoRepo.EspecialidadIdExistForMedicoCreation(medicoRequest.EspecialidadesId))
                 {
                     return BadRequest("No existe una de las especialidades asignadas");
@@ -84,8 +105,7 @@ namespace MedicDate.API.Controllers
                 await _medicoRepo.SaveAsync();
 
                 var meidcoDb = await _medicoRepo
-                    .FirstOrDefaultAsync(x => x.Id == entityDb.Id,
-                        includeProperties: "MedicosEspecialidades.Especialidad");
+                    .FirstOrDefaultAsync(x => x.Id == entityDb.Id, "MedicosEspecialidades.Especialidad");
 
                 var entityResponse = _mapper.Map<MedicoResponse>(meidcoDb);
 

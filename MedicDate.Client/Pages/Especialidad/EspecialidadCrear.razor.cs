@@ -14,33 +14,31 @@ using Radzen;
 
 namespace MedicDate.Client.Pages.Especialidad
 {
-    public partial class EspecialidadCrear : ComponentBase, IDisposable
+    public partial class EspecialidadCrear : IDisposable
     {
         [Inject] public IHttpRepository HttpRepo { get; set; }
         [Inject] public NavigationManager NavigationManager { get; set; }
         [Inject] public INotificationService NotificationService { get; set; }
-        [Inject] public DialogService DialogService { get; set; }
         [Inject] public IHttpInterceptorService HttpInterceptor { get; set; }
+
+        private bool _isBussy;
 
         protected override void OnInitialized()
         {
             HttpInterceptor.RegisterEvent();
         }
 
-        private EspecialidadRequest _especialidadModel = new();
+        private readonly EspecialidadRequest _especialidadModel = new();
 
         private async Task CreateEspecialidad()
         {
-            NotificationService.ShowLoadingDialog(DialogService);
+            _isBussy = true;
 
             var httpResp =
                 await HttpRepo.Post("api/Especialidad/crear",
                     _especialidadModel);
 
-            if (httpResp is null)
-            {
-                return;
-            }
+            _isBussy = false;
 
             if (httpResp.Error)
             {
@@ -48,8 +46,6 @@ namespace MedicDate.Client.Pages.Especialidad
             }
             else
             {
-                NotificationService.CloseDialog(DialogService);
-
                 NotificationService.ShowSuccess("Operación Exitosa!", "Especialidad creada con éxito");
 
                 NavigationManager.NavigateTo("especialidadList");

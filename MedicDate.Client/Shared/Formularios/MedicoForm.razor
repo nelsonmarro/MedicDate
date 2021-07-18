@@ -34,13 +34,10 @@
 			<div class="mt-1">
 				@if (_especialidades is not null)
 				{
-					<RadzenDropDown AllowClear="true" TValue="IEnumerable<int>" Style="width: 100%"
-									Data="@_especialidades" AllowVirtualization="true"
-									Placeholder="Seleccione" Change="@SelectEspecialidad"
-									TextProperty="NombreEspecialidad" ValueProperty="Id"
-									Multiple="true" AllowFiltering="true"
-									@bind-Value="_especialidadesIds"
-									FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" />
+					<RadzenDropDown AllowClear="true" TValue="IEnumerable<int>" Style="width: 100%" Data="@_especialidades"
+					AllowVirtualization="true" Placeholder="Seleccione" Change="@SelectEspecialidad"
+					TextProperty="NombreEspecialidad" ValueProperty="Id" Multiple="true" AllowFiltering="true"
+					@bind-Value="_especialidadesIds" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" />
 				}
 				else
 				{

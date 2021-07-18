@@ -15,7 +15,7 @@ namespace MedicDate.Bussines.Repository
     {
         private readonly IMapper _mapper;
 
-        public EspecialidadRepository(ApplicationDbContext context, IMapper mapper) : base(context)
+        public EspecialidadRepository(ApplicationDbContext context, IMapper mapper) : base(context, mapper)
         {
             _mapper = mapper;
         }

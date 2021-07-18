@@ -11,6 +11,7 @@ namespace MedicDate.Bussines.Repository.IRepository
     public interface IRepository<TEntity> where TEntity : class
     {
         Task<TEntity> FindAsync(int id);
+        Task<TResponse> FindAsync<TResponse>(int id);
 
         Task<List<TEntity>> GetAllAsync(
             Expression<Func<TEntity, bool>> filter = null,
@@ -19,7 +20,20 @@ namespace MedicDate.Bussines.Repository.IRepository
             bool isTracking = true
         );
 
+        Task<List<TResponse>> GetAllAsync<TResponse>(
+            Expression<Func<TEntity, bool>> filter = null,
+            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
+            string includeProperties = null,
+            bool isTracking = true
+        );
+
         Task<TEntity> FirstOrDefaultAsync(
+            Expression<Func<TEntity, bool>> filter = null,
+            string includeProperties = null,
+            bool isTracking = true
+        );
+
+        Task<TResponse> FirstOrDefaultAsync<TResponse>(
             Expression<Func<TEntity, bool>> filter = null,
             string includeProperties = null,
             bool isTracking = true

@@ -1,172 +1,79 @@
-﻿@using MedicDate.Models.DTOs
-@using MedicDate.Client.Helpers
-@typeparam TItem
+﻿@typeparam TItem
 @inject IHttpRepository _httpRepository
 @inject DialogService _dialogService
 @inject INotificationService _notificationService
 
 @if (AllowCrudOps.AlowAdd)
 {
-	<div class="mb-2 row">
-		<div class="col-12 text-end">
-			<NavLink Match="@NavLinkMatch.Prefix" href="@OpRoutes.AddUrl">
-				<RadzenButton Text="Agregar" Icon="add"/>
-			</NavLink>
-		</div>
-	</div>
+    <div class="mb-2 row">
+        <div class="col-12 text-end">
+            <NavLink Match="@NavLinkMatch.Prefix" href="@OpRoutes.AddUrl">
+                <RadzenButton Text="Agregar" Icon="add" />
+            </NavLink>
+        </div>
+    </div>
 }
 
 @if (ItemList is null)
 {
-	if (NullItemList is not null)
-	{
-		@NullItemList
-	}
-	else
-	{
-		<p>Cargando...</p>
-	}
+    if (NullItemList is not null)
+    {
+        @NullItemList
+    }
+    else
+    {
+        <p>Cargando...</p>
+    }
 }
 else
 {
-	<div class="my-3">
-		<RadzenDataGrid @ref="_dataGrid" Count="@TotalCount" Data="@ItemList"
-		            LoadData="@((e) => LoadData(e, _dataGrid.CurrentPage))" AllowFiltering="@AllowFilter"
-		            FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" FilterMode="@FilterMode" AllowPaging="true"
-		            LogicalFilterOperator="LogicalFilterOperator.Or" PageSize="@_pageSize" EmptyText="No hay datos que mostrar"
-		            AllowSorting="true" PagerPosition="PagerPosition.TopAndBottom"
-		            TItem="TItem" AllowColumnResize="AllowColumnResize">
-			<Columns>
+    <div class="my-3">
+        <RadzenDataGrid @ref="_dataGrid" Count="@TotalCount" Data="@ItemList"
+                    LoadData="@((e) => LoadData(e, _dataGrid.CurrentPage))" AllowFiltering="@AllowFilter"
+                    FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" FilterMode="@FilterMode" AllowPaging="true"
+                    LogicalFilterOperator="LogicalFilterOperator.Or" PageSize="@_pageSize" EmptyText="No hay datos que mostrar"
+                    AllowSorting="true" PagerPosition="PagerPosition.TopAndBottom"
+                    TItem="TItem" AllowColumnResize="AllowColumnResize">
+            <Columns>
 
-				@if (CustomGridCols is null)
-				{
-					var i = 0;
+                @if (CustomGridCols is null)
+                {
+                    var i = 0;
 
-					@foreach (var propiedad in PropNames)
-					{
-						<RadzenDataGridColumn TItem="TItem" Property="@propiedad" Title="@Headers[i]"/>
-						i++;
-					}
-				}
-				else
-				{
-					@CustomGridCols
-				}
-				@if (AllowCrudOps.AllowEdit)
-				{
-					<RadzenDataGridColumn TItem="TItem" Context="item" Filterable="false" Sortable="false"
-					                  TextAlign="@TextAlign.Center" Width="70px">
-						<Template>
-							<NavLink Match="@NavLinkMatch.Prefix"
-							         href="@($"{OpRoutes.EditUrl}/{item.GetType().GetProperties()[0].GetValue(item)}")">
-								<RadzenButton Icon="edit" ButtonStyle="@ButtonStyle.Secondary"></RadzenButton>
-							</NavLink>
-						</Template>
-					</RadzenDataGridColumn>
-				}
-				@if (AllowCrudOps.AllowDelete)
-				{
-					<RadzenDataGridColumn TItem="TItem" Context="item" Filterable="false" Sortable="false"
-					                  TextAlign="@TextAlign.Center" Width="70px">
-						<Template>
-							<RadzenButton Icon="delete" ButtonStyle="@ButtonStyle.Danger"
-							              Click="@(() => _dialogService.OpenAsync<DeleteConfirmation>("Borrar Registro", new Dictionary<string, object>() {{"Id", item.GetType().GetProperties()[0].GetValue(item)?.ToString()}, {"OnDelete", OnDeleteData}}, new DialogOptions() {Width = "355px", Height = "184px"}))"/>
-						</Template>
-					</RadzenDataGridColumn>
-				}
-			</Columns>
-		</RadzenDataGrid>
-	</div>
+                    @foreach (var propiedad in PropNames)
+                    {
+                        <RadzenDataGridColumn TItem="TItem" Property="@propiedad" Title="@Headers[i]" />
+                        i++;
+                    }
+                }
+                else
+                {
+                    @CustomGridCols
+                }
+                @if (AllowCrudOps.AllowEdit)
+                {
+                    <RadzenDataGridColumn TItem="TItem" Context="item" Filterable="false" Sortable="false"
+                                  TextAlign="@TextAlign.Center" Width="70px">
+                        <Template>
+                            <NavLink Match="@NavLinkMatch.Prefix"
+                             href="@($"{OpRoutes.EditUrl}/{item.GetType().GetProperties()[0].GetValue(item)}")">
+                                <RadzenButton Icon="edit" ButtonStyle="@ButtonStyle.Secondary"></RadzenButton>
+                            </NavLink>
+                        </Template>
+                    </RadzenDataGridColumn>
+                }
+                @if (AllowCrudOps.AllowDelete)
+                {
+                    <RadzenDataGridColumn TItem="TItem" Context="item" Filterable="false" Sortable="false"
+                                  TextAlign="@TextAlign.Center" Width="70px">
+                        <Template>
+                            <RadzenButton Icon="delete" ButtonStyle="@ButtonStyle.Danger"
+                                  Click="@(() => _dialogService.OpenAsync<DeleteConfirmation>("Borrar Registro", new Dictionary<string, object>() {{"Id", item.GetType().GetProperties()[0].GetValue(item)?.ToString()}, {"OnDelete", OnDeleteData}}, new DialogOptions() {Width = "355px", Height = "184px"}))" />
+                        </Template>
+                    </RadzenDataGridColumn>
+                }
+            </Columns>
+        </RadzenDataGrid>
+    </div>
 }
 
-@code {
-
-	[Parameter]
-	public List<TItem> ItemList { get; set; }
-
-	[Parameter]
-	public string[] Headers { get; set; }
-
-	[Parameter]
-	public string[] PropNames { get; set; }
-
-	[Parameter]
-	public RenderFragment NullItemList { get; set; }
-
-	[Parameter]
-	public RenderFragment CustomGridCols { get; set; }
-
-	[Parameter]
-	public bool AllowFilter { get; set; } = true;
-
-	[Parameter]
-	public bool AllowColumnResize { get; set; } = true;
-
-	[Parameter]
-	public FilterMode FilterMode { get; set; } = FilterMode.Simple;
-
-	[Parameter]
-	public AllowCrudOps AllowCrudOps { get; set; }
-
-	[Parameter]
-	public OpRoutes OpRoutes { get; set; }
-
-	[Parameter]
-	public EventCallback<string> OnDeleteData { get; set; }
-
-	[Parameter]
-	public int TotalCount { get; set; }
-
-	private RadzenDataGrid<TItem> _dataGrid;
-	private int _pageSize = 10;
-
-	private async Task LoadData(LoadDataArgs args = null, int pageIndex = 0, int pageSize = 10)
-	{
-		var url = OpRoutes.GetUrl.Contains("?") ? $"{OpRoutes.GetUrl}&pageIndex={pageIndex}&pageSize={pageSize}" : $"{OpRoutes.GetUrl}?pageIndex={pageIndex}&pageSize={pageSize}";
-
-		var response = await _httpRepository.Get<ApiResponseDto<TItem>>(url);
-
-		if (response is null)
-		{
-			return;
-		}
-
-		if (response.Error)
-		{
-			_notificationService.ShowError("Error!", await response.GetResponseBody());
-		}
-		else
-		{
-			ItemList = response.Response.DataResult;
-			_pageSize = response.Response.PageSize;
-			TotalCount = response.Response.TotalCount;
-
-			if (args is not null)
-			{
-				var query = ItemList.AsQueryable();
-
-				if (!string.IsNullOrEmpty(args.Filter))
-				{
-					query = query.Where(args.Filter);
-				}
-
-				if (!string.IsNullOrEmpty(args.OrderBy))
-				{
-					query = query.OrderBy(args.OrderBy);
-				}
-
-				ItemList = query.ToList();
-
-				await InvokeAsync(StateHasChanged);
-			}
-		}
-	}
-
-	private async Task OnDropDownChange(object value)
-	{
-		_pageSize = (int) value;
-		await LoadData(null, 0, _pageSize);
-		_dataGrid.GoToPage(0);
-	}
-
-}

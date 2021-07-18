@@ -28,11 +28,6 @@ namespace MedicDate.Client.Shared.Formularios.AppUser
         {
             var httpResp = await HttpRepo.Get<List<RoleResponse>>("api/Usuario/roles");
 
-            if (httpResp is null)
-            {
-                return;
-            }
-
             if (httpResp.Error)
             {
                 NotificationService.ShowError("Error!", "Error al obtener los roles");
@@ -61,7 +56,7 @@ namespace MedicDate.Client.Shared.Formularios.AppUser
 
         private async Task SendConfirmationEmail()
         {
-            var httpResp = await HttpRepo.Post("api/Usuario/sendConfirmationEmail", EditUserModel.Email);
+            var httpResp = await HttpRepo.Post("api/Account/sendConfirmationEmail", EditUserModel.Email);
 
             if (httpResp is null)
             {

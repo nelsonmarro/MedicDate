@@ -19,13 +19,13 @@ namespace MedicDate.Client.Pages.AppUser
         [Inject] public IHttpRepository HttpRepo { get; set; }
         [Inject] public NavigationManager NavigationManager { get; set; }
         [Inject] public INotificationService NotificationService { get; set; }
-        [Inject] public DialogService DialogService { get; set; }
         [Inject] public IHttpInterceptorService HttpInterceptor { get; set; }
         [Inject] public IDialogNotificationService DialogNotificationService { get; set; }
 
         [Parameter] public string Id { get; set; }
 
-        private AppUserRequest _appUserModel = new();
+        private AppUserRequest _appUserModel;
+        private bool _isBussy;
 
         protected override async Task OnInitializedAsync()
         {
@@ -57,16 +57,11 @@ namespace MedicDate.Client.Pages.AppUser
                 return;
             }
 
-            NotificationService.ShowLoadingDialog(DialogService);
+            _isBussy = true;
 
             var httpResp = await HttpRepo.Put($"api/Usuario/editar/{Id}", _appUserModel);
 
-            NotificationService.CloseDialog(DialogService);
-
-            if (httpResp is null)
-            {
-                return;
-            }
+            _isBussy = false;
 
             if (httpResp.Error)
             {

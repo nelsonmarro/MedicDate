@@ -1,10 +1,13 @@
-﻿<RadzenButton ButtonType="ButtonType.Submit" ButtonStyle="ButtonStyle.Secondary" Text="@SaveButtonText" Icon="@SaveButtonIcon" class="mb-1 mb-md-0"/>
+﻿<RadzenButton ButtonType="ButtonType.Submit" ButtonStyle="ButtonStyle.Secondary" Text="@SaveButtonText" Icon="@SaveButtonIcon" class="mb-1 mb-md-0" IsBusy="IsBussy" BusyText="Salvando"/>
 
 <NavLink href="@NavLinkRoute">
 	<RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="close" Text="Cancelar"/>
 </NavLink>
 
 @code {
+
+	[CascadingParameter]
+	public bool IsBussy { get; set; }
 
 	[Parameter]
 	public string SaveButtonText { get; set; } = "Guardar";

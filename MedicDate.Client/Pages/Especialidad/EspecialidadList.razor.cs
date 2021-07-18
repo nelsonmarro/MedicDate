@@ -10,7 +10,6 @@ using MedicDate.Client.Services.IServices;
 using MedicDate.Models.DTOs;
 using MedicDate.Models.DTOs.Especialidad;
 using Microsoft.AspNetCore.Authorization;
-using Radzen.Blazor;
 
 namespace MedicDate.Client.Pages.Especialidad
 {

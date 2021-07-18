@@ -1,4 +1,4 @@
-﻿namespace MedicDate.API.Helpers
+﻿namespace MedicDate.Bussines.Helpers
 {
     public class JwtSettings
     {

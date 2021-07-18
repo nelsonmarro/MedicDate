@@ -29,11 +29,6 @@ namespace MedicDate.Client.Shared.Formularios
         {
             var httpResponse = await HttpRepo.Get<List<EspecialidadResponse>>("api/Especialidad/listar");
 
-            if (httpResponse is null)
-            {
-                return;
-            }
-
             if (httpResponse.Error)
             {
                 NotificationService.ShowError("Error!", await httpResponse.GetResponseBody());

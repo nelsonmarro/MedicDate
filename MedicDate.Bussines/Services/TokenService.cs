@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
@@ -38,10 +39,7 @@ namespace MedicDate.Bussines.Services
 
             var roles = await _userManager.GetRolesAsync(user);
 
-            foreach (var role in roles)
-            {
-                claims.Add(new Claim(ClaimTypes.Role, role));
-            }
+            claims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role)));
 
             return claims;
         }
@@ -81,10 +79,13 @@ namespace MedicDate.Bussines.Services
                 ValidIssuer = validIssuer,
                 ValidAudience = validAudience
             };
+
             var tokenHandler = new JwtSecurityTokenHandler();
-            SecurityToken securityToken;
-            var principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out securityToken);
+
+            var principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out var securityToken);
+
             var jwtSecurityToken = securityToken as JwtSecurityToken;
+
             if (jwtSecurityToken == null || !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha512,
                 StringComparison.InvariantCultureIgnoreCase))
             {

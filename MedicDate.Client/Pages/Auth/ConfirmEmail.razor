@@ -38,7 +38,7 @@
 			_confirmEmailRequest.Code = _code;
 			_confirmEmailRequest.UserId = _userId;
 
-			var httpResp = await _httpRepo.Post("api/Usuario/confirmEmail", _confirmEmailRequest);
+			var httpResp = await _httpRepo.Post("api/Account/confirmEmail", _confirmEmailRequest);
 
 			if (httpResp is null)
 			{

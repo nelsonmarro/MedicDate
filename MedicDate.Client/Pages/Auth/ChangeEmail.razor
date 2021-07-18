@@ -50,7 +50,7 @@
 
 	protected override async Task OnInitializedAsync()
 	{
-		var httpResp = await _httpRepo.Get<AppUserResponse>($"api/Usuario/{UserId}");
+		var httpResp = await _httpRepo.Get<AppUserResponse>($"api/Account/{UserId}");
 
 		if (httpResp.Error)
 		{
@@ -65,7 +65,7 @@
 
 	private async Task OnSubmit()
 	{
-		var httpResp = await _httpRepo.Post("api/Usuario/sendChangeEmailToken", _changeEmailModel);
+		var httpResp = await _httpRepo.Post("api/Account/sendChangeEmailToken", _changeEmailModel);
 
 		if (httpResp.Error)
 		{
