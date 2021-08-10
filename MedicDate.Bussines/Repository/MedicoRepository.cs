@@ -29,7 +29,7 @@ namespace MedicDate.Bussines.Repository
                 return new DataResponse<string>()
                 {
                     IsSuccess = false,
-                    ActionResult = new BadRequestObjectResult("Ya existe otro doctor registrado con la cédula que ingresó")
+                    ErrorActionResult = new BadRequestObjectResult("Ya existe otro doctor registrado con la cédula que ingresó")
                 };
             }
 
@@ -38,7 +38,7 @@ namespace MedicDate.Bussines.Repository
                 return new DataResponse<string>()
                 {
                     IsSuccess = false,
-                    ActionResult = new BadRequestObjectResult("No existe una de las especialidades asignadas")
+                    ErrorActionResult = new BadRequestObjectResult("No existe una de las especialidades asignadas")
                 };
             }
 
@@ -51,7 +51,7 @@ namespace MedicDate.Bussines.Repository
                 return new DataResponse<string>()
                 {
                     IsSuccess = false,
-                    ActionResult = new NotFoundObjectResult("No se encontró el médico ha actualizar")
+                    ErrorActionResult = new NotFoundObjectResult("No se encontró el médico ha actualizar")
                 };
             }
 
@@ -61,7 +61,7 @@ namespace MedicDate.Bussines.Repository
             return new DataResponse<string>()
             {
                 IsSuccess = true,
-                ActionResult = new NoContentResult()
+                ErrorActionResult = new NoContentResult()
             };
         }
 

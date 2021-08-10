@@ -1,11 +1,10 @@
-using System;
-using System.Linq;
 using MedicDate.Bussines.Services.IServices;
 using MedicDate.DataAccess.Data;
 using MedicDate.DataAccess.Models;
 using MedicDate.Utility;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace MedicDate.Bussines.Services
 {
@@ -25,17 +24,9 @@ namespace MedicDate.Bussines.Services
 
         public void Initialize()
         {
-            try
+            if (_context.Database.GetPendingMigrations().Any())
             {
-                if (_context.Database.GetPendingMigrations().Any())
-                {
-                    _context.Database.Migrate();
-                }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                throw;
+                _context.Database.Migrate();
             }
 
             if (_context.Roles.Any(x => x.Name == Sd.ROLE_ADMIN))

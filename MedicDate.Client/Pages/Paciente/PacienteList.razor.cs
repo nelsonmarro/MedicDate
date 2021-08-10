@@ -1,19 +1,15 @@
+using MedicDate.Client.Components;
+using MedicDate.Client.Helpers;
+using MedicDate.Models.DTOs.Grupo;
+using MedicDate.Models.DTOs.Paciente;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using MedicDate.Client.Components;
-using MedicDate.Client.Helpers;
-using MedicDate.Client.Services.IServices;
-using MedicDate.Models.DTOs.Grupo;
-using MedicDate.Models.DTOs.Paciente;
-using Microsoft.AspNetCore.Components;
 
 namespace MedicDate.Client.Pages.Paciente
 {
-    public class PacienteListBase : BaseListComponent<PacienteResponse>, IDisposable
+    public class PacienteListBase : BaseListComponent<PacienteResponse>
     {
-        [Inject] public IHttpInterceptorService HttpInterceptor { get; set; }
-
         private const string GetUrl = "api/Paciente/listarConPaginacion?traerGrupos=true";
         protected List<GrupoResponse> Grupos = new();
 
@@ -30,26 +26,15 @@ namespace MedicDate.Client.Pages.Paciente
         };
 
         protected readonly OpRoutes OpRoutes = new()
-            { AddUrl = "pacienteCrear", EditUrl = "pacienteEditar", GetUrl = GetUrl };
+        { AddUrl = "pacienteCrear", EditUrl = "pacienteEditar", GetUrl = GetUrl };
 
         protected override async Task OnInitializedAsync()
         {
-            HttpInterceptor.RegisterEvent();
-
             await LoadItemListAsync(GetUrl);
 
             var httpResponse = await HttpRepo.Get<List<GrupoResponse>>("api/Grupo/listar");
 
-            if (httpResponse is null)
-            {
-                return;
-            }
-
-            if (httpResponse.Error)
-            {
-                NotificationService.ShowError("Error!", await httpResponse.GetResponseBody());
-            }
-            else
+            if (!httpResponse.Error)
             {
                 Grupos = httpResponse.Response;
             }
@@ -72,11 +57,6 @@ namespace MedicDate.Client.Pages.Paciente
             {
                 NotificationService.ShowError("Error!", "Error al obtener el Id del grupo");
             }
-        }
-
-        public void Dispose()
-        {
-            HttpInterceptor.DisposeEvent();
         }
     }
 }

@@ -1,19 +1,16 @@
 ﻿using MedicDate.Client.Data.HttpRepository.IHttpRepository;
 using MedicDate.Client.Services.IServices;
-using Microsoft.AspNetCore.Components;
-using System;
-using System.Threading.Tasks;
 using MedicDate.Models.DTOs.Paciente;
-
+using Microsoft.AspNetCore.Components;
+using System.Threading.Tasks;
 
 namespace MedicDate.Client.Pages.Paciente
 {
-    public partial class PacienteEdit : IDisposable
+    public partial class PacienteEdit
     {
         [Inject] public IHttpRepository HttpRepo { get; set; }
         [Inject] public NavigationManager NavigationManager { get; set; }
         [Inject] public INotificationService NotificationService { get; set; }
-        [Inject] public IHttpInterceptorService HttpInterceptor { get; set; }
         [Inject] public IDialogNotificationService DialogNotificationService { get; set; }
 
         [Parameter] public string Id { get; set; }
@@ -23,15 +20,9 @@ namespace MedicDate.Client.Pages.Paciente
 
         protected override async Task OnInitializedAsync()
         {
-            HttpInterceptor.RegisterEvent();
-
             var httpResp = await HttpRepo.Get<PacienteRequest>($"api/Paciente/obtenerParaEditar/{Id}");
 
-            if (httpResp.Error)
-            {
-                NotificationService.ShowError("Error!", await httpResp.GetResponseBody());
-            }
-            else
+            if (!httpResp.Error)
             {
                 _pacienteModel = httpResp.Response;
             }
@@ -45,20 +36,11 @@ namespace MedicDate.Client.Pages.Paciente
 
             _isBussy = false;
 
-            if (httpResp.Error)
+            if (!httpResp.Error)
             {
-                await DialogNotificationService.ShowError("Error!", await httpResp.GetResponseBody());
-
-                return;
+                NotificationService.ShowSuccess("Operación exitosa!", "Registro editado con éxito");
+                NavigationManager.NavigateTo("pacienteList");
             }
-
-            NotificationService.ShowSuccess("Operación exitosa!", "Registro editado con éxito");
-            NavigationManager.NavigateTo("pacienteList");
-        }
-
-        public void Dispose()
-        {
-            HttpInterceptor.DisposeEvent();
         }
     }
 }

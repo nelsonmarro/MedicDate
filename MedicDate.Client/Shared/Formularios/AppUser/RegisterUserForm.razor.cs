@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using MedicDate.Client.Data.HttpRepository.IHttpRepository;
+﻿using MedicDate.Client.Data.HttpRepository.IHttpRepository;
 using MedicDate.Client.Services.IServices;
 using MedicDate.Models.DTOs.AppUser;
 using MedicDate.Models.DTOs.Auth;
 using Microsoft.AspNetCore.Components;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace MedicDate.Client.Shared.Formularios.AppUser
 {
@@ -17,12 +17,13 @@ namespace MedicDate.Client.Shared.Formularios.AppUser
 
         [Parameter] public RegisterRequest RegisterModel { get; set; }
         [Parameter] public EventCallback OnSubmit { get; set; }
+        [Parameter] public string[] Errors { get; set; }
 
         private List<RoleResponse> _roleList;
         private readonly List<RoleResponse> _selectedRoles = new();
 
-        private readonly string[] _headers = {"Nombre Rol", "Descripción"};
-        private readonly string[] _propName = {"Nombre", "Descripcion"};
+        private readonly string[] _headers = { "Nombre Rol", "Descripción" };
+        private readonly string[] _propName = { "Nombre", "Descripcion" };
 
         protected override async Task OnInitializedAsync()
         {

@@ -1,14 +1,12 @@
-﻿using System;
-using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using AutoMapper;
-using MedicDate.Bussines.Helpers;
+﻿using AutoMapper;
 using MedicDate.Bussines.Repository.IRepository;
 using MedicDate.DataAccess.Models;
 using MedicDate.Models.DTOs;
 using MedicDate.Models.DTOs.Especialidad;
+using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace MedicDate.API.Controllers
 {
@@ -62,18 +60,11 @@ namespace MedicDate.API.Controllers
         [HttpPut("editar/{id}")]
         public async Task<ActionResult> PutAsync(string id, EspecialidadRequest especialidadRequest)
         {
-            try
-            {
-                var response = await _unitOfWork.EspecialidadRepo.UpdateEspecialidad(id, especialidadRequest);
+            var resp = await _unitOfWork.EspecialidadRepo.UpdateEspecialidad(id, especialidadRequest);
 
-                return response.ActionResult;
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
-                Console.WriteLine(e.InnerException?.Message);
-                return BadRequest("Error al editar el registro");
-            }
+            return resp.IsSuccess
+                ? Ok("Especialidad actualizada con éxito")
+                : resp.ErrorActionResult;
         }
 
         [HttpDelete("eliminar/{id}")]

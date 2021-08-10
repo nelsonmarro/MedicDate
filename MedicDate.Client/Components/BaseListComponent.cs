@@ -33,16 +33,7 @@ namespace MedicDate.Client.Components
 
             var response = await HttpRepo.Get<ApiResponseDto<T>>(getUrl + filterRequestQuery);
 
-            if (response is null)
-            {
-                return;
-            }
-
-            if (response.Error)
-            {
-                NotificationService.ShowError("Error!", "Error al cargar los datos");
-            }
-            else
+            if (!response.Error)
             {
                 ItemList = response.Response.DataResult;
                 TotalCount = response.Response.TotalCount;
@@ -53,11 +44,7 @@ namespace MedicDate.Client.Components
         {
             var httpResp = await HttpRepo.Delete($"{deleteUrl}/{idString}");
 
-            if (httpResp.Error)
-            {
-                NotificationService.ShowError("Error!", await httpResp.GetResponseBody());
-            }
-            else
+            if (!httpResp.Error)
             {
                 NotificationService.ShowSuccess("Operación Exitosa!", await httpResp.GetResponseBody());
 

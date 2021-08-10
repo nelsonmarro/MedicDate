@@ -6,6 +6,6 @@ namespace MedicDate.Bussines.Helpers
     {
         public T Data { get; set; }
         public bool IsSuccess { get; set; }
-        public ActionResult ActionResult { get; set; }
+        public ActionResult ErrorActionResult { get; set; }
     }
 }

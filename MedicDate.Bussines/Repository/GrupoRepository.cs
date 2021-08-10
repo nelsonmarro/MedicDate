@@ -1,11 +1,11 @@
-﻿using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using MedicDate.Bussines.Helpers;
 using MedicDate.Bussines.Repository.IRepository;
 using MedicDate.DataAccess.Data;
 using MedicDate.DataAccess.Models;
 using MedicDate.Models.DTOs.Grupo;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 namespace MedicDate.Bussines.Repository
 {
@@ -29,7 +29,7 @@ namespace MedicDate.Bussines.Repository
                 return new DataResponse<string>()
                 {
                     IsSuccess = false,
-                    ActionResult = new NotFoundObjectResult("No se encontró el grupo para editar")
+                    ErrorActionResult = new NotFoundObjectResult("No se encontró el grupo para editar")
                 };
             }
 
@@ -38,8 +38,7 @@ namespace MedicDate.Bussines.Repository
 
             return new DataResponse<string>()
             {
-                IsSuccess = true,
-                ActionResult = new OkObjectResult("Grupo actualizado con éxito")
+                IsSuccess = true
             };
         }
     }

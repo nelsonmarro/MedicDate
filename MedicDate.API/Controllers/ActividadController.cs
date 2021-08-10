@@ -1,14 +1,12 @@
-﻿using System;
-using Microsoft.AspNetCore.Mvc;
-using AutoMapper;
+﻿using AutoMapper;
 using MedicDate.Bussines.Repository.IRepository;
 using MedicDate.DataAccess.Models;
-using MedicDate.Bussines.Helpers;
+using MedicDate.Models.DTOs;
+using MedicDate.Models.DTOs.Actividad;
+using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using MedicDate.Models.DTOs;
-using MedicDate.Models.DTOs.Actividad;
 
 namespace MedicDate.API.Controllers
 {
@@ -25,10 +23,11 @@ namespace MedicDate.API.Controllers
         }
 
         [HttpGet("listarConPaginacion")]
-        public async Task<ActionResult<ApiResponseDto<ActividadResponse>>> GetAllActividadesWithPagingAsync(
-            int pageIndex = 0,
-            int pageSize = 10
-        )
+        public async Task<ActionResult<ApiResponseDto<ActividadResponse>>>
+            GetAllActividadesWithPagingAsync(
+                int pageIndex = 0,
+                int pageSize = 10
+            )
         {
             return await GetAllWithPagingAsync<ActividadResponse>
             (
@@ -60,18 +59,12 @@ namespace MedicDate.API.Controllers
         [HttpPut("editar/{id}")]
         public async Task<ActionResult> PutActividadAsync(string id, ActividadRequest actividadReq)
         {
-            try
-            {
-                var response = await _unitOfWork.ActividadRepo.UpdateActividadAsync(id, actividadReq);
+            var resp = await _unitOfWork.ActividadRepo.UpdateActividadAsync(id, actividadReq);
 
-                return response.ActionResult;
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
-                Console.WriteLine(e.InnerException?.Message);
-                return BadRequest("Error al editar el registro");
-            }
+            return resp.IsSuccess
+                ? Ok("Actividad actualizada con éxito")
+                : resp.ErrorActionResult;
+
         }
 
         [HttpDelete("eliminar/{id}")]

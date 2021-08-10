@@ -1,12 +1,10 @@
 ﻿using System.Threading.Tasks;
 using Toolbelt.Blazor;
 
-namespace MedicDate.Client.Services.IServices
+namespace MedicDate.Client.Interceptors.IInterceptors
 {
-    public interface IHttpInterceptorService
+    public interface IAuthTokenInterceptor : IInterceptor
     {
-        public void RegisterEvent();
         public Task InterceptBeforeHttpAsync(object sender, HttpClientInterceptorEventArgs e);
-        public void DisposeEvent();
     }
 }

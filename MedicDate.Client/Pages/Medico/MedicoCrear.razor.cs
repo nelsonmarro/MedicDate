@@ -2,25 +2,18 @@
 using MedicDate.Client.Services.IServices;
 using MedicDate.Models.DTOs.Medico;
 using Microsoft.AspNetCore.Components;
-using System;
 using System.Threading.Tasks;
 
 namespace MedicDate.Client.Pages.Medico
 {
-    public partial class MedicoCrear : IDisposable
+    public partial class MedicoCrear
     {
         [Inject] public IHttpRepository HttpRepo { get; set; }
         [Inject] public NavigationManager NavigationManager { get; set; }
         [Inject] public INotificationService NotificationService { get; set; }
-        [Inject] public IHttpInterceptorService HttpInterceptor { get; set; }
 
         private readonly MedicoRequest _medicoModel = new();
         private bool _isBussy;
-
-        protected override void OnInitialized()
-        {
-            HttpInterceptor.RegisterEvent();
-        }
 
         private async Task CreateMedico()
         {
@@ -30,21 +23,12 @@ namespace MedicDate.Client.Pages.Medico
 
             _isBussy = false;
 
-            if (httpResp.Error)
-            {
-                NotificationService.ShowError("Error!", await httpResp.GetResponseBody());
-            }
-            else
+            if (!httpResp.Error)
             {
                 NotificationService.ShowSuccess("Operacion exitosa!", "Registro creado con éxito");
 
-                NavigationManager.NavigateTo("medicoList");
+                NavigationManager.NavigateTo("medicoList"); ;
             }
-        }
-
-        public void Dispose()
-        {
-            HttpInterceptor.DisposeEvent();
         }
     }
 }

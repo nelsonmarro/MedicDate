@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using AutoMapper;
 using MedicDate.Bussines.Helpers;
 using MedicDate.Bussines.Repository.IRepository;
@@ -9,6 +6,8 @@ using MedicDate.DataAccess.Models;
 using MedicDate.Models.DTOs.Paciente;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace MedicDate.Bussines.Repository
 {
@@ -48,7 +47,7 @@ namespace MedicDate.Bussines.Repository
                 return new DataResponse<string>()
                 {
                     IsSuccess = false,
-                    ActionResult = new BadRequestObjectResult("Ya existe otro paciente registrado con la cédula que ingresó")
+                    ErrorActionResult = new BadRequestObjectResult("Ya existe otro paciente registrado con la cédula que ingresó")
                 };
             }
 
@@ -57,7 +56,7 @@ namespace MedicDate.Bussines.Repository
                 return new DataResponse<string>()
                 {
                     IsSuccess = false,
-                    ActionResult =
+                    ErrorActionResult =
                         new BadRequestObjectResult(
                             "Ya existe otro paciente registrado con el número de historia que ingresó")
                 };
@@ -68,7 +67,7 @@ namespace MedicDate.Bussines.Repository
                 return new DataResponse<string>()
                 {
                     IsSuccess = false,
-                    ActionResult = new BadRequestObjectResult("No existe uno de los grupos asignados")
+                    ErrorActionResult = new BadRequestObjectResult("No existe uno de los grupos asignados")
                 };
             }
 
@@ -81,7 +80,7 @@ namespace MedicDate.Bussines.Repository
                 return new DataResponse<string>
                 {
                     IsSuccess = false,
-                    ActionResult = new NotFoundObjectResult("No se encontró el paciente a actualizar")
+                    ErrorActionResult = new NotFoundObjectResult("No se encontró el paciente a actualizar")
                 };
             }
 
@@ -90,8 +89,7 @@ namespace MedicDate.Bussines.Repository
 
             return new DataResponse<string>
             {
-                IsSuccess = true,
-                ActionResult = new OkObjectResult("Paciente actualizado con éxito")
+                IsSuccess = true
             };
         }
 

@@ -1,16 +1,17 @@
-﻿using System.Net.Http.Headers;
-using System.Threading.Tasks;
+﻿using MedicDate.Client.Interceptors.IInterceptors;
 using MedicDate.Client.Services.IServices;
+using System.Net.Http.Headers;
+using System.Threading.Tasks;
 using Toolbelt.Blazor;
 
-namespace MedicDate.Client.Services
+namespace MedicDate.Client.Interceptors
 {
-    public class HttpInterceptorService : IHttpInterceptorService
+    public class AuthTokenInterceptor : IAuthTokenInterceptor
     {
         private readonly HttpClientInterceptor _interceptor;
         private readonly IRefreshTokenService _refreshTokenService;
 
-        public HttpInterceptorService(HttpClientInterceptor interceptor, IRefreshTokenService refreshTokenService)
+        public AuthTokenInterceptor(HttpClientInterceptor interceptor, IRefreshTokenService refreshTokenService)
         {
             _interceptor = interceptor;
             _refreshTokenService = refreshTokenService;
@@ -20,7 +21,6 @@ namespace MedicDate.Client.Services
         {
             _interceptor.BeforeSendAsync += InterceptBeforeHttpAsync;
         }
-
 
         public async Task InterceptBeforeHttpAsync(object sender, HttpClientInterceptorEventArgs e)
         {

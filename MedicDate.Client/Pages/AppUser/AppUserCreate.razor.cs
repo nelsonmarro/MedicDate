@@ -1,35 +1,23 @@
 ﻿using MedicDate.Client.Data.HttpRepository.IHttpRepository;
 using MedicDate.Client.Services.IServices;
-using MedicDate.Models.DTOs.Especialidad;
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Rendering;
-using Radzen;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using MedicDate.Client.Components;
 using MedicDate.Models.DTOs.Auth;
-
+using Microsoft.AspNetCore.Components;
+using System;
+using System.Net.Http.Json;
+using System.Threading.Tasks;
 
 namespace MedicDate.Client.Pages.AppUser
 {
-    public partial class AppUserCreate : IDisposable
+    public partial class AppUserCreate
     {
         [Inject] public IHttpRepository HttpRepo { get; set; }
         [Inject] public NavigationManager NavigationManager { get; set; }
         [Inject] public INotificationService NotificationService { get; set; }
-        [Inject] public IHttpInterceptorService HttpInterceptor { get; set; }
         [Inject] public IDialogNotificationService DialogNotificationService { get; set; }
 
         private bool _isBussy;
-
-        protected override void OnInitialized()
-        {
-            HttpInterceptor.RegisterEvent();
-        }
-
         private readonly RegisterRequest _registerModel = new();
+        private string[] _errors = Array.Empty<string>();
 
         private async Task CreateUser()
         {
@@ -48,19 +36,13 @@ namespace MedicDate.Client.Pages.AppUser
 
             if (httpResp.Error)
             {
-                NotificationService.ShowError("Error!", await httpResp.GetResponseBody());
+                _errors = await httpResp.HttpResponseMessage.Content.ReadFromJsonAsync<string[]>();
+                NotificationService.ShowError("Error!", "Error al crear el usuario");
             }
             else
             {
-                NotificationService.ShowSuccess("Operación Exitosa!", await httpResp.GetResponseBody());
-
                 NavigationManager.NavigateTo("usuarioList");
             }
-        }
-
-        public void Dispose()
-        {
-            HttpInterceptor.DisposeEvent();
         }
     }
 }

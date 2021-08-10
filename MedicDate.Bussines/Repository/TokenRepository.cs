@@ -36,7 +36,7 @@ namespace MedicDate.Bussines.Repository
                 return new DataResponse<LoginResponse>()
                 {
                     IsSuccess = false,
-                    ActionResult = new BadRequestObjectResult(new LoginResponse()
+                    ErrorActionResult = new BadRequestObjectResult(new LoginResponse()
                         {IsAuthSuccessful = false, ErrorMessage = "Petición inválida al servidor"})
                 };
             }
@@ -52,7 +52,7 @@ namespace MedicDate.Bussines.Repository
                 return new DataResponse<LoginResponse>()
                 {
                     IsSuccess = false,
-                    ActionResult = new BadRequestObjectResult("No se encotró un refresh token en la DB")
+                    ErrorActionResult = new BadRequestObjectResult("No se encotró un refresh token en la DB")
                 };
             }
 
@@ -62,7 +62,7 @@ namespace MedicDate.Bussines.Repository
                 return new DataResponse<LoginResponse>()
                 {
                     IsSuccess = false,
-                    ActionResult = new BadRequestObjectResult(new LoginResponse()
+                    ErrorActionResult = new BadRequestObjectResult(new LoginResponse()
                         {IsAuthSuccessful = false, ErrorMessage = "Petición inválida al servidor"})
                 };
             }

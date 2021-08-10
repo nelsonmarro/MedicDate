@@ -23,7 +23,7 @@ namespace MedicDate.Bussines.Helpers
                     return new DataResponse<string>()
                     {
                         IsSuccess = false,
-                        ActionResult = new BadRequestObjectResult("Ya existe un registro con la cédula que ingresó")
+                        ErrorActionResult = new BadRequestObjectResult("Ya existe un registro con la cédula que ingresó")
                     };
                 }
 
@@ -40,7 +40,7 @@ namespace MedicDate.Bussines.Helpers
                     return new DataResponse<string>()
                     {
                         IsSuccess = false,
-                        ActionResult = new BadRequestObjectResult("Error al crear el registro")
+                        ErrorActionResult = new BadRequestObjectResult("Error al crear el registro")
                     };
                 }
 

@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 using AutoMapper;
 using MedicDate.DataAccess.Models;
 using MedicDate.Models.DTOs.Actividad;
 using MedicDate.Models.DTOs.AppUser;
+using MedicDate.Models.DTOs.Auth;
 using MedicDate.Models.DTOs.Especialidad;
 using MedicDate.Models.DTOs.Grupo;
 using MedicDate.Models.DTOs.Medico;
@@ -43,7 +42,75 @@ namespace MedicDate.Bussines.Mapper
             CreateMap<Medico, MedicoRequest>()
                 .ForMember(x => x.EspecialidadesId, opts => opts.MapFrom(MapEspecialidadesIds));
 
-            CreateMap<ApplicationUser, AppUserResponse>();
+            CreateMap<ApplicationUser, AppUserResponse>()
+                .ForMember(x => x.Roles, opts => opts.MapFrom(MapRolesResponse));
+
+            CreateMap<AppUserRequest, ApplicationUser>()
+                .ForMember(x => x.UserRoles, opts =>
+                    opts.MapFrom(MapUserRoles));
+
+            CreateMap<ApplicationUser, AppUserRequest>()
+                .ForMember(x => x.Roles, opts => opts.MapFrom(MapRolesRequest));
+        }
+
+        private List<RoleResponse> MapRolesRequest(ApplicationUser applicationUser,
+            AppUserRequest appUserRequest)
+        {
+            var result = new List<RoleResponse>();
+
+            if (applicationUser.UserRoles is null)
+            {
+                return result;
+            }
+
+            result.AddRange(applicationUser.UserRoles.Select(x =>
+                new RoleResponse
+                {
+                    Id = x.RoleId,
+                    Nombre = x.Role.Name,
+                    Descripcion = x.Role.Descripcion
+                }));
+
+            return result;
+        }
+
+        private List<ApplicationUserRole> MapUserRoles(AppUserRequest appUserRequest,
+            ApplicationUser applicationUser)
+        {
+            var result = new List<ApplicationUserRole>();
+
+            if (appUserRequest.Roles is null)
+            {
+                return result;
+            }
+
+            result.AddRange(appUserRequest.Roles.Select(x => new ApplicationUserRole
+            {
+                RoleId = x.Id
+            }));
+
+            return result;
+        }
+
+        private List<RoleResponse> MapRolesResponse(ApplicationUser applicationUser,
+            AppUserResponse appUserResponse)
+        {
+            var result = new List<RoleResponse>();
+
+            if (applicationUser.UserRoles is null)
+            {
+                return result;
+            }
+
+            result.AddRange(applicationUser.UserRoles.Select(x =>
+                new RoleResponse
+                {
+                    Id = x.RoleId,
+                    Nombre = x.Role.Name,
+                    Descripcion = x.Role.Descripcion
+                }));
+
+            return result;
         }
 
         private List<GrupoResponse> MapGrupos(Paciente paciente, PacienteResponse pacienteResponse)

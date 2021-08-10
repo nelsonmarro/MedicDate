@@ -19,7 +19,7 @@ namespace MedicDate.Client.Components
         [Parameter] public string[] Headers { get; set; } = { };
 
         [Parameter]
-        public string[] PropNames { get; set; } = {};
+        public string[] PropNames { get; set; } = { };
 
         [Parameter]
         public RenderFragment NullItemList { get; set; }
@@ -56,15 +56,12 @@ namespace MedicDate.Client.Components
 
             var response = await _httpRepository.Get<ApiResponseDto<TItem>>(url);
 
-            if (response.Error)
-            {
-                _notificationService.ShowError("Error!", await response.GetResponseBody());
-            }
-            else
+            if (!response.Error)
             {
                 ItemList = response.Response.DataResult;
                 _pageSize = response.Response.PageSize;
                 TotalCount = response.Response.TotalCount;
+
                 if (args is not null)
                 {
                     var query = ItemList.AsQueryable();

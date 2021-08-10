@@ -2,17 +2,15 @@
 using MedicDate.Client.Services.IServices;
 using MedicDate.Models.DTOs.Medico;
 using Microsoft.AspNetCore.Components;
-using System;
 using System.Threading.Tasks;
 
 namespace MedicDate.Client.Pages.Medico
 {
-    public partial class MedicoEditar : IDisposable
+    public partial class MedicoEditar
     {
         [Inject] public IHttpRepository HttpRepo { get; set; }
         [Inject] public NavigationManager NavigationManager { get; set; }
         [Inject] public INotificationService NotificationService { get; set; }
-        [Inject] public IHttpInterceptorService HttpInterceptor { get; set; }
 
         [Parameter]
         public string Id { get; set; }
@@ -22,15 +20,9 @@ namespace MedicDate.Client.Pages.Medico
 
         protected override async Task OnInitializedAsync()
         {
-            HttpInterceptor.RegisterEvent();
-
             var httpResp = await HttpRepo.Get<MedicoRequest>($"api/Medico/obtenerParaEditar/{Id}");
 
-            if (httpResp.Error)
-            {
-                NotificationService.ShowError("Error!", await httpResp.GetResponseBody());
-            }
-            else
+            if (!httpResp.Error)
             {
                 _medicoModel = httpResp.Response;
             }
@@ -44,19 +36,11 @@ namespace MedicDate.Client.Pages.Medico
 
             _isBussy = false;
 
-            if (httpResp.Error)
+            if (!httpResp.Error)
             {
-                NotificationService.ShowError("Error!", await httpResp.GetResponseBody());
-                return;
+                NotificationService.ShowSuccess("Operación exitosa!", "Registro editado con éxito");
+                NavigationManager.NavigateTo("medicoList");
             }
-
-            NotificationService.ShowSuccess("Operación exitosa!", "Registro editado con éxito");
-            NavigationManager.NavigateTo("medicoList");
-        }
-
-        public void Dispose()
-        {
-            HttpInterceptor.DisposeEvent();
         }
     }
 }

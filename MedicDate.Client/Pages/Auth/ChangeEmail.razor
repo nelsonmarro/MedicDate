@@ -14,25 +14,25 @@
 
 		<RadzenCard>
 			<EditForm Model="_changeEmailModel" OnValidSubmit="OnSubmit">
-				<DataAnnotationsValidator/>
+				<DataAnnotationsValidator />
 
 				<div class="mb-3">
-					<RadzenLabel Text="Email actual"/>
+					<RadzenLabel Text="Email actual" />
 					<div class="mt-1">
-						<RadzenTextBox Value="@_appUserRequest.Email" class="w-100" ReadOnly="true"/>
+						<RadzenTextBox Value="@_appUserRequest.Email" class="w-100" ReadOnly="true" />
 					</div>
 				</div>
 
 				<div class="mb-3">
-					<RadzenLabel Text="Ingrese el nuevo email"/>
+					<RadzenLabel Text="Ingrese el nuevo email" />
 					<div class="mt-1">
-						<RadzenTextBox @bind-Value="_changeEmailModel.NewEmail" class="w-100"/>
-						<ValidationMessage For="() => _changeEmailModel.NewEmail"/>
+						<RadzenTextBox @bind-Value="_changeEmailModel.NewEmail" class="w-100" />
+						<ValidationMessage For="() => _changeEmailModel.NewEmail" />
 					</div>
 				</div>
 
 				<div class="mb-2">
-					<FormButtons SaveButtonText="Enviar" NavLinkRoute="/usuarioList"/>
+					<FormButtons SaveButtonText="Enviar" NavLinkRoute="/usuarioList" />
 				</div>
 			</EditForm>
 		</RadzenCard>
@@ -52,11 +52,7 @@
 	{
 		var httpResp = await _httpRepo.Get<AppUserResponse>($"api/Account/{UserId}");
 
-		if (httpResp.Error)
-		{
-			_notificationService.ShowError("Error", await httpResp.GetResponseBody());
-		}
-		else
+		if (!httpResp.Error)
 		{
 			_appUserRequest = httpResp.Response;
 			_changeEmailModel.CurrentEmail = _appUserRequest.Email;
@@ -67,11 +63,7 @@
 	{
 		var httpResp = await _httpRepo.Post("api/Account/sendChangeEmailToken", _changeEmailModel);
 
-		if (httpResp.Error)
-		{
-			_notificationService.ShowError("Error!", await httpResp.GetResponseBody());
-		}
-		else
+		if (!httpResp.Error)
 		{
 			_navigationManager.NavigateTo("usuario/changeEmailConfirm");
 		}

@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using MedicDate.Client.Data.HttpRepository.IHttpRepository;
+﻿using MedicDate.Client.Data.HttpRepository.IHttpRepository;
 using MedicDate.Client.Services.IServices;
 using MedicDate.Models.DTOs.AppUser;
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Authorization;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace MedicDate.Client.Shared.Formularios.AppUser
 {
@@ -21,8 +19,8 @@ namespace MedicDate.Client.Shared.Formularios.AppUser
         private List<RoleResponse> _selectedRoles;
         private bool _emailNeedConfirmation;
 
-        private readonly string[] _headers = {"Nombre Rol", "Descripción"};
-        private readonly string[] _propName = {"Nombre", "Descripcion"};
+        private readonly string[] _headers = { "Nombre Rol", "Descripción" };
+        private readonly string[] _propName = { "Nombre", "Descripcion" };
 
         protected override async Task OnInitializedAsync()
         {

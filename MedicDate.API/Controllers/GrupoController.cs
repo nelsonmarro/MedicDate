@@ -1,15 +1,12 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using AutoMapper;
-using MedicDate.Bussines.Helpers;
+﻿using AutoMapper;
 using MedicDate.Bussines.Repository.IRepository;
 using MedicDate.DataAccess.Models;
 using MedicDate.Models.DTOs;
 using MedicDate.Models.DTOs.Grupo;
+using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace MedicDate.API.Controllers
 {
@@ -61,18 +58,11 @@ namespace MedicDate.API.Controllers
         [HttpPut("editar/{id}")]
         public async Task<ActionResult> PutGrupoAsync(string id, GrupoRequest grupoRequest)
         {
-            try
-            {
-                var response = await _unitOfWork.GrupoRepo.UpdateGrupoAsync(id, grupoRequest);
+            var resp = await _unitOfWork.GrupoRepo.UpdateGrupoAsync(id, grupoRequest);
 
-                return response.ActionResult;
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
-                Console.WriteLine(e.InnerException?.Message);
-                return BadRequest("Error al editar el registro");
-            }
+            return resp.IsSuccess
+                ? Ok("Grupo actualizado con éxito")
+                : resp.ErrorActionResult;
         }
 
         [HttpDelete("eliminar/{id}")]

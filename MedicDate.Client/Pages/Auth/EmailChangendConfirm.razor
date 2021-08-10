@@ -11,17 +11,17 @@
 
 	<RadzenCard>
 		<EditForm Model="_changeEmailModel" OnValidSubmit="OnSubmit">
-			<DataAnnotationsValidator/>
+			<DataAnnotationsValidator />
 			<div class="mb-3">
-				<RadzenLabel Text="Ingrese el nuevo email"/>
+				<RadzenLabel Text="Ingrese el nuevo email" />
 				<div class="mt-1">
-					<RadzenTextBox @bind-Value="_changeEmailModel.NewEmail" class="w-100"/>
-					<ValidationMessage For="() => _changeEmailModel.NewEmail"/>
+					<RadzenTextBox @bind-Value="_changeEmailModel.NewEmail" class="w-100" />
+					<ValidationMessage For="() => _changeEmailModel.NewEmail" />
 				</div>
 			</div>
 
 			<div class="mb-2">
-				<FormButtons SaveButtonText="Enviar" NavLinkRoute="/usuarioList"/>
+				<FormButtons SaveButtonText="Enviar" NavLinkRoute="/usuarioList" />
 			</div>
 		</EditForm>
 	</RadzenCard>
@@ -32,7 +32,7 @@
 			Su email ha sido actualizado con éxito.
 		</div>
 		<NavLink href="/login">
-			<RadzenButton Text="inicia sesión" Click="IniciarSession"/>
+			<RadzenButton Text="inicia sesión" Click="IniciarSession" />
 		</NavLink>
 	}
 </div>
@@ -78,11 +78,7 @@
 
 		var httpResp = await _httpRepo.Post($"api/Account/changeEmail/{_userId}", _changeEmailModel);
 
-		if (httpResp.Error)
-		{
-			_notificationService.ShowError("Error!", await httpResp.GetResponseBody());
-		}
-		else
+		if (!httpResp.Error)
 		{
 			_isChangeEmailSuccess = true;
 		}

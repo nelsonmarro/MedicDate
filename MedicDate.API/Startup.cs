@@ -1,24 +1,12 @@
-using MedicDate.Bussines.Helpers;
-using MedicDate.Bussines.Mapper;
-using MedicDate.Bussines.Repository;
-using MedicDate.Bussines.Repository.IRepository;
-using MedicDate.Bussines.Services;
+using MedicDate.API.Extensions;
+using MedicDate.API.Middlewares;
 using MedicDate.Bussines.Services.IServices;
-using MedicDate.DataAccess.Data;
-using MedicDate.DataAccess.Models;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI.Services;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using System;
-using System.Text;
 
 namespace MedicDate.API
 {
@@ -34,51 +22,11 @@ namespace MedicDate.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<ApplicationDbContext>(options =>
-            {
-                options.UseSqlServer(
-                    Configuration.GetConnectionString("DefaultConnection"),
-                    o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)
-                );
-            });
-
+            services.AddApplicationServices(Configuration);
             services.AddControllers();
-            services.AddAutoMapper(typeof(MapperProfile));
-
-            var appSettingsSection = Configuration.GetSection("JwtSettings");
-            services.Configure<JwtSettings>(appSettingsSection);
-
-            var apiSettings = appSettingsSection.Get<JwtSettings>();
-            var key = Encoding.UTF8.GetBytes(apiSettings.SecretKey);
-
-            services.AddIdentity<ApplicationUser, AppRole>(opts => { opts.SignIn.RequireConfirmedEmail = true; })
-                .AddEntityFrameworkStores<ApplicationDbContext>()
-                .AddDefaultTokenProviders();
-
-            services.AddAuthentication(opts =>
-            {
-                opts.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                opts.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                opts.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-            }).AddJwtBearer(x =>
-            {
-                x.RequireHttpsMetadata = false;
-                x.SaveToken = true;
-                x.TokenValidationParameters = new TokenValidationParameters()
-                {
-                    ValidateIssuerSigningKey = true,
-                    ValidateAudience = true,
-                    ValidateIssuer = true,
-                    ValidateLifetime = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(key),
-                    ValidAudience = apiSettings.ValidAudience,
-                    ValidIssuer = apiSettings.ValidIssuer,
-                    ClockSkew = TimeSpan.Zero
-                };
-            });
-
             services.AddCors(opt => opt.AddPolicy("MedicDate",
                 builder => { builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader(); }));
+            services.AddIdentityServices(Configuration);
 
             services.AddSwaggerGen(c =>
             {
@@ -105,16 +53,13 @@ namespace MedicDate.API
                     }
                 });
             });
-
-            services.AddTransient<IEmailSender, MailJetEmailSender>();
-            services.AddScoped<IDbInitializer, DbInitializer>();
-            services.AddScoped<ITokenService, TokenService>();
-            services.AddTransient<IUnitOfWork, UnitOfWork>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IDbInitializer dbInitializer)
         {
+            app.UseMiddleware<ExceptionMiddleware>();
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

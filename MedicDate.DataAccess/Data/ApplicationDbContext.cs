@@ -1,12 +1,15 @@
 ﻿using MedicDate.DataAccess.EntityConfig;
 using MedicDate.DataAccess.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace MedicDate.DataAccess.Data
 {
     public class ApplicationDbContext :
-        IdentityDbContext<ApplicationUser, AppRole, string>
+        IdentityDbContext<ApplicationUser, AppRole, string,
+            IdentityUserClaim<string>, ApplicationUserRole, IdentityUserLogin<string>,
+            IdentityRoleClaim<string>, IdentityUserToken<string>>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
@@ -14,18 +17,36 @@ namespace MedicDate.DataAccess.Data
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            base.OnModelCreating(builder);
+
+            builder.Entity<ApplicationUser>(b =>
+            {
+                b.HasMany(e => e.UserRoles)
+                    .WithOne(e => e.User)
+                    .HasForeignKey(ur => ur.UserId)
+                    .IsRequired();
+            });
+
+            builder.Entity<AppRole>(b =>
+            {
+                // Each Role can have many entries in the UserRole join table
+                b.HasMany(e => e.UserRoles)
+                    .WithOne(e => e.Role)
+                    .HasForeignKey(ur => ur.RoleId)
+                    .IsRequired();
+            });
+
             builder.ApplyConfiguration(new MedicoConfig());
             builder.ApplyConfiguration(new MedicoEspecialidadConfig());
             builder.ApplyConfiguration(new PacienteConfig());
             builder.ApplyConfiguration(new GrupoPacienteConfig());
             builder.ApplyConfiguration(new ActividadCitaConfig());
-
-            base.OnModelCreating(builder);
         }
 
         public DbSet<ApplicationUser> ApplicationUser { get; set; }
         public DbSet<AppRole> AppRole { get; set; }
         public DbSet<Medico> Medico { get; set; }
+        public DbSet<ApplicationUserRole> ApplicationUserRoles { get; set; }
         public DbSet<Especialidad> Especialidad { get; set; }
         public DbSet<MedicoEspecialidad> MedicoEspecialidad { get; set; }
         public DbSet<Paciente> Paciente { get; set; }

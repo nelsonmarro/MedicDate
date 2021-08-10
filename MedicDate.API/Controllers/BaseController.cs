@@ -1,14 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using MedicDate.Bussines.Repository.IRepository;
+using MedicDate.Models.DTOs;
+using MedicDate.Utility.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using AutoMapper;
-using MedicDate.Bussines.Repository.IRepository;
-using MedicDate.Bussines.Helpers;
-using MedicDate.Models.DTOs;
-using MedicDate.Utility.Interfaces;
 
 namespace MedicDate.API.Controllers
 {
@@ -35,52 +34,37 @@ namespace MedicDate.API.Controllers
             Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null)
             where TResponse : class
         {
-            try
-            {
-                if (!loadRealtedData)
-                {
-                    includeProperties = "";
-                }
 
-                var entityList = await _repository.GetAllWithPagingAsync
-                (
-                    filter,
-                    orderBy,
-                    includeProperties,
-                    false,
-                    pageIndex,
-                    pageSize
-                );
-
-                return new ApiResponseDto<TResponse>
-                {
-                    PageIndex = pageIndex,
-                    PageSize = pageSize,
-                    DataResult = _mapper.Map<List<TResponse>>(entityList),
-                    TotalCount = await _repository.CountResourcesAsync()
-                };
-            }
-            catch (Exception e)
+            if (!loadRealtedData)
             {
-                Console.WriteLine(e.Message);
-                return BadRequest("Error al obtener los Datos");
+                includeProperties = "";
             }
+
+            var entityList = await _repository.GetAllWithPagingAsync
+            (
+                filter,
+                orderBy,
+                includeProperties,
+                false,
+                pageIndex,
+                pageSize
+            );
+
+            return new ApiResponseDto<TResponse>
+            {
+                PageIndex = pageIndex,
+                PageSize = pageSize,
+                DataResult = _mapper.Map<List<TResponse>>(entityList),
+                TotalCount = await _repository.CountResourcesAsync()
+            };
         }
 
         protected async Task<ActionResult<List<TResponse>>> GetAllAsync<TResponse>(
             Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null)
         {
-            try
-            {
-                var resp = await _repository.GetAllAsync(isTracking: false, orderBy: orderBy);
+            var resp = await _repository.GetAllAsync(isTracking: false, orderBy: orderBy);
 
-                return _mapper.Map<List<TResponse>>(resp);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
-                return BadRequest("Error al obtener los datos");
-            }
+            return _mapper.Map<List<TResponse>>(resp);
         }
 
         protected async Task<ActionResult<TResponse>> GetByIdAsync<TResponse>
@@ -90,97 +74,71 @@ namespace MedicDate.API.Controllers
             string includeProperties = ""
         )
         {
-            try
+            var existeEntity = await _repository.ResourceExists(id);
+
+            if (!existeEntity)
             {
-                var existeEntity = await _repository.ResourceExists(id);
-
-                if (!existeEntity)
-                {
-                    return NotFound($"No existe el registro con id : {id}");
-                }
-
-                TEntity responseEntity;
-
-                if (loadRealtedData)
-                {
-                    responseEntity =
-                        await _repository.FirstOrDefaultAsync(x => x.Id == id, includeProperties, false);
-                }
-                else
-                {
-                    responseEntity = await _repository.FindAsync(id);
-                }
-
-                if (responseEntity is null)
-                {
-                    return NotFound($"No se encontró el registro con Id: {id}");
-                }
-
-                return _mapper.Map<TResponse>(responseEntity);
+                return NotFound($"No existe el registro con id : {id}");
             }
-            catch (Exception e)
+
+            TEntity responseEntity;
+
+            if (loadRealtedData)
             {
-                Console.WriteLine(e.Message);
-                return BadRequest("Error al obtener los datos");
+                responseEntity =
+                    await _repository.FirstOrDefaultAsync(x => x.Id == id, includeProperties, false);
             }
+            else
+            {
+                responseEntity = await _repository.FindAsync(id);
+            }
+
+            if (responseEntity is null)
+            {
+                return NotFound($"No se encontró el registro con Id: {id}");
+            }
+
+            return _mapper.Map<TResponse>(responseEntity);
         }
 
         protected async Task<ActionResult> AddResourceAsync<TRequest, TResponse>(TRequest entityRequest,
             string routeResultName, string includeProperties = null)
             where TResponse : IId
         {
-            try
+            var entityDb = _mapper.Map<TEntity>(entityRequest);
+            await _repository.AddAsync(entityDb);
+            await _unitOfWork.SaveAsync();
+
+            TResponse responseEntity;
+
+            if (!string.IsNullOrEmpty(includeProperties))
             {
-                var entityDb = _mapper.Map<TEntity>(entityRequest);
-                await _repository.AddAsync(entityDb);
-                await _unitOfWork.SaveAsync();
+                var entityWithRelatedData = await _repository
+                    .FirstOrDefaultAsync(x => x.Id == entityDb.Id, includeProperties, false);
 
-                TResponse responseEntity;
-
-                if (!string.IsNullOrEmpty(includeProperties))
-                {
-                    var entityWithRelatedData = await _repository
-                        .FirstOrDefaultAsync(x => x.Id == entityDb.Id, includeProperties, false);
-
-                    responseEntity = _mapper.Map<TResponse>(entityWithRelatedData);
-                }
-                else
-                {
-                    responseEntity = _mapper.Map<TResponse>(entityDb);
-                }
-
-                return CreatedAtRoute(routeResultName, new { id = responseEntity.Id },
-                    responseEntity);
+                responseEntity = _mapper.Map<TResponse>(entityWithRelatedData);
             }
-            catch (Exception e)
+            else
             {
-                Console.WriteLine(e.Message);
-                Console.WriteLine(e.InnerException?.Message);
-                return BadRequest("Error al crear el registro");
+                responseEntity = _mapper.Map<TResponse>(entityDb);
             }
+
+            return CreatedAtRoute(routeResultName, new { id = responseEntity.Id },
+                responseEntity);
         }
 
         protected async Task<ActionResult> DeleteResourceAsync(string id)
         {
-            try
+            var response = await _repository.Remove(id);
+
+            if (response == 0)
             {
-                var response = await _repository.Remove(id);
-
-                if (response == 0)
-                {
-                    return BadRequest("Error al eliminar");
-                }
-
-                await _unitOfWork.SaveAsync();
-
-                return Ok("Registro Eliminado con éxito");
+                return BadRequest("Error al eliminar");
             }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
-                Console.WriteLine(e.InnerException?.Message);
-                return BadRequest("Error al eliminar el registro");
-            }
+
+            await _unitOfWork.SaveAsync();
+
+            return Ok("Registro Eliminado con éxito");
         }
     }
 }

@@ -1,20 +1,18 @@
 ﻿using MedicDate.Bussines.Helpers;
 using MedicDate.Bussines.Repository.IRepository;
+using MedicDate.Bussines.Services.IServices;
+using MedicDate.DataAccess.Data;
 using MedicDate.DataAccess.Models;
 using MedicDate.Models.DTOs.Auth;
-using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Threading.Tasks;
-using System;
-using System.Linq;
-using AutoMapper;
-using MedicDate.DataAccess.Data;
-using System.IdentityModel.Tokens.Jwt;
-using Newtonsoft.Json.Linq;
-using MedicDate.Bussines.Services.IServices;
 using Microsoft.Extensions.Options;
+using System;
+using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace MedicDate.Bussines.Repository
 {
@@ -47,21 +45,30 @@ namespace MedicDate.Bussines.Repository
             _jwtSettings = jwtOptions.Value;
         }
 
-        public async Task<bool> SendForgotPasswordRequestAsync(ForgotPasswordRequest forgotPasswordModel)
+        public async Task<DataResponse<string>> SendForgotPasswordRequestAsync(ForgotPasswordRequest forgotPasswordModel)
         {
             var userDb = await _userManager.FindByEmailAsync(forgotPasswordModel.Email);
+
             if (userDb == null)
             {
-                return true;
+                return new DataResponse<string>
+                {
+                    IsSuccess = false,
+                    ErrorActionResult = new NotFoundObjectResult("No se encotró el usuario para el cambio de contraseña")
+                };
             }
 
             var code = await _userManager.GeneratePasswordResetTokenAsync(userDb);
 
-            var callbackUrl = $"https://localhost:44367/usuario/resetPassword?code={code}";
+            var callbackUrl = $"https://localhost:5001/usuario/resetPassword?code={code}";
 
             await _emailSender.SendEmailAsync(forgotPasswordModel.Email, "Restrablecer Contraseña - MedicDate",
                 $"Por favor restrablezca su contraseña haciendo click <a href=\"{callbackUrl}\">aquí</a>");
-            return true;
+
+            return new DataResponse<string>
+            {
+                IsSuccess = true
+            };
         }
 
         public async Task<DataResponse<string>> ResetPasswordAsync(ResetPasswordRequest resetPasswordRequest)
@@ -86,7 +93,7 @@ namespace MedicDate.Bussines.Repository
                 return new DataResponse<string>()
                 {
                     IsSuccess = false,
-                    ActionResult = new BadRequestObjectResult("No se pudo restablecer la contraseña")
+                    ErrorActionResult = new BadRequestObjectResult("No se pudo restablecer la contraseña")
                 };
             }
 
@@ -105,7 +112,7 @@ namespace MedicDate.Bussines.Repository
                 return new DataResponse<string>()
                 {
                     IsSuccess = false,
-                    ActionResult = new NotFoundObjectResult("No se encotró el usuario para confirmar la cuenta")
+                    ErrorActionResult = new NotFoundObjectResult("No se encotró el usuario para confirmar la cuenta")
                 };
             }
 
@@ -116,7 +123,7 @@ namespace MedicDate.Bussines.Repository
                 return new DataResponse<string>()
                 {
                     IsSuccess = false,
-                    ActionResult = new BadRequestObjectResult("Error al confirmar la cuenta")
+                    ErrorActionResult = new BadRequestObjectResult("Error al confirmar la cuenta")
                 };
             }
 
@@ -130,7 +137,7 @@ namespace MedicDate.Bussines.Repository
         {
             var code = await _userManager.GenerateEmailConfirmationTokenAsync(applicationUser);
 
-            var callbackUrl = $"https://localhost:44367/usuario/confirmEmail?userId={applicationUser.Id}&code={code}";
+            var callbackUrl = $"https://localhost:5001/usuario/confirmEmail?userId={applicationUser.Id}&code={code}";
 
             await _emailSender.SendEmailAsync(applicationUser.Email, "Confirme su cuenta - MedicDate",
                 $"Por favor confirma tu cuenta haciendo click <a href=\"{callbackUrl}\">aquí</a>");
@@ -145,13 +152,14 @@ namespace MedicDate.Bussines.Repository
                 return new DataResponse<string>()
                 {
                     IsSuccess = false,
-                    ActionResult = new NotFoundObjectResult("No se encotró el usuario para confirmar la cuenta")
+                    ErrorActionResult = new NotFoundObjectResult("No se encotró el usuario para confirmar la cuenta")
                 };
             }
 
-            var code = await _userManager.GenerateEmailConfirmationTokenAsync(userDb);
+            var code = await _userManager
+            .GenerateEmailConfirmationTokenAsync(userDb);
 
-            var callbackUrl = $"https://localhost:44367/usuario/confirmEmail?userId={userDb.Id}&code={code}";
+            var callbackUrl = $"https://localhost:5001/usuario/confirmEmail?userId={userDb.Id}&code={code}";
 
             await _emailSender.SendEmailAsync(userDb.Email, "Confirme su cuenta - MedicDate",
                 $"Por favor confirma tu cuenta haciendo click <a href=\"{callbackUrl}\">aquí</a>");
@@ -171,9 +179,8 @@ namespace MedicDate.Bussines.Repository
                 return new DataResponse<string>()
                 {
                     IsSuccess = false,
-                    ActionResult =
-                        new NotFoundObjectResult(
-                            $"El email \"{changeEmailModel.NewEmail}\" ya se encuetra registrado, elija otro por favor.")
+                    ErrorActionResult = new NotFoundObjectResult(
+                           $"El email \"{changeEmailModel.NewEmail}\" ya se encuetra registrado, elija otro por favor.")
                 };
             }
 
@@ -184,14 +191,14 @@ namespace MedicDate.Bussines.Repository
                 return new DataResponse<string>()
                 {
                     IsSuccess = false,
-                    ActionResult = new NotFoundObjectResult("No se encotró el usuario para cambiar el email")
+                    ErrorActionResult = new NotFoundObjectResult("No se encotró el usuario para cambiar el email")
                 };
             }
 
             var code = await _userManager.GenerateChangeEmailTokenAsync(userDb, changeEmailModel.NewEmail);
 
             var callbackUrl =
-                $"https://localhost:44367/usuario/emailChangedConfirm?code={code}&userId={userDb.Id}";
+                $"https://localhost:5001/usuario/emailChangedConfirm?code={code}&userId={userDb.Id}";
 
             await _emailSender.SendEmailAsync(userDb.Email, "Cambio de email - MedicDate",
                 $"Para proceder con el cambio de email has click <a href=\"{callbackUrl}\">aquí</a>");
@@ -211,7 +218,7 @@ namespace MedicDate.Bussines.Repository
                 return new DataResponse<string>()
                 {
                     IsSuccess = false,
-                    ActionResult = new NotFoundObjectResult("No se encotró el usuario para cambiar el email")
+                    ErrorActionResult = new NotFoundObjectResult("No se encotró el usuario para cambiar el email")
                 };
             }
 
@@ -222,7 +229,7 @@ namespace MedicDate.Bussines.Repository
                 return new DataResponse<string>()
                 {
                     IsSuccess = false,
-                    ActionResult = new BadRequestObjectResult("No se pudo cambiar el email")
+                    ErrorActionResult = new BadRequestObjectResult("No se pudo cambiar el email")
                 };
             }
 
@@ -241,8 +248,8 @@ namespace MedicDate.Bussines.Repository
                 return new DataResponse<LoginResponse>
                 {
                     IsSuccess = false,
-                    ActionResult = new BadRequestObjectResult(new LoginResponse()
-                        {ErrorMessage = "Inicio de sesión incorrecto."})
+                    ErrorActionResult = new BadRequestObjectResult(new LoginResponse()
+                    { ErrorMessage = "Inicio de sesión incorrecto." })
                 };
             }
 
@@ -254,8 +261,8 @@ namespace MedicDate.Bussines.Repository
                 return new DataResponse<LoginResponse>
                 {
                     IsSuccess = false,
-                    ActionResult = new BadRequestObjectResult(new LoginResponse()
-                        {ErrorMessage = "Inicio de sesión incorrecto."})
+                    ErrorActionResult = new BadRequestObjectResult(new LoginResponse()
+                    { ErrorMessage = "Inicio de sesión incorrecto." })
                 };
             }
 
@@ -276,7 +283,7 @@ namespace MedicDate.Bussines.Repository
             return new DataResponse<LoginResponse>
             {
                 IsSuccess = true,
-                Data = new LoginResponse() {IsAuthSuccessful = true, Token = token, RefreshToken = user.RefreshToken}
+                Data = new LoginResponse() { IsAuthSuccessful = true, Token = token, RefreshToken = user.RefreshToken }
             };
         }
 
@@ -289,7 +296,7 @@ namespace MedicDate.Bussines.Repository
                 return new DataResponse<string>()
                 {
                     IsSuccess = false,
-                    ActionResult = new NotFoundObjectResult("No se pudo encontrar el usuario")
+                    ErrorActionResult = new NotFoundObjectResult("No se pudo encontrar el usuario")
                 };
             }
 
@@ -303,10 +310,10 @@ namespace MedicDate.Bussines.Repository
             }
 
             await _context.SaveChangesAsync();
+
             return new DataResponse<string>()
             {
-                IsSuccess = true,
-                ActionResult = new OkObjectResult("Bloqueo/Desbloqueo exitoso")
+                IsSuccess = true
             };
         }
 
@@ -329,10 +336,9 @@ namespace MedicDate.Bussines.Repository
                 return new DataResponse<string>()
                 {
                     IsSuccess = false,
-                    ActionResult = new BadRequestObjectResult(errors)
+                    ErrorActionResult = new BadRequestObjectResult(errors)
                 };
             }
-
 
             if (registerRequest.RolesIds is not null && registerRequest.RolesIds.Count > 0)
             {
@@ -347,7 +353,7 @@ namespace MedicDate.Bussines.Repository
                     return new DataResponse<string>()
                     {
                         IsSuccess = false,
-                        ActionResult = new BadRequestObjectResult(errors)
+                        ErrorActionResult = new BadRequestObjectResult(errors)
                     };
                 }
             }
@@ -356,8 +362,7 @@ namespace MedicDate.Bussines.Repository
 
             return new DataResponse<string>()
             {
-                IsSuccess = true,
-                ActionResult = new OkObjectResult("Usuario creado correctamente")
+                IsSuccess = true
             };
         }
     }

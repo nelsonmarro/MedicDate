@@ -24,7 +24,7 @@
                            Headers="Headers">
             <CustomGridCols>
                 <RadzenDataGridColumn TItem="MedicoResponse" Property="Especialidades"
-                                      Title="Especialidades" Filterable="false" 
+                                      Title="Especialidades" Filterable="false"
                                       Sortable="false">
                     <Template Context="medico">
                         @if (medico.Especialidades?.Count is > 0 and <= 3)
@@ -52,4 +52,3 @@
         </RadzenGenericGrid>
     </div>
 </div>
-

@@ -1,3 +1,12 @@
+using Blazored.LocalStorage;
+using MedicDate.Client.Auth;
+using MedicDate.Client.Data.HttpRepository;
+using MedicDate.Client.Data.HttpRepository.IHttpRepository;
+using MedicDate.Client.Interceptors;
+using MedicDate.Client.Interceptors.IInterceptors;
+using MedicDate.Client.Services;
+using MedicDate.Client.Services.IServices;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -5,13 +14,6 @@ using Radzen;
 using System;
 using System.Net.Http;
 using System.Threading.Tasks;
-using MedicDate.Client.Auth;
-using MedicDate.Client.Data.HttpRepository;
-using MedicDate.Client.Data.HttpRepository.IHttpRepository;
-using MedicDate.Client.Services;
-using MedicDate.Client.Services.IServices;
-using Microsoft.AspNetCore.Components.Authorization;
-using Blazored.LocalStorage;
 using Toolbelt.Blazor.Extensions.DependencyInjection;
 
 namespace MedicDate.Client
@@ -35,6 +37,7 @@ namespace MedicDate.Client
 
         public static void ConfigureServices(IServiceCollection services)
         {
+            services.AddHttpClientInterceptor();
             services.AddAuthorizationCore();
 
             services.AddBlazoredLocalStorage();
@@ -50,8 +53,9 @@ namespace MedicDate.Client
             services.AddTransient<IDialogNotificationService, DialogNotificationService>();
             services.AddScoped<IAuthenticationService, AuthenticationService>();
             services.AddScoped<IRefreshTokenService, RefreshTokenService>();
-            services.AddHttpClientInterceptor();
-            services.AddScoped<IHttpInterceptorService, HttpInterceptorService>();
+
+            services.AddScoped<IAuthTokenInterceptor, AuthTokenInterceptor>();
+            services.AddScoped<IErrorInterceptor, ErrorInterceptor>();
         }
     }
 }

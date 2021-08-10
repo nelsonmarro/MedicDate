@@ -2,32 +2,36 @@
 
 @if (ItemList is null)
 {
-	<p>Cargando <i class="fas fa-spinner fa-spin"></i></p>
+    <p>Cargando <i class="fas fa-spinner fa-spin"></i></p>
 }
 else
 {
-	<RadzenDataGrid AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
-	                AllowPaging="true" PageSize="5" AllowSorting="true"
-	                Data="@ItemList" TItem="TItem" EmptyText="No hay datos que mostrar" AllowColumnResize="AllowColumnResize" FilterMode="FilterMode.Simple">
-		<Columns>
-			<RadzenDataGridColumn TItem="TItem" Width="40px" Sortable="false" Filterable="false">
-				<HeaderTemplate>
-					<RadzenCheckBox TriState="false" TValue="bool" Value="@(SelectedItems.Any())"
-					                Change="@SelectAll"/>
-				</HeaderTemplate>
-				<Template Context="data">
-					<RadzenCheckBox TriState="false" TValue="bool" Value="@(SelectedItems != null && SelectedItems.Any(x => x.Id == data.Id))" Change="@((args) => SelectOne(args, data))"/>
-				</Template>
-			</RadzenDataGridColumn>
+    <RadzenDataGrid AllowFiltering="true" AllowPaging="true"
+                    PageSize="5" AllowSorting="true" Data="@ItemList"
+                    TItem="TItem" EmptyText="No hay datos que mostrar"
+                    AllowColumnResize="AllowColumnResize" FilterMode="FilterMode.Simple">
+        <Columns>
+            <RadzenDataGridColumn TItem="TItem" Width="40px"
+                                  Sortable="false" Filterable="false">
+                <HeaderTemplate>
+                    <RadzenCheckBox TriState="false" TValue="bool"
+                                    Value="@(SelectedItems.Any())" Change="@SelectAll"/>
+                </HeaderTemplate>
+                <Template Context="data">
+                    <RadzenCheckBox TriState="false" TValue="bool"
+                                    Value="@(SelectedItems != null && SelectedItems.Any(x => x.Id == data.Id))"
+                                    Change="@((args) => SelectOne(args, data))"/>
+                </Template>
+            </RadzenDataGridColumn>
 
-			@{
-				var i = 0;
-			}
-			@foreach (var propiedad in PropNames)
-			{
-				<RadzenDataGridColumn TItem="TItem" Property="@propiedad" Title="@Headers[i]"/>
-				i++;
-			}
-		</Columns>
-	</RadzenDataGrid>
+            @{
+                var i = 0;
+            }
+            @foreach (var propiedad in PropNames)
+            {
+                <RadzenDataGridColumn TItem="TItem" Property="@propiedad" Title="@Headers[i]"/>
+                i++;
+            }
+        </Columns>
+    </RadzenDataGrid>
 }

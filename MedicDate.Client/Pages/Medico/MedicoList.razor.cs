@@ -1,28 +1,26 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using MedicDate.Client.Components;
+using MedicDate.Client.Helpers;
+using MedicDate.Models.DTOs.Especialidad;
+using MedicDate.Models.DTOs.Medico;
+using Microsoft.AspNetCore.Components;
+using Radzen;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using MedicDate.Client.Components;
-using MedicDate.Client.Helpers;
-using MedicDate.Client.Services.IServices;
-using MedicDate.Models.DTOs.Medico;
-using MedicDate.Models.DTOs.Especialidad;
-using Radzen;
 
 namespace MedicDate.Client.Pages.Medico
 {
-    public class MedicoListBase : BaseListComponent<MedicoResponse>, IDisposable
+    public class MedicoListBase : BaseListComponent<MedicoResponse>
     {
-        [Inject] public IHttpInterceptorService HttpInterceptor { get; set; }
         [Inject] public DialogService DialogService { get; set; }
 
-        protected static string GetUrl = "api/Medico/listarConPaginacion?traerEspecialidades=true";
+        private const string GetUrl = "api/Medico/listarConPaginacion?traerEspecialidades=true";
         protected List<EspecialidadResponse> Especialidades = new();
-        protected string[] PropNames = { "Nombre", "Apellidos", "Cedula", "PhoneNumber"};
-        protected string[] Headers = { "Nombre", "Apellidos", "Cédula", "Teléfono"};
+        protected string[] PropNames = { "Nombre", "Apellidos", "Cedula", "PhoneNumber" };
+        protected string[] Headers = { "Nombre", "Apellidos", "Cédula", "Teléfono" };
 
         protected readonly OpRoutes OpRoutes = new()
-            {AddUrl = "medicoCrear", EditUrl = "medicoEditar", GetUrl = GetUrl};
+        { AddUrl = "medicoCrear", EditUrl = "medicoEditar", GetUrl = GetUrl };
 
         private readonly RenderFragment<object> _especialidadesDialogContent = obj => __builder =>
         {
@@ -34,25 +32,13 @@ namespace MedicDate.Client.Pages.Medico
             __builder.CloseElement();
         };
 
-
         protected override async Task OnInitializedAsync()
         {
-            HttpInterceptor.RegisterEvent();
-
             await LoadItemListAsync(GetUrl);
 
             var httpResponse = await HttpRepo.Get<List<EspecialidadResponse>>("api/Especialidad/listar");
 
-            if (httpResponse is null)
-            {
-                return;
-            }
-
-            if (httpResponse.Error)
-            {
-                NotificationService.ShowError("Error!", await httpResponse.GetResponseBody());
-            }
-            else
+            if (!httpResponse.Error)
             {
                 Especialidades = httpResponse.Response;
             }
@@ -69,7 +55,7 @@ namespace MedicDate.Client.Pages.Medico
             {
                 var especialidadId = value?.ToString() ?? "";
 
-                await LoadItemListAsync(GetUrl, "&filtrarEspecialidadId=", 
+                await LoadItemListAsync(GetUrl, "&filtrarEspecialidadId=",
                     especialidadId);
             }
             catch (Exception)
@@ -81,18 +67,13 @@ namespace MedicDate.Client.Pages.Medico
         protected async Task OpenEspecialidadesDialog()
         {
             await DialogService.OpenAsync<RadzenGenericDialog>
-            ("", 
+            ("",
                 new Dictionary<string, object>
                 {
-                    { "Heading", "Especialidades" }, 
-                    { "ItemList", Especialidades.ToArray() }, 
+                    { "Heading", "Especialidades" },
+                    { "ItemList", Especialidades.ToArray() },
                     { "ListBodyContent", _especialidadesDialogContent}
                 });
-        }
-
-        public void Dispose()
-        {
-            HttpInterceptor.DisposeEvent();
         }
     }
 }

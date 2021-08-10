@@ -1,14 +1,11 @@
-﻿using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using MedicDate.Bussines.Helpers;
 using MedicDate.Bussines.Repository.IRepository;
 using MedicDate.DataAccess.Data;
 using MedicDate.DataAccess.Models;
-using MedicDate.Models.DTOs;
 using MedicDate.Models.DTOs.Especialidad;
-using MedicDate.Utility;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
 
 namespace MedicDate.Bussines.Repository
 {
@@ -32,7 +29,7 @@ namespace MedicDate.Bussines.Repository
                 return new DataResponse<string>()
                 {
                     IsSuccess = false,
-                    ActionResult = new NotFoundObjectResult("No se encontró la especialidad")
+                    ErrorActionResult = new NotFoundObjectResult("No se encontró la especialidad")
                 };
             }
 
@@ -41,8 +38,7 @@ namespace MedicDate.Bussines.Repository
 
             return new DataResponse<string>()
             {
-                IsSuccess = true,
-                ActionResult = new OkObjectResult("Especialidad actualizada con éxito")
+                IsSuccess = true
             };
         }
     }

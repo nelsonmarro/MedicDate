@@ -1,8 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
+﻿using MedicDate.Bussines.Repository.IRepository;
 using MedicDate.Models.DTOs.Auth;
-using MedicDate.Bussines.Repository.IRepository;
-
+using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 namespace MedicDate.API.Controllers
 {
@@ -11,7 +10,6 @@ namespace MedicDate.API.Controllers
     public class AccountController : ControllerBase
     {
         private readonly IUnitOfWork _unitOfWork;
-
 
         public AccountController(IUnitOfWork unitOfWork)
         {
@@ -23,7 +21,9 @@ namespace MedicDate.API.Controllers
         {
             var resp = await _unitOfWork.AccountRepo.RegisterUserAsync(registerRequest);
 
-            return resp.ActionResult;
+            return resp.IsSuccess
+                ? Ok("Usuario registrado con éxito")
+                : resp.ErrorActionResult;
         }
 
         [HttpPost("login")]
@@ -31,12 +31,9 @@ namespace MedicDate.API.Controllers
         {
             var resp = await _unitOfWork.AccountRepo.LoginUserAsync(loginRequest);
 
-            if (!resp.IsSuccess)
-            {
-                return resp.ActionResult;
-            }
-
-            return resp.Data;
+            return resp.IsSuccess
+                ? resp.Data
+                : resp.ErrorActionResult;
         }
 
         [HttpPost("forgotPassword")]
@@ -44,12 +41,9 @@ namespace MedicDate.API.Controllers
         {
             var resp = await _unitOfWork.AccountRepo.SendForgotPasswordRequestAsync(forgotPasswordModel);
 
-            if (resp)
-            {
-                return Ok();
-            }
-
-            return BadRequest();
+            return resp.IsSuccess
+                ? Ok()
+                : resp.ErrorActionResult;
         }
 
         [HttpPost("resetPassword")]
@@ -59,10 +53,10 @@ namespace MedicDate.API.Controllers
 
             if (!resp.IsSuccess)
             {
-                return resp.ActionResult;
+                return resp.ErrorActionResult;
             }
 
-            return Ok();
+            return Ok("Contraseña cambiada con éxito");
         }
 
         [HttpPost("lockUnlock")]
@@ -70,7 +64,9 @@ namespace MedicDate.API.Controllers
         {
             var resp = await _unitOfWork.AccountRepo.LockUnlockUserAsync(id);
 
-            return resp.ActionResult;
+            return resp.IsSuccess
+                ? Ok("Usuario bloqueado/desbloqueado con éxito")
+                : resp.ErrorActionResult;
         }
 
         [HttpPost("confirmEmail")]
@@ -78,7 +74,7 @@ namespace MedicDate.API.Controllers
         {
             var response = await _unitOfWork.AccountRepo.ConfirmEmailAsync(confirmEmailRequest);
 
-            return !response.IsSuccess ? response.ActionResult : Ok();
+            return !response.IsSuccess ? response.ErrorActionResult : Ok("Email confirmado con éxito");
         }
 
         [HttpPost("sendConfirmationEmail")]
@@ -86,33 +82,27 @@ namespace MedicDate.API.Controllers
         {
             var response = await _unitOfWork.AccountRepo.SendConfirmEmailAsync(userEmail);
 
-            return !response.IsSuccess ? response.ActionResult : Ok();
+            return !response.IsSuccess ? response.ErrorActionResult : Ok("Email de confirmación enviado");
         }
 
         [HttpPost("sendChangeEmailToken")]
         public async Task<ActionResult> SendChangeEmailTokenAsync(ChangeEmailModel changeEmailModel)
         {
-            var response = await _unitOfWork.AccountRepo.SendChangeEmailTokenAsync(changeEmailModel);
+            var resp = await _unitOfWork.AccountRepo.SendChangeEmailTokenAsync(changeEmailModel);
 
-            if (!response.IsSuccess)
-            {
-                return response.ActionResult;
-            }
-
-            return Ok();
+            return resp.IsSuccess
+                ? Ok("Token para cambio de email enviado")
+                : resp.ErrorActionResult;
         }
 
         [HttpPost("changeEmail/{userId}")]
         public async Task<ActionResult> ChangeEmailAsync(string userId, ChangeEmailModel changeEmailModel)
         {
-            var response = await _unitOfWork.AccountRepo.ChangeEmailAsync(userId, changeEmailModel);
+            var resp = await _unitOfWork.AccountRepo.ChangeEmailAsync(userId, changeEmailModel);
 
-            if (!response.IsSuccess)
-            {
-                return response.ActionResult;
-            }
-
-            return Ok();
+            return resp.IsSuccess
+                ? Ok("Cambio de email exitoso")
+                : resp.ErrorActionResult;
         }
     }
 }

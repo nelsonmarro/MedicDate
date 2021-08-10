@@ -9,12 +9,11 @@
 <h2 class="text-center py-2">@Title</h2>
 
 <p class="py-1 text-center px-5">
-	@Text
+	@((MarkupString)Text)
 </p>
 
 <div class="text-center">
-	<RadzenButton Text="OK" ButtonStyle="@ButtonStyle.Secondary"
-	              Click="@(() => _dialogService.Close(false))"/>
+	<RadzenButton Text="OK" ButtonStyle="@ButtonStyle.Secondary" Click="@(() => _dialogService.Close(false))" />
 </div>
 
 

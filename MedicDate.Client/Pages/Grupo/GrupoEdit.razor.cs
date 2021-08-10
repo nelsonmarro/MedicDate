@@ -1,20 +1,16 @@
 ﻿using MedicDate.Client.Data.HttpRepository.IHttpRepository;
 using MedicDate.Client.Services.IServices;
-using MedicDate.Models.DTOs.Especialidad;
-using Microsoft.AspNetCore.Components;
-using System;
-using System.Threading.Tasks;
 using MedicDate.Models.DTOs.Grupo;
-
+using Microsoft.AspNetCore.Components;
+using System.Threading.Tasks;
 
 namespace MedicDate.Client.Pages.Grupo
 {
-    public partial class GrupoEdit : IDisposable
+    public partial class GrupoEdit
     {
         [Inject] public IHttpRepository HttpRepo { get; set; }
         [Inject] public NavigationManager NavigationManager { get; set; }
         [Inject] public INotificationService NotificationService { get; set; }
-        [Inject] public IHttpInterceptorService HttpInterceptor { get; set; }
 
         [Parameter] public string Id { get; set; }
 
@@ -22,20 +18,11 @@ namespace MedicDate.Client.Pages.Grupo
 
         private GrupoRequest _grupoModel;
 
-        protected override void OnInitialized()
-        {
-            HttpInterceptor.RegisterEvent();
-        }
-
         protected override async Task OnParametersSetAsync()
         {
             var httpResp = await HttpRepo.Get<GrupoRequest>($"api/Grupo/{Id}");
 
-            if (httpResp.Error)
-            {
-                NotificationService.ShowError("Error!", await httpResp.GetResponseBody());
-            }
-            else
+            if (!httpResp.Error)
             {
                 _grupoModel = httpResp.Response;
             }
@@ -49,21 +36,12 @@ namespace MedicDate.Client.Pages.Grupo
 
             _isBussy = false;
 
-            if (httpResp.Error)
-            {
-                NotificationService.ShowError("Error!", await httpResp.GetResponseBody());
-            }
-            else
+            if (!httpResp.Error)
             {
                 NotificationService.ShowSuccess("Operación Exitosa!", await httpResp.GetResponseBody());
 
                 NavigationManager.NavigateTo("grupoList");
             }
-        }
-
-        public void Dispose()
-        {
-            HttpInterceptor.DisposeEvent();
         }
     }
 }

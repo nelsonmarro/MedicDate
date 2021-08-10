@@ -10,8 +10,8 @@
     <PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="5.0.0" />
     <PackageReference Include="Microsoft.Web.LibraryManager.Build" Version="2.1.113" />
-    <PackageReference Include="Radzen.Blazor" Version="3.8.0" />
-    <PackageReference Include="System.Linq.Dynamic.Core" Version="1.2.11" />
+    <PackageReference Include="Radzen.Blazor" Version="3.8.2" />
+    <PackageReference Include="System.Linq.Dynamic.Core" Version="1.2.12" />
     <PackageReference Include="System.Net.Http.Json" Version="5.0.0" />
     <PackageReference Include="Toolbelt.Blazor.HttpClientInterceptor" Version="9.2.1" />
   </ItemGroup>
@@ -38,6 +38,7 @@
     <Content Include="Shared\Layouts\MainLayout.razor.css" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Pages\Error\" />
     <Folder Include="wwwroot\css\" />
     <Folder Include="wwwroot\lib\" />
   </ItemGroup>

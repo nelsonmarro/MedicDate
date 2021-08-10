@@ -1,5 +1,4 @@
-﻿using System;
-using System.Data;
+﻿using System.Data;
 using System.Threading.Tasks;
 using AutoMapper;
 using MedicDate.Bussines.Helpers;
@@ -10,6 +9,7 @@ using MedicDate.DataAccess.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.Extensions.Options;
+using static System.GC;
 
 namespace MedicDate.Bussines.Repository
 {
@@ -70,14 +70,14 @@ namespace MedicDate.Bussines.Repository
         public void Dispose()
         {
             Dispose(disposing: true);
-            GC.SuppressFinalize(this);
+            SuppressFinalize(this);
         }
 
         public async ValueTask DisposeAsync()
         {
             await DisposeAsyncCore();
             Dispose(disposing: false);
-            GC.SuppressFinalize(this);
+            SuppressFinalize(this);
         }
 
         private void Dispose(bool disposing)

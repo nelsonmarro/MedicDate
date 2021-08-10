@@ -1,7 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
+﻿using MedicDate.Bussines.Repository.IRepository;
 using MedicDate.Models.DTOs.Auth;
-using MedicDate.Bussines.Repository.IRepository;
+using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 namespace MedicDate.API.Controllers
 {
@@ -21,12 +21,9 @@ namespace MedicDate.API.Controllers
         {
             var resp = await _unitOfWork.TokenRepo.RefreshTokenAsync(refreshTokenDto);
 
-            if (!resp.IsSuccess)
-            {
-                return resp.ActionResult;
-            }
-
-            return resp.Data;
+            return resp.IsSuccess
+                ? resp.Data
+                : resp.ErrorActionResult;
         }
     }
 }

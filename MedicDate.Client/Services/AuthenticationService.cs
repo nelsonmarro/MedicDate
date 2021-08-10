@@ -5,11 +5,9 @@ using System.Net.Http.Headers;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text.Json;
-using System.Text;
 using System.Threading.Tasks;
 using MedicDate.Client.Data.HttpRepository;
 using MedicDate.Models.DTOs.Auth;
-using MedicDate.Client.Helpers;
 using MedicDate.Client.Services.IServices;
 using System;
 using MedicDate.Utility;
@@ -34,14 +32,9 @@ namespace MedicDate.Client.Services
         {
             var response = await Post<LoginRequest, LoginResponse>("api/Account/login", loginRequest);
 
-            if (response is null)
-            {
-                return new LoginResponse();
-            }
-
             if (response.Error)
             {
-                return await response.HttpResponseMessage.Content.ReadFromJsonAsync<LoginResponse>(new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                return response.Response;
             }
 
             await _localStorage.SetItemAsync(Sd.TOKEN_ACCESS, response.Response.Token);
@@ -67,11 +60,6 @@ namespace MedicDate.Client.Services
 
             var refreshResult = await Post<RefreshTokenDto, LoginResponse>("api/Token/refresh",
                 new RefreshTokenDto() { Token = token, RefreshToken = refreshToken });
-
-            if (refreshResult.Error)
-            {
-                throw new ApplicationException("Algo falló durante la renovación del token");
-            }
 
             await _localStorage.SetItemAsync(Sd.TOKEN_ACCESS, refreshResult.Response.Token);
             await _localStorage.SetItemAsync(Sd.TOKEN_REFRESH, refreshResult.Response.RefreshToken);

@@ -1,6 +1,3 @@
-using System;
-using System.Linq;
-using System.Threading.Tasks;
 using AutoMapper;
 using MedicDate.Bussines.Helpers;
 using MedicDate.Bussines.Repository.IRepository;
@@ -8,6 +5,8 @@ using MedicDate.DataAccess.Models;
 using MedicDate.Models.DTOs;
 using MedicDate.Models.DTOs.Paciente;
 using Microsoft.AspNetCore.Mvc;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace MedicDate.API.Controllers
 {
@@ -80,8 +79,7 @@ namespace MedicDate.API.Controllers
                 .ValidateAsync(_unitOfWork.PacienteRepo, cedula: pacienteRequest.Cedula,
                     entityIds: pacienteRequest.GruposId);
 
-            if (!response.IsSuccess) return response.ActionResult;
-
+            if (!response.IsSuccess) return response.ErrorActionResult;
 
             return await AddResourceAsync<PacienteRequest, PacienteResponse>(pacienteRequest, "GetPaciente");
         }
@@ -89,18 +87,11 @@ namespace MedicDate.API.Controllers
         [HttpPut("editar/{id}")]
         public async Task<ActionResult> PutPacienteAsync(string id, PacienteRequest pacienteRequest)
         {
-            try
-            {
-                var resposne = await _unitOfWork.PacienteRepo.UpdatePacienteAsync(id, pacienteRequest);
+            var resp = await _unitOfWork.PacienteRepo.UpdatePacienteAsync(id, pacienteRequest);
 
-                return resposne.ActionResult;
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
-                Console.WriteLine(e.InnerException?.Message);
-                return BadRequest("Error al editar el registro");
-            }
+            return resp.IsSuccess
+                ? Ok("Paciente actualizado con éxito")
+                : resp.ErrorActionResult;
         }
 
         [HttpDelete("eliminar/{id}")]
