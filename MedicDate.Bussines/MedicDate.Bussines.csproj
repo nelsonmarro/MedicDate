@@ -3,19 +3,17 @@
     <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="AutoMapper" Version="10.1.1"/>
-    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="5.0.8"/>
-    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="5.0.8"/>
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5"/>
-    <PackageReference Include="System.Linq.Dynamic.Core" Version="1.2.10"/>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.DynamicLinq" Version="5.2.10"/>
+    <PackageReference Include="AutoMapper" Version="10.1.1" />
+    <PackageReference Include="Mailjet.Api" Version="2.0.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="5.0.8" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="5.0.8" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
+    <PackageReference Include="System.Linq.Dynamic.Core" Version="1.2.11" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.DynamicLinq" Version="5.2.11" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MedicDate.DataAccess\MedicDate.DataAccess.csproj"/>
-    <ProjectReference Include="..\MedicDate.Models\MedicDate.Models.csproj"/>
-    <ProjectReference Include="..\MedicDate.Utility\MedicDate.Utility.csproj"/>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Services\IServices\"/>
+    <ProjectReference Include="..\MedicDate.DataAccess\MedicDate.DataAccess.csproj" />
+    <ProjectReference Include="..\MedicDate.Models\MedicDate.Models.csproj" />
+    <ProjectReference Include="..\MedicDate.Utility\MedicDate.Utility.csproj" />
   </ItemGroup>
 </Project>

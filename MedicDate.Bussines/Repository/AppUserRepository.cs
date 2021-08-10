@@ -26,7 +26,7 @@ namespace MedicDate.Bussines.Repository
         (
             UserManager<ApplicationUser> userManager,
             RoleManager<AppRole> roleManager,
-            ApplicationDbContext context, IMapper mapper) : base(context, mapper)
+            ApplicationDbContext context, IMapper mapper) : base(context)
         {
             _userManager = userManager;
             _roleManager = roleManager;
@@ -34,12 +34,23 @@ namespace MedicDate.Bussines.Repository
             _mapper = mapper;
         }
 
-        public async Task<List<AppUserResponse>> GetUsersWithRoles(string filterRolId)
+        public async Task<List<AppUserResponse>> GetUsersWithRoles(string filterRolId, int pageIndex = 0,
+            int pageSize = 10)
         {
-            var userList = await _context.ApplicationUser.ToListAsync();
+            var userQuery = _context.ApplicationUser.AsQueryable();
 
-            var userListResp = _mapper.Map<List<AppUserResponse>>(userList);
+            if (!string.IsNullOrEmpty(filterRolId))
+            {
+                userQuery = userQuery.Where(x => x.IdentityUserRoles
+                    .Any(ur => ur.RoleId == filterRolId));
+            }
 
+            var userListDb = await userQuery
+                .Paginate(pageIndex, pageSize)
+                .OrderBy(x => x.Nombre)
+                .ToListAsync();
+
+            var userListResp = _mapper.Map<List<AppUserResponse>>(userListDb);
             var userRole = await _context.UserRoles.ToListAsync();
             var systemRoles = await _context.Roles.ToListAsync();
 
@@ -50,12 +61,7 @@ namespace MedicDate.Bussines.Repository
 
                 user.Roles = systemRoles
                     .Where(x => roles.Any(y => y.RoleId == x.Id))
-                    .Select(x => new RoleResponse {Id = x.Id, Nombre = x.Name}).ToList();
-            }
-
-            if (!string.IsNullOrEmpty(filterRolId))
-            {
-                return userListResp.Where(u => u.Roles.Any(r => r.Id == filterRolId)).ToList();
+                    .Select(x => new RoleResponse { Id = x.Id, Nombre = x.Name }).ToList();
             }
 
             return userListResp;
@@ -84,7 +90,8 @@ namespace MedicDate.Bussines.Repository
                 }
 
                 var rolesResult =
-                    await _userManager.AddToRolesAsync(userDb, appUserRequest.Roles.Select(x => x.Nombre));
+                    await _userManager.AddToRolesAsync(userDb,
+                        appUserRequest.Roles.Select(x => x.Nombre));
 
                 if (!rolesResult.Succeeded)
                 {

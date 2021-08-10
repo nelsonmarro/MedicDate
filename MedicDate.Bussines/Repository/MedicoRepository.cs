@@ -1,15 +1,13 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using MedicDate.Bussines.Helpers;
 using MedicDate.Bussines.Repository.IRepository;
 using MedicDate.DataAccess.Data;
 using MedicDate.DataAccess.Models;
 using MedicDate.Models.DTOs.Medico;
-using MedicDate.Utility;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace MedicDate.Bussines.Repository
 {
@@ -18,28 +16,32 @@ namespace MedicDate.Bussines.Repository
         private readonly ApplicationDbContext _context;
         private readonly IMapper _mapper;
 
-        public MedicoRepository(ApplicationDbContext context, IMapper mapper) : base(context, mapper)
+        public MedicoRepository(ApplicationDbContext context, IMapper mapper) : base(context)
         {
             _context = context;
             _mapper = mapper;
         }
 
-        public async Task<bool> EspecialidadIdExistForMedicoCreation(List<int> especialidadesIds)
+        public async Task<DataResponse<string>> UpdateMedicoAsync(string id, MedicoRequest medicoRequest)
         {
-            var especialidadesIdsDb = await _context.Especialidad
-                .Where(x => especialidadesIds.Contains(x.Id))
-                .Select(x => x.Id).ToListAsync();
+            if (await CheckCedulaExistsForEditAsync(medicoRequest.Cedula, id))
+            {
+                return new DataResponse<string>()
+                {
+                    IsSuccess = false,
+                    ActionResult = new BadRequestObjectResult("Ya existe otro doctor registrado con la cédula que ingresó")
+                };
+            }
 
-            return !(especialidadesIdsDb.Count != especialidadesIds.Count);
-        }
+            if (await CheckRelatedEntityIdExistsAsync(medicoRequest.EspecialidadesId))
+            {
+                return new DataResponse<string>()
+                {
+                    IsSuccess = false,
+                    ActionResult = new BadRequestObjectResult("No existe una de las especialidades asignadas")
+                };
+            }
 
-        public async Task<bool> CedulaAlreadyRegisted(string numCedula)
-        {
-            return await _context.Medico.AnyAsync(x => x.Cedula == numCedula);
-        }
-
-        public async Task<DataResponse<string>> UpdateMedicoAsync(int id, MedicoRequest medicoRequest)
-        {
             var medicoDb = await _context.Medico
                 .Include(x => x.MedicosEspecialidades)
                 .FirstOrDefaultAsync(x => x.Id == id);
@@ -54,13 +56,31 @@ namespace MedicDate.Bussines.Repository
             }
 
             _mapper.Map(medicoRequest, medicoDb);
-            await SaveAsync();
+            await _context.SaveChangesAsync();
 
             return new DataResponse<string>()
             {
                 IsSuccess = true,
                 ActionResult = new NoContentResult()
             };
+        }
+
+        public async Task<bool> CheckCedulaExistsAsync(string numCedula)
+        {
+            return await RequestEntityValidator<Medico>
+                .CheckValueExistsAsync(_context, "Cedula", numCedula);
+        }
+
+        public async Task<bool> CheckCedulaExistsForEditAsync(string numCedula, string id)
+        {
+            return await RequestEntityValidator<Medico>
+                .CheckValueExistsForEditAsync(_context, "Cedula", numCedula, id);
+        }
+
+        public async Task<bool> CheckRelatedEntityIdExistsAsync(List<string> entityIds)
+        {
+            return await RequestEntityValidator<Especialidad>
+                .CheckRelatedEntityIdExists(_context, entityIds);
         }
     }
 }

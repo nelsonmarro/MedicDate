@@ -1,13 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Threading.Tasks;
-using MedicDate.Bussines.Services.IServices;
-using MedicDate.DataAccess.Models;
 using MedicDate.Models.DTOs.Auth;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Options;
-using System.IdentityModel.Tokens.Jwt;
-using MedicDate.Bussines.Helpers;
 using MedicDate.Bussines.Repository.IRepository;
 
 namespace MedicDate.API.Controllers
@@ -16,17 +9,17 @@ namespace MedicDate.API.Controllers
     [ApiController]
     public class TokenController : ControllerBase
     {
-        private readonly ITokenRepository _tokenRepo;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public TokenController(ITokenRepository tokenRepo)
+        public TokenController(IUnitOfWork unitOfWork)
         {
-            _tokenRepo = tokenRepo;
+            _unitOfWork = unitOfWork;
         }
 
         [HttpPost("refresh")]
         public async Task<ActionResult<LoginResponse>> RefreshAsync(RefreshTokenDto refreshTokenDto)
         {
-            var resp = await _tokenRepo.RefreshTokenAsync(refreshTokenDto);
+            var resp = await _unitOfWork.TokenRepo.RefreshTokenAsync(refreshTokenDto);
 
             if (!resp.IsSuccess)
             {

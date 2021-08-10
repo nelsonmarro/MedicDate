@@ -15,7 +15,7 @@ namespace MedicDate.Client.Pages.Medico
         [Inject] public IHttpInterceptorService HttpInterceptor { get; set; }
 
         [Parameter]
-        public int Id { get; set; }
+        public string Id { get; set; }
 
         private MedicoRequest _medicoModel;
         private bool _isBussy;
@@ -43,11 +43,6 @@ namespace MedicDate.Client.Pages.Medico
             var httpResp = await HttpRepo.Put($"api/Medico/editar/{Id}", _medicoModel);
 
             _isBussy = false;
-
-            if (httpResp is null)
-            {
-                return;
-            }
 
             if (httpResp.Error)
             {

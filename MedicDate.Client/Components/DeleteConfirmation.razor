@@ -1,7 +1,15 @@
 ﻿@inject DialogService _dialogService
 
-<p>¿ Está seguro de borrar este registro ?</p>
-<div class="mt-4">
+<div class="text-center py-2">
+	<span class="text-warning">
+		<i class="fas fa-exclamation-triangle fa-4x"></i>
+	</span>
+</div>
+<p class="py-2 text-center">
+	¿ Está seguro de borrar este registro ?
+</p>
+
+<div class="pt-1 container">
 	<div class="row">
 		<div class="col-6">
 			<RadzenButton Text="Aceptar" class="w-100" Click="@Delete"/>

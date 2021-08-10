@@ -1,13 +1,9 @@
 ﻿using MedicDate.Models.DTOs.Especialidad;
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Rendering;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using MedicDate.Models.DTOs.Medico;
 using MedicDate.Client.Data.HttpRepository.IHttpRepository;
-using Radzen;
 using MedicDate.Client.Services.IServices;
 
 namespace MedicDate.Client.Shared.Formularios
@@ -23,7 +19,7 @@ namespace MedicDate.Client.Shared.Formularios
         [Parameter] public EventCallback OnSubmit { get; set; }
 
         private List<EspecialidadResponse> _especialidades;
-        private IEnumerable<int> _especialidadesIds;
+        private IEnumerable<string> _especialidadesIds;
 
         protected override async Task OnInitializedAsync()
         {
@@ -51,7 +47,7 @@ namespace MedicDate.Client.Shared.Formularios
         {
             MedicoRequest.EspecialidadesId.Clear();
 
-            var especialidades = (IEnumerable<int>)value;
+            var especialidades = (IEnumerable<string>)value;
 
             if (especialidades is not null)
             {

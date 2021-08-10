@@ -3,31 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
-using System.Net.Http;
-using System.Net.Http.Json;
-using Microsoft.AspNetCore.Components.Forms;
-using Microsoft.AspNetCore.Components.Routing;
-using Microsoft.AspNetCore.Components.Web;
-using Microsoft.AspNetCore.Components.Web.Virtualization;
-using Microsoft.AspNetCore.Components.WebAssembly.Http;
-using Microsoft.JSInterop;
-using MedicDate.Client;
-using MedicDate.Client.Shared;
-using MedicDate.Client.Shared.Formularios;
-using MedicDate.Client.Shared.Formularios.AppUser;
 using Radzen;
 using Radzen.Blazor;
-using MedicDate.Client.Data.HttpRepository.IHttpRepository;
-using MedicDate.Models.DTOs.Especialidad;
-using MedicDate.Models.DTOs.Medico;
 using System.Linq.Dynamic.Core;
-using Microsoft.AspNetCore.Components.Authorization;
-using MedicDate.Utility;
-using MedicDate.Client.Services.IServices;
-using MedicDate.Models.DTOs.AppUser;
-using MedicDate.Models.DTOs.Auth;
 using MedicDate.Client.Helpers;
-using MedicDate.Client.Components;
 using MedicDate.Models.DTOs;
 
 namespace MedicDate.Client.Components
@@ -37,11 +16,10 @@ namespace MedicDate.Client.Components
         [Parameter]
         public List<TItem> ItemList { get; set; }
 
-        [Parameter]
-        public string[] Headers { get; set; }
+        [Parameter] public string[] Headers { get; set; } = { };
 
         [Parameter]
-        public string[] PropNames { get; set; }
+        public string[] PropNames { get; set; } = {};
 
         [Parameter]
         public RenderFragment NullItemList { get; set; }
@@ -55,8 +33,8 @@ namespace MedicDate.Client.Components
         public bool AllowColumnResize { get; set; } = true;
         [Parameter]
         public FilterMode FilterMode { get; set; } = FilterMode.Simple;
-        [Parameter]
-        public AllowCrudOps AllowCrudOps { get; set; }
+
+        [Parameter] public AllowCrudOps AllowCrudOps { get; set; } = new();
 
         [Parameter]
         public OpRoutes OpRoutes { get; set; }
@@ -69,15 +47,14 @@ namespace MedicDate.Client.Components
 
         private RadzenDataGrid<TItem> _dataGrid;
         private int _pageSize = 10;
+
         private async Task LoadData(LoadDataArgs args = null, int pageIndex = 0, int pageSize = 10)
         {
-            var url = OpRoutes.GetUrl.Contains("?") ? $"{OpRoutes.GetUrl}&pageIndex={pageIndex}&pageSize={pageSize}" : $"{OpRoutes.GetUrl}?pageIndex={pageIndex}&pageSize={pageSize}";
+            var url = OpRoutes.GetUrl.Contains("?")
+                ? $"{OpRoutes.GetUrl}&pageIndex={pageIndex}&pageSize={pageSize}"
+                : $"{OpRoutes.GetUrl}?pageIndex={pageIndex}&pageSize={pageSize}";
 
             var response = await _httpRepository.Get<ApiResponseDto<TItem>>(url);
-            if (response is null)
-            {
-                return;
-            }
 
             if (response.Error)
             {
@@ -85,7 +62,7 @@ namespace MedicDate.Client.Components
             }
             else
             {
-                ItemList = (List<TItem>)response.Response.DataResult;
+                ItemList = response.Response.DataResult;
                 _pageSize = response.Response.PageSize;
                 TotalCount = response.Response.TotalCount;
                 if (args is not null)

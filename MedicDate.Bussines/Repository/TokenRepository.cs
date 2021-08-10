@@ -2,10 +2,8 @@
 using MedicDate.Bussines.Helpers;
 using MedicDate.Bussines.Repository.IRepository;
 using MedicDate.Bussines.Services.IServices;
-using MedicDate.DataAccess.Data;
 using MedicDate.DataAccess.Models;
 using MedicDate.Models.DTOs.Auth;
-using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using System.IdentityModel.Tokens.Jwt;

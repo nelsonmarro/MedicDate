@@ -2,7 +2,7 @@
 
 namespace MedicDate.Models.DTOs.AppUser
 {
-    public class RoleResponse : IIdString
+    public class RoleResponse : IId
     {
         public string Id { get; set; }
         public string Nombre { get; set; }

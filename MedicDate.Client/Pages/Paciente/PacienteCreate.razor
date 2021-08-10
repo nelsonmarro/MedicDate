@@ -1,0 +1,7 @@
+﻿@page "/pacienteCrear"
+
+<h2 class="text-radzen-primary mb-2">Registrar Paciente</h2>
+
+<CascadingValue Value="_isBussy">
+    <PacienteForm PacienteRequest="_pacienteModel" OnSubmit="CreatePaciente" />
+</CascadingValue>

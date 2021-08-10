@@ -1,6 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using System;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -10,8 +9,6 @@ using MedicDate.Bussines.Repository.IRepository;
 using MedicDate.DataAccess.Models;
 using MedicDate.Models.DTOs;
 using MedicDate.Models.DTOs.Especialidad;
-using MedicDate.Utility;
-using Microsoft.AspNetCore.Authorization;
 
 namespace MedicDate.API.Controllers
 {
@@ -19,18 +16,18 @@ namespace MedicDate.API.Controllers
     [ApiController]
     public class EspecialidadController : BaseController<Especialidad>
     {
-        private readonly IEspecialidadRepository _especialidadRepo;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
 
-        public EspecialidadController(IEspecialidadRepository especialidadRepo, IMapper mapper) : base(especialidadRepo,
-            mapper)
+        public EspecialidadController(IUnitOfWork unitOfWork, IMapper mapper)
+            : base(unitOfWork, mapper)
         {
-            _especialidadRepo = especialidadRepo;
+            _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
 
         [HttpGet("listarConPaginacion")]
-        public async Task<ActionResult<ApiResult<EspecialidadResponse>>> GetAllWithPagingAsync(
+        public async Task<ActionResult<ApiResponseDto<EspecialidadResponse>>> GetAllWithPagingAsync(
             int pageIndex = 0,
             int pageSize = 10)
         {
@@ -38,19 +35,19 @@ namespace MedicDate.API.Controllers
             (
                 pageIndex,
                 pageSize,
-                sortColumn: "NombreEspecialidad",
-                sortOrder: "ASC"
+                orderBy: x => x.OrderBy(e => e.NombreEspecialidad)
             );
         }
 
         [HttpGet("listar")]
         public async Task<ActionResult<List<EspecialidadResponse>>> GetAllAsync()
         {
-            return await GetAllAsync<EspecialidadResponse>();
+            return await GetAllAsync<EspecialidadResponse>(
+                x => x.OrderBy(e => e.NombreEspecialidad));
         }
 
-        [HttpGet("{id:int}", Name = "ObtenerEspecialidad")]
-        public async Task<ActionResult<EspecialidadRequest>> GetPutEspecialidadAsync(int id)
+        [HttpGet("{id}", Name = "ObtenerEspecialidad")]
+        public async Task<ActionResult<EspecialidadRequest>> GetPutEspecialidadAsync(string id)
         {
             return await GetByIdAsync<EspecialidadRequest>(id);
         }
@@ -62,16 +59,25 @@ namespace MedicDate.API.Controllers
                 "ObtenerEspecialidad");
         }
 
-        [HttpPut("editar/{id:int}")]
-        public async Task<ActionResult> PutAsync(int id, EspecialidadRequest especialidadRequest)
+        [HttpPut("editar/{id}")]
+        public async Task<ActionResult> PutAsync(string id, EspecialidadRequest especialidadRequest)
         {
-            var response = await _especialidadRepo.UpdateEspecialidad(id, especialidadRequest);
+            try
+            {
+                var response = await _unitOfWork.EspecialidadRepo.UpdateEspecialidad(id, especialidadRequest);
 
-            return response.ActionResult;
+                return response.ActionResult;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                Console.WriteLine(e.InnerException?.Message);
+                return BadRequest("Error al editar el registro");
+            }
         }
 
-        [HttpDelete("eliminar/{id:int}")]
-        public async Task<ActionResult> DeleteAsync(int id)
+        [HttpDelete("eliminar/{id}")]
+        public async Task<ActionResult> DeleteAsync(string id)
         {
             return await DeleteResourceAsync(id);
         }

@@ -29,46 +29,61 @@ else
 {
     <div class="my-3">
         <RadzenDataGrid @ref="_dataGrid" Count="@TotalCount" Data="@ItemList"
-                    LoadData="@((e) => LoadData(e, _dataGrid.CurrentPage))" AllowFiltering="@AllowFilter"
-                    FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" FilterMode="@FilterMode" AllowPaging="true"
-                    LogicalFilterOperator="LogicalFilterOperator.Or" PageSize="@_pageSize" EmptyText="No hay datos que mostrar"
-                    AllowSorting="true" PagerPosition="PagerPosition.TopAndBottom"
-                    TItem="TItem" AllowColumnResize="AllowColumnResize">
+                        LoadData="@((e) => LoadData(e, _dataGrid.CurrentPage))"
+                        AllowFiltering="@AllowFilter"
+                        FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                        FilterMode="@FilterMode" AllowPaging="true"
+                        PageSize="@_pageSize" EmptyText="No hay datos que mostrar" 
+                        AllowSorting="true" PagerPosition="PagerPosition.TopAndBottom" 
+                        TItem="TItem" AllowColumnResize="AllowColumnResize"
+                        ColumnWidth="200px" AndOperatorText="Y"
+                        ApplyFilterText="Aplicar" ClearFilterText="Limpiar"
+                        ContainsText="Contiene" DoesNotContainText="No contiene"
+                        EndsWithText="Termina con" EqualsText="Es igual"
+                        FilterText="Filtrar" GreaterThanOrEqualsText="Mayor o igual"
+                        GreaterThanText="Mayor" LessThanOrEqualsText="Menor o igual"
+                        LessThanText="Menor" NotEqualsText="Diferente"
+                        OrOperatorText="O" StartsWithText="Empieza con">
             <Columns>
-
-                @if (CustomGridCols is null)
+                @if (PropNames.Length > 0 && Headers.Length > 0)
                 {
                     var i = 0;
-
                     @foreach (var propiedad in PropNames)
                     {
-                        <RadzenDataGridColumn TItem="TItem" Property="@propiedad" Title="@Headers[i]" />
+                        <RadzenDataGridColumn TItem="TItem" Property="@propiedad"
+                                              Title="@Headers[i]"/>
                         i++;
                     }
                 }
-                else
+                
+                @if (CustomGridCols is not null)
                 {
                     @CustomGridCols
                 }
+
                 @if (AllowCrudOps.AllowEdit)
                 {
-                    <RadzenDataGridColumn TItem="TItem" Context="item" Filterable="false" Sortable="false"
-                                  TextAlign="@TextAlign.Center" Width="70px">
+                    <RadzenDataGridColumn TItem="TItem" Context="item" Filterable="false" 
+                                          Sortable="false" TextAlign="@TextAlign.Center" 
+                                          Width="70px">
                         <Template>
                             <NavLink Match="@NavLinkMatch.Prefix"
-                             href="@($"{OpRoutes.EditUrl}/{item.GetType().GetProperties()[0].GetValue(item)}")">
-                                <RadzenButton Icon="edit" ButtonStyle="@ButtonStyle.Secondary"></RadzenButton>
+                                     href="@($"{OpRoutes.EditUrl}/{item.GetType().GetProperties()[0].GetValue(item)}")">
+
+                                <RadzenButton Icon="edit" ButtonStyle="@ButtonStyle.Secondary">
+                                </RadzenButton>
                             </NavLink>
                         </Template>
                     </RadzenDataGridColumn>
                 }
                 @if (AllowCrudOps.AllowDelete)
                 {
-                    <RadzenDataGridColumn TItem="TItem" Context="item" Filterable="false" Sortable="false"
-                                  TextAlign="@TextAlign.Center" Width="70px">
+                    <RadzenDataGridColumn TItem="TItem" Context="item" Filterable="false" 
+                                          Sortable="false" TextAlign="@TextAlign.Center" 
+                                          Width="70px">
                         <Template>
                             <RadzenButton Icon="delete" ButtonStyle="@ButtonStyle.Danger"
-                                  Click="@(() => _dialogService.OpenAsync<DeleteConfirmation>("Borrar Registro", new Dictionary<string, object>() {{"Id", item.GetType().GetProperties()[0].GetValue(item)?.ToString()}, {"OnDelete", OnDeleteData}}, new DialogOptions() {Width = "355px", Height = "184px"}))" />
+                                          Click="@(() => _dialogService.OpenAsync<DeleteConfirmation>("Borrar Registro", new Dictionary<string, object> {{"Id", item.GetType().GetProperties()[0].GetValue(item)?.ToString()}, {"OnDelete", OnDeleteData}}, new DialogOptions() {Width = "465px", Height = "280px"}))" />
                         </Template>
                     </RadzenDataGridColumn>
                 }
@@ -76,4 +91,3 @@ else
         </RadzenDataGrid>
     </div>
 }
-

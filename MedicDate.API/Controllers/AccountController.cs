@@ -10,18 +10,18 @@ namespace MedicDate.API.Controllers
     [ApiController]
     public class AccountController : ControllerBase
     {
-        private readonly IAccountRepository _accountRepo;
+        private readonly IUnitOfWork _unitOfWork;
 
 
-        public AccountController(IAccountRepository accountRepo)
+        public AccountController(IUnitOfWork unitOfWork)
         {
-            _accountRepo = accountRepo;
+            _unitOfWork = unitOfWork;
         }
 
         [HttpPost("register")]
         public async Task<ActionResult> PostAsync(RegisterRequest registerRequest)
         {
-            var resp = await _accountRepo.RegisterUserAsync(registerRequest);
+            var resp = await _unitOfWork.AccountRepo.RegisterUserAsync(registerRequest);
 
             return resp.ActionResult;
         }
@@ -29,7 +29,7 @@ namespace MedicDate.API.Controllers
         [HttpPost("login")]
         public async Task<ActionResult<LoginResponse>> LoginAsync(LoginRequest loginRequest)
         {
-            var resp = await _accountRepo.LoginUserAsync(loginRequest);
+            var resp = await _unitOfWork.AccountRepo.LoginUserAsync(loginRequest);
 
             if (!resp.IsSuccess)
             {
@@ -42,7 +42,7 @@ namespace MedicDate.API.Controllers
         [HttpPost("forgotPassword")]
         public async Task<ActionResult> ForgotPassword(ForgotPasswordRequest forgotPasswordModel)
         {
-            var resp = await _accountRepo.SendForgotPasswordRequestAsync(forgotPasswordModel);
+            var resp = await _unitOfWork.AccountRepo.SendForgotPasswordRequestAsync(forgotPasswordModel);
 
             if (resp)
             {
@@ -55,7 +55,7 @@ namespace MedicDate.API.Controllers
         [HttpPost("resetPassword")]
         public async Task<ActionResult> ResetPassword(ResetPasswordRequest resetPasswordRequest)
         {
-            var resp = await _accountRepo.ResetPasswordAsync(resetPasswordRequest);
+            var resp = await _unitOfWork.AccountRepo.ResetPasswordAsync(resetPasswordRequest);
 
             if (!resp.IsSuccess)
             {
@@ -68,7 +68,7 @@ namespace MedicDate.API.Controllers
         [HttpPost("lockUnlock")]
         public async Task<ActionResult> LockUnlockUserAsync([FromBody] string id)
         {
-            var resp = await _accountRepo.LockUnlockUserAsync(id);
+            var resp = await _unitOfWork.AccountRepo.LockUnlockUserAsync(id);
 
             return resp.ActionResult;
         }
@@ -76,7 +76,7 @@ namespace MedicDate.API.Controllers
         [HttpPost("confirmEmail")]
         public async Task<ActionResult> ConfirmEmailAsync(ConfirmEmailRequest confirmEmailRequest)
         {
-            var response = await _accountRepo.ConfirmEmailAsync(confirmEmailRequest);
+            var response = await _unitOfWork.AccountRepo.ConfirmEmailAsync(confirmEmailRequest);
 
             return !response.IsSuccess ? response.ActionResult : Ok();
         }
@@ -84,7 +84,7 @@ namespace MedicDate.API.Controllers
         [HttpPost("sendConfirmationEmail")]
         public async Task<ActionResult> ResendConfirmEmailAsync([FromBody] string userEmail)
         {
-            var response = await _accountRepo.SendConfirmEmailAsync(userEmail);
+            var response = await _unitOfWork.AccountRepo.SendConfirmEmailAsync(userEmail);
 
             return !response.IsSuccess ? response.ActionResult : Ok();
         }
@@ -92,7 +92,7 @@ namespace MedicDate.API.Controllers
         [HttpPost("sendChangeEmailToken")]
         public async Task<ActionResult> SendChangeEmailTokenAsync(ChangeEmailModel changeEmailModel)
         {
-            var response = await _accountRepo.SendChangeEmailTokenAsync(changeEmailModel);
+            var response = await _unitOfWork.AccountRepo.SendChangeEmailTokenAsync(changeEmailModel);
 
             if (!response.IsSuccess)
             {
@@ -105,7 +105,7 @@ namespace MedicDate.API.Controllers
         [HttpPost("changeEmail/{userId}")]
         public async Task<ActionResult> ChangeEmailAsync(string userId, ChangeEmailModel changeEmailModel)
         {
-            var response = await _accountRepo.ChangeEmailAsync(userId, changeEmailModel);
+            var response = await _unitOfWork.AccountRepo.ChangeEmailAsync(userId, changeEmailModel);
 
             if (!response.IsSuccess)
             {

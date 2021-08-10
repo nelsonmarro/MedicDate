@@ -1,16 +1,9 @@
 ﻿using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Rendering;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using MedicDate.Client.Data.HttpRepository.IHttpRepository;
 using MedicDate.Client.Services.IServices;
-using MedicDate.Client.Shared;
-using MedicDate.Models.DTOs;
 using MedicDate.Models.DTOs.Especialidad;
-using MedicDate.Utility;
-using Radzen;
 
 namespace MedicDate.Client.Pages.Especialidad
 {

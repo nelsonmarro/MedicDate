@@ -6,6 +6,11 @@ using AutoMapper;
 using MedicDate.Bussines.Repository.IRepository;
 using MedicDate.Models.DTOs.AppUser;
 using MedicDate.Bussines.Helpers;
+using MedicDate.DataAccess.Models;
+using MedicDate.Models.DTOs;
+using Mailjet.Client.Resources.SMS;
+using System;
+using System.Drawing;
 
 namespace MedicDate.API.Controllers
 {
@@ -13,17 +18,17 @@ namespace MedicDate.API.Controllers
     [ApiController]
     public class UsuarioController : ControllerBase
     {
-        private readonly IAppUserRepository _userRepo;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
 
-        public UsuarioController(IAppUserRepository userRepo, IMapper mapper)
+        public UsuarioController(IUnitOfWork unitOfWork, IMapper mapper)
         {
-            _userRepo = userRepo;
+            _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
 
         [HttpGet("listarConPaginacion")]
-        public async Task<ActionResult<ApiResult<AppUserResponse>>> GetAllUsersAsync
+        public async Task<ActionResult<ApiResponseDto<AppUserResponse>>> GetAllUsersAsync
         (
             int pageIndex = 0,
             int pageSize = 10,
@@ -31,36 +36,43 @@ namespace MedicDate.API.Controllers
             [FromQuery] string filterRolId = null
         )
         {
+            var count = await _unitOfWork.AppUserRepo.CountResourcesAsync();
+
             if (traerRoles)
             {
-                var usersWithRoles = await _userRepo.GetUsersWithRoles(filterRolId);
+                var usersWithRoles = await _unitOfWork.AppUserRepo
+                    .GetUsersWithRoles(filterRolId, pageIndex, pageSize);
 
-                return ApiResult<AppUserResponse>.Create
-                (
-                    usersWithRoles,
-                    pageIndex,
-                    pageSize,
-                    "Nombre",
-                    "ASC"
-                );
+                return new ApiResponseDto<AppUserResponse>()
+                {
+                    DataResult = usersWithRoles,
+                    PageIndex = pageIndex,
+                    PageSize = pageSize,
+                    TotalCount = count
+                };
             }
 
-            var usersDb = await _userRepo.GetAllAsync<AppUserResponse>();
+            var usersDb = await _unitOfWork.AppUserRepo
+                .GetAllWithPagingAsync(
+                    isTracking: false,
+                    pageIndex: pageIndex,
+                    pageSize: pageSize,
+                    orderBy: x =>
+                        x.OrderBy(u => u.Nombre));
 
-            return ApiResult<AppUserResponse>.Create
-            (
-                usersDb,
-                pageIndex,
-                pageSize,
-                "Nombre",
-                "ASC"
-            );
+            return new ApiResponseDto<AppUserResponse>()
+            {
+                DataResult = _mapper.Map<List<AppUserResponse>>(usersDb),
+                PageIndex = pageIndex,
+                PageSize = pageSize,
+                TotalCount = count
+            };
         }
 
         [HttpGet("obtenerParaEditar/{id}")]
         public async Task<ActionResult<AppUserRequest>> GetPutAsync(string id)
         {
-            var response = await _userRepo.GetUserForEdit(id);
+            var response = await _unitOfWork.AppUserRepo.GetUserForEdit(id);
 
             if (!response.IsSuccess)
             {
@@ -73,7 +85,7 @@ namespace MedicDate.API.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<AppUserResponse>> GetUserById(string id)
         {
-            var userDb = await _userRepo.FirstOrDefaultAsync(x => x.Id == id);
+            var userDb = await _unitOfWork.AppUserRepo.FirstOrDefaultAsync(x => x.Id == id);
 
             if (userDb is null)
             {
@@ -86,7 +98,7 @@ namespace MedicDate.API.Controllers
         [HttpPut("editar/{id}")]
         public async Task<ActionResult> PutAsync(string id, AppUserRequest appUserRequest)
         {
-            var resp = await _userRepo.EditUserAsync(id, appUserRequest);
+            var resp = await _unitOfWork.AppUserRepo.EditUserAsync(id, appUserRequest);
 
             return resp.ActionResult;
         }
@@ -94,7 +106,7 @@ namespace MedicDate.API.Controllers
         [HttpGet("roles")]
         public async Task<ActionResult<List<RoleResponse>>> GetRolesAsync()
         {
-            var rolesListDb = await _userRepo.GetRolesAsync();
+            var rolesListDb = await _unitOfWork.AppUserRepo.GetRolesAsync();
 
             return rolesListDb.Select(x => new RoleResponse
             {
@@ -107,7 +119,7 @@ namespace MedicDate.API.Controllers
         [HttpDelete("eliminar/{id}")]
         public async Task<ActionResult> DeleteUserAsync(string id)
         {
-            var esMasterResp = await _userRepo.CheckIfUserIsWebMasterAsync(id);
+            var esMasterResp = await _unitOfWork.AppUserRepo.CheckIfUserIsWebMasterAsync(id);
 
             if (!esMasterResp.IsSuccess)
             {
@@ -119,7 +131,7 @@ namespace MedicDate.API.Controllers
                 return BadRequest("No puede eliminar al usuario Web Master");
             }
 
-            var resp = await _userRepo.DeleteUserAsync(id);
+            var resp = await _unitOfWork.AppUserRepo.DeleteUserAsync(id);
 
             return resp.ActionResult;
         }

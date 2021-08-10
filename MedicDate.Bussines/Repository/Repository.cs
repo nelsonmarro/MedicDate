@@ -5,37 +5,27 @@ using System.Linq.Expressions;
 using System.Linq;
 using System.Threading.Tasks;
 using System;
-using AutoMapper;
 using MedicDate.Bussines.Helpers;
 using MedicDate.DataAccess.Data;
-using MedicDate.Models.DTOs;
 
 namespace MedicDate.Bussines.Repository
 {
     public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
     {
         private readonly ApplicationDbContext _context;
-        private readonly IMapper _mapper;
         private readonly DbSet<TEntity> _dBSet;
 
-        public Repository(ApplicationDbContext context, IMapper mapper)
+        public Repository(ApplicationDbContext context)
         {
             _context = context;
-            _mapper = mapper;
             _dBSet = context.Set<TEntity>();
         }
 
-        public async Task<TEntity> FindAsync(int id)
+        public async Task<TEntity> FindAsync(string id)
         {
             return await _dBSet.FindAsync(id);
         }
 
-        public async Task<TResponse> FindAsync<TResponse>(int id)
-        {
-            var entityDb = await FindAsync(id);
-
-            return _mapper.Map<TResponse>(entityDb);
-        }
 
         public async Task<List<TEntity>> GetAllAsync
         (
@@ -46,6 +36,13 @@ namespace MedicDate.Bussines.Repository
         )
         {
             IQueryable<TEntity> query = _dBSet;
+
+            if (!isTracking)
+            {
+                query = query.AsNoTracking();
+            }
+
+
             if (filter != null)
             {
                 query = query.Where(filter);
@@ -53,36 +50,53 @@ namespace MedicDate.Bussines.Repository
 
             if (includeProperties != null)
             {
-                foreach (var s in includeProperties.Split(',', StringSplitOptions.RemoveEmptyEntries))
-                {
-                    query = query.Include(s);
-                }
+                query = includeProperties.Split(',', StringSplitOptions.RemoveEmptyEntries)
+                    .Aggregate(query, (current, s) => current.Include(s));
             }
+
 
             if (orderBy != null)
             {
                 query = orderBy(query);
             }
 
+            return await query.ToListAsync();
+        }
+
+        public async Task<List<TEntity>> GetAllWithPagingAsync(
+            Expression<Func<TEntity, bool>> filter = null,
+            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
+            string includeProperties = null,
+            bool isTracking = true, int pageIndex = 0, int pageSize = 10)
+        {
+            IQueryable<TEntity> query = _dBSet;
+
             if (!isTracking)
             {
                 query = query.AsNoTracking();
             }
 
+            var count = await query.CountAsync();
+
+            if (filter != null)
+            {
+                query = query.Where(filter);
+            }
+
+            if (includeProperties != null)
+            {
+                query = includeProperties.Split(',', StringSplitOptions.RemoveEmptyEntries)
+                    .Aggregate(query, (current, s) => current.Include(s));
+            }
+
+            query = query.Paginate(pageIndex, pageSize);
+
+            if (orderBy != null)
+            {
+                query = orderBy(query);
+            }
+
             return await query.ToListAsync();
-        }
-
-        public async Task<List<TResponse>> GetAllAsync<TResponse>
-        (
-            Expression<Func<TEntity, bool>> filter = null,
-            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
-            string includeProperties = null,
-            bool isTracking = true
-        )
-        {
-            var entityList = await GetAllAsync(filter, orderBy, includeProperties, isTracking);
-
-            return _mapper.Map<List<TResponse>>(entityList);
         }
 
         public async Task<TEntity> FirstOrDefaultAsync
@@ -93,6 +107,12 @@ namespace MedicDate.Bussines.Repository
         )
         {
             IQueryable<TEntity> query = _dBSet;
+
+            if (!isTracking)
+            {
+                query = query.AsNoTracking();
+            }
+
             if (filter != null)
             {
                 query = query.Where(filter);
@@ -100,30 +120,12 @@ namespace MedicDate.Bussines.Repository
 
             if (includeProperties != null)
             {
-                foreach (var s in includeProperties.Split(',', StringSplitOptions.RemoveEmptyEntries))
-                {
-                    query = query.Include(s);
-                }
+                query = includeProperties.Split(',', StringSplitOptions.RemoveEmptyEntries)
+                    .Aggregate(query, (current, s) => current.Include(s));
             }
 
-            if (!isTracking)
-            {
-                query = query.AsNoTracking();
-            }
 
             return await query.FirstOrDefaultAsync();
-        }
-
-        public async Task<TResponse> FirstOrDefaultAsync<TResponse>
-        (
-            Expression<Func<TEntity, bool>> filter = null,
-            string includeProperties = null,
-            bool isTracking = true
-        )
-        {
-            var entityDb = await FirstOrDefaultAsync(filter, includeProperties, isTracking);
-
-            return _mapper.Map<TResponse>(entityDb);
         }
 
         public async Task AddAsync(TEntity entity)
@@ -131,7 +133,8 @@ namespace MedicDate.Bussines.Repository
             await _dBSet.AddAsync(entity);
         }
 
-        public async Task<int> Remove(int id)
+
+        public async Task<int> Remove(string id)
         {
             var resp = 1;
 
@@ -159,12 +162,12 @@ namespace MedicDate.Bussines.Repository
             _dBSet.RemoveRange(entities);
         }
 
-        public async Task SaveAsync()
+        public async Task<int> CountResourcesAsync()
         {
-            await _context.SaveChangesAsync();
+            return await _dBSet.CountAsync();
         }
 
-        public async Task<bool> ResourceExists(int resourceId)
+        public async Task<bool> ResourceExists(string resourceId)
         {
             var resourse = await FindAsync(resourceId);
 

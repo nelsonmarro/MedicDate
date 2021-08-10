@@ -1,19 +1,5 @@
-using MedicDate.API.Helpers;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using Microsoft.OpenApi.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using MedicDate.Bussines.Helpers;
+using MedicDate.Bussines.Mapper;
 using MedicDate.Bussines.Repository;
 using MedicDate.Bussines.Repository.IRepository;
 using MedicDate.Bussines.Services;
@@ -21,13 +7,18 @@ using MedicDate.Bussines.Services.IServices;
 using MedicDate.DataAccess.Data;
 using MedicDate.DataAccess.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using MedicDate.API.Services.IServices;
-using MedicDate.API.Services;
-using System.Text.Json.Serialization;
-using MedicDate.Bussines.Helpers;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+using System;
+using System.Text;
 
 namespace MedicDate.API
 {
@@ -45,12 +36,14 @@ namespace MedicDate.API
         {
             services.AddDbContext<ApplicationDbContext>(options =>
             {
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
+                options.UseSqlServer(
+                    Configuration.GetConnectionString("DefaultConnection"),
+                    o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)
+                );
             });
 
             services.AddControllers();
-
-            services.AddAutoMapper(typeof(Startup));
+            services.AddAutoMapper(typeof(MapperProfile));
 
             var appSettingsSection = Configuration.GetSection("JwtSettings");
             services.Configure<JwtSettings>(appSettingsSection);
@@ -89,7 +82,7 @@ namespace MedicDate.API
 
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo {Title = "MedicDate_Api", Version = "v1"});
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "MedicDate_Api", Version = "v1" });
                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
                     In = ParameterLocation.Header,
@@ -116,11 +109,7 @@ namespace MedicDate.API
             services.AddTransient<IEmailSender, MailJetEmailSender>();
             services.AddScoped<IDbInitializer, DbInitializer>();
             services.AddScoped<ITokenService, TokenService>();
-            services.AddScoped<IEspecialidadRepository, EspecialidadRepository>();
-            services.AddScoped<IMedicoRepository, MedicoRepository>();
-            services.AddScoped<IAppUserRepository, AppUserRepository>();
-            services.AddScoped<IAccountRepository, AccountRepository>();
-            services.AddScoped<ITokenRepository, TokenRepository>();
+            services.AddTransient<IUnitOfWork, UnitOfWork>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

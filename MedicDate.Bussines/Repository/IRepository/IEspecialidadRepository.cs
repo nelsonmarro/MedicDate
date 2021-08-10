@@ -9,6 +9,6 @@ namespace MedicDate.Bussines.Repository.IRepository
 {
     public interface IEspecialidadRepository : IRepository<Especialidad>
     {
-        public Task<DataResponse<string>> UpdateEspecialidad(int id, EspecialidadRequest especialidadDto);
+        public Task<DataResponse<string>> UpdateEspecialidad(string id, EspecialidadRequest especialidadDto);
     }
 }

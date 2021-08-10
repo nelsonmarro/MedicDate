@@ -1,0 +1,7 @@
+﻿@page "/grupoCrear"
+
+<h2 class="text-radzen-primary mb-2">Crear Grupo</h2>
+
+<CascadingValue Value="_isBussy">
+	<GrupoForm GrupoModel="@_grupoModel" OnSubmit="@CreateGrupo"/>
+</CascadingValue>

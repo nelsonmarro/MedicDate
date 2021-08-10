@@ -1,0 +1,56 @@
+﻿@inject DialogService DialogService
+
+<div class="container">
+
+    <h3 class="text-radzen-primary text-center mb-2">@Heading</h3>
+
+    @if (SimpleBodyContent is not null)
+    {
+        @SimpleBodyContent
+    }
+    else if (ListBodyContent is not null)
+    {
+        <div class="d-flex flex-row flex-wrap mb-2 list-container">
+
+            @foreach (var item in ItemList)
+            {
+                @ListBodyContent(item)
+            }
+        </div>
+    }
+    else
+    {
+        <p>@BodyText</p>
+
+    }
+</div>
+
+@if (ShowBackButton)
+{
+    <div class="mb-3">
+        <RadzenButton Text="Volver" ButtonStyle="ButtonStyle.Secondary" />
+    </div>
+}
+
+
+@code {
+    [Parameter]
+    public string Heading { get; set; }
+
+    [Parameter]
+    public string BodyText { get; set; }
+
+    [Parameter]
+    public bool ShowBackButton { get; set; }
+
+    [Parameter]
+    public object[] ItemList { get; set; }
+
+    [Parameter]
+    public RenderFragment SimpleBodyContent { get; set; }
+
+    [Parameter]
+    public RenderFragment<object> ListBodyContent { get; set; }
+
+
+}

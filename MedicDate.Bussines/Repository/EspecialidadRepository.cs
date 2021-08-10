@@ -8,19 +8,22 @@ using MedicDate.Models.DTOs;
 using MedicDate.Models.DTOs.Especialidad;
 using MedicDate.Utility;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace MedicDate.Bussines.Repository
 {
     public class EspecialidadRepository : Repository<Especialidad>, IEspecialidadRepository
     {
+        private readonly ApplicationDbContext _context;
         private readonly IMapper _mapper;
 
-        public EspecialidadRepository(ApplicationDbContext context, IMapper mapper) : base(context, mapper)
+        public EspecialidadRepository(ApplicationDbContext context, IMapper mapper) : base(context)
         {
+            _context = context;
             _mapper = mapper;
         }
 
-        public async Task<DataResponse<string>> UpdateEspecialidad(int id, EspecialidadRequest especialidadDto)
+        public async Task<DataResponse<string>> UpdateEspecialidad(string id, EspecialidadRequest especialidadDto)
         {
             var especialidadDb = await FindAsync(id);
 
@@ -34,7 +37,7 @@ namespace MedicDate.Bussines.Repository
             }
 
             _mapper.Map(especialidadDto, especialidadDb);
-            await SaveAsync();
+            await _context.SaveChangesAsync();
 
             return new DataResponse<string>()
             {

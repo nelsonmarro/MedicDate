@@ -2,62 +2,44 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using MedicDate.Client.Data.HttpRepository.IHttpRepository;
+using MedicDate.Client.Components;
 using MedicDate.Client.Helpers;
 using MedicDate.Client.Services.IServices;
-using MedicDate.Models.DTOs;
 using MedicDate.Models.DTOs.Medico;
 using MedicDate.Models.DTOs.Especialidad;
+using Radzen;
 
 namespace MedicDate.Client.Pages.Medico
 {
-    public partial class MedicoList : IDisposable
+    public class MedicoListBase : BaseListComponent<MedicoResponse>, IDisposable
     {
         [Inject] public IHttpInterceptorService HttpInterceptor { get; set; }
-        [Inject] public IHttpRepository HttpRepo { get; set; }
-        [Inject] public INotificationService NotificationService { get; set; }
+        [Inject] public DialogService DialogService { get; set; }
 
-        private static string _getUrl = "api/Medico/listarConPaginacion?traerEspecialidades=true";
-        private List<MedicoResponse> _medicoList;
-        private int _totalCount;
-        private List<EspecialidadResponse> _especialidades = new();
+        protected static string GetUrl = "api/Medico/listarConPaginacion?traerEspecialidades=true";
+        protected List<EspecialidadResponse> Especialidades = new();
+        protected string[] PropNames = { "Nombre", "Apellidos", "Cedula", "PhoneNumber"};
+        protected string[] Headers = { "Nombre", "Apellidos", "Cédula", "Teléfono"};
 
-        private readonly AllowCrudOps _allowCrudOps = new()
-        { AlowAdd = true, AllowEdit = true, AllowDelete = true };
+        protected readonly OpRoutes OpRoutes = new()
+            {AddUrl = "medicoCrear", EditUrl = "medicoEditar", GetUrl = GetUrl};
 
-        private readonly OpRoutes _opRoutes = new()
-        { AddUrl = "medicoCrear", EditUrl = "medicoEditar", GetUrl = _getUrl };
-
-        private async Task LoadMedicoListAsync(int filterEspecialidadId = 0)
+        private readonly RenderFragment<object> _especialidadesDialogContent = obj => __builder =>
         {
-            var filtrarEspecialidadesQuery = "";
+            var especialidad = (EspecialidadResponse)obj;
 
-            if (filterEspecialidadId > 0)
-            {
-                filtrarEspecialidadesQuery = $"&filtrarEspecialidadId={filterEspecialidadId}";
-            }
+            __builder.OpenElement(0, "div");
+            __builder.AddAttribute(1, "class", "mx-3 my-2");
+            __builder.AddContent(3, especialidad.NombreEspecialidad);
+            __builder.CloseElement();
+        };
 
-            var response = await HttpRepo.Get<ApiResponseDto<MedicoResponse>>($"{_getUrl}{filtrarEspecialidadesQuery}");
-
-            if (response is null)
-            {
-                return;
-            }
-
-            if (response.Error)
-            {
-                NotificationService.ShowError("Error!", "Error al cargar los datos");
-            }
-            else
-            {
-                _medicoList = response.Response.DataResult;
-                _totalCount = response.Response.TotalCount;
-            }
-        }
 
         protected override async Task OnInitializedAsync()
         {
             HttpInterceptor.RegisterEvent();
+
+            await LoadItemListAsync(GetUrl);
 
             var httpResponse = await HttpRepo.Get<List<EspecialidadResponse>>("api/Especialidad/listar");
 
@@ -72,52 +54,40 @@ namespace MedicDate.Client.Pages.Medico
             }
             else
             {
-                _especialidades = httpResponse.Response;
+                Especialidades = httpResponse.Response;
             }
         }
 
-        protected override async Task OnParametersSetAsync()
+        protected async Task DeleteMedico(string id)
         {
-            await LoadMedicoListAsync();
+            await DeleteItem(id, "api/Medico/eliminar", GetUrl);
         }
 
-        private async Task DeleteMedico(string id)
-        {
-            if (int.TryParse(id, out var idMedico))
-            {
-                if (idMedico > 0)
-                {
-                    var httpResp = await HttpRepo.Delete($"api/Medico/eliminar/{id}");
-
-                    if (httpResp is null)
-                    {
-                        return;
-                    }
-
-                    if (httpResp.Error)
-                    {
-                        NotificationService.ShowError("Error!", await httpResp.GetResponseBody());
-                    }
-                    else
-                    {
-                        NotificationService.ShowSuccess("Operación Exitosa!", await httpResp.GetResponseBody());
-
-                        await LoadMedicoListAsync();
-                    }
-                }
-            }
-        }
-
-        private async Task FilterByEspecialidad(object value)
+        protected async Task FilterByEspecialidad(object value)
         {
             try
             {
-                await LoadMedicoListAsync(Convert.ToInt32(value));
+                var especialidadId = value?.ToString() ?? "";
+
+                await LoadItemListAsync(GetUrl, "&filtrarEspecialidadId=", 
+                    especialidadId);
             }
             catch (Exception)
             {
                 NotificationService.ShowError("Error!", "Error al obtener el Id de la especialidad");
             }
+        }
+
+        protected async Task OpenEspecialidadesDialog()
+        {
+            await DialogService.OpenAsync<RadzenGenericDialog>
+            ("", 
+                new Dictionary<string, object>
+                {
+                    { "Heading", "Especialidades" }, 
+                    { "ItemList", Especialidades.ToArray() }, 
+                    { "ListBodyContent", _especialidadesDialogContent}
+                });
         }
 
         public void Dispose()

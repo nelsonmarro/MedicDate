@@ -7,7 +7,7 @@ using MedicDate.Utility.Interfaces;
 
 namespace MedicDate.Client.Components
 {
-    public partial class SelectableGrid<TItem> where TItem : IIdString
+    public partial class SelectableGrid<TItem> where TItem : IId
     {
         [Parameter] public List<TItem> ItemList { get; set; }
 

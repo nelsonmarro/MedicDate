@@ -14,9 +14,11 @@ namespace MedicDate.DataAccess.Data
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            builder.ApplyConfiguration(new MedicoConfig());
             builder.ApplyConfiguration(new MedicoEspecialidadConfig());
             builder.ApplyConfiguration(new PacienteConfig());
             builder.ApplyConfiguration(new GrupoPacienteConfig());
+            builder.ApplyConfiguration(new ActividadCitaConfig());
 
             base.OnModelCreating(builder);
         }
@@ -27,8 +29,11 @@ namespace MedicDate.DataAccess.Data
         public DbSet<Especialidad> Especialidad { get; set; }
         public DbSet<MedicoEspecialidad> MedicoEspecialidad { get; set; }
         public DbSet<Paciente> Paciente { get; set; }
-        public DbSet<ArchivoPaciente> ArchivoPaciente { get; set; }
         public DbSet<Grupo> Grupo { get; set; }
         public DbSet<GrupoPaciente> GrupoPaciente { get; set; }
+        public DbSet<Cita> Cita { get; set; }
+        public DbSet<Actividad> Actividad { get; set; }
+        public DbSet<ActividadCita> ActividadCita { get; set; }
+        public DbSet<Archivo> Archivo { get; set; }
     }
 }

@@ -1,10 +1,11 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace MedicDate.DataAccess.Models
 {
     public class AppRole : IdentityRole
     {
-        public string Descripcion { get; set; }
+        [StringLength(300)] public string Descripcion { get; set; }
     }
 }

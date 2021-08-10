@@ -8,8 +8,8 @@ namespace MedicDate.DataAccess.Models
 {
     public class MedicoEspecialidad
     {
-        public int MedicoId { get; set; }
-        public int EspecialidadId { get; set; }
+        public string MedicoId { get; set; }
+        public string EspecialidadId { get; set; }
 
         public Medico Medico { get; set; }
         public Especialidad Especialidad { get; set; }

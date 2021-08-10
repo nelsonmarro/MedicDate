@@ -1,0 +1,15 @@
+﻿<RadzenCard>
+	<EditForm Model="@GrupoModel" OnValidSubmit="OnSubmit">
+		<DataAnnotationsValidator/>
+		<div class="row mb-3">
+			<RadzenLabel Text="Nombre Grupo"/>
+			<div class="mt-1">
+				<RadzenTextBox @bind-Value="GrupoModel.Nombre" class="w-100"/>
+				<ValidationMessage For="() => GrupoModel.Nombre"/>
+			</div>
+		</div>
+		<div class="mb-2">
+			<FormButtons NavLinkRoute="grupoList"/>
+		</div>
+	</EditForm>
+</RadzenCard>

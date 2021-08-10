@@ -1,4 +1,5 @@
 ﻿@page "/usuarioList"
+@inherits AppUserListBase
 
 <div class="row">
 	<div class="col-auto col-md-6 text-start">
@@ -10,38 +11,26 @@
 		</div>
 		<div class="ps-md-3">
 			<RadzenDropDown TValue="string" Style="width: 300px"
-			                Data="@_roles" Placeholder="Seleccione"
+			                Data="@Roles" Placeholder="Seleccione"
 			                Change="@FilterByRole" TextProperty="Nombre"
 			                ValueProperty="Id" AllowClear="true"/>
 		</div>
 	</div>
 	<div class="col-12">
-		<RadzenGenericGrid TItem="AppUserResponse" TotalCount="@_totalCount"
-		                   ItemList="@_usersList" AllowFilter="true"
-		                   FilterMode="@FilterMode.Simple" AllowCrudOps="@_allowCrudOps" OpRoutes="@_opRoutes" OnDeleteData="@DeleteUser">
+		<RadzenGenericGrid TItem="AppUserResponse" TotalCount="@TotalCount"
+		                   ItemList="@ItemList" OpRoutes="@OpRoutes"
+                           OnDeleteData="@DeleteUser" PropNames="PropNames"
+                           Headers="Headers">
 			<CustomGridCols>
-				<RadzenDataGridColumn TItem="AppUserResponse" Property="Nombre"
-				                      Title="Nombre"/>
-
-				<RadzenDataGridColumn TItem="AppUserResponse" Property="Apellidos"
-				                      Title="Apellidos"/>
-
-				<RadzenDataGridColumn TItem="AppUserResponse" Property="Email"
-				                      Title="Email" Width="220px"/>
-
-				<RadzenDataGridColumn TItem="AppUserResponse" Property="PhoneNumber"
-				                      Title="Teléfono" Width="130px"/>
-
-				<RadzenDataGridColumn TItem="AppUserResponse" Title="Roles"
-				                      Filterable="false" Sortable="false"
-				                      Width="150px">
+                <RadzenDataGridColumn TItem="AppUserResponse" Title="Roles"
+				                      Filterable="false" Sortable="false">
 					<Template Context="user">
 						<div class="d-flex flex-row flex-wrap">
 							@foreach (var item in user.Roles)
 							{
 								<div>
 									<span class="text-radzen-primary"
-									      style="font-weight: bold;">
+                                          style="font-weight: 700;">
 										@(item.Nombre).&nbsp;&nbsp;
 									</span>
 								</div>
@@ -50,9 +39,8 @@
 						</div>
 					</Template>
 				</RadzenDataGridColumn>
-
-				<RadzenDataGridColumn TItem="AppUserResponse" Property="EmailConfirmed"
-				                      Title="Estado Cuenta" Filterable="false"
+                <RadzenDataGridColumn TItem="AppUserResponse" Property="EmailConfirmed"
+				                      Title="Estado" Filterable="false"
 				                      Sortable="false">
 					<Template Context="user">
 						@if (user.EmailConfirmed)
@@ -65,22 +53,24 @@
 						}
 					</Template>
 				</RadzenDataGridColumn>
-
-				<RadzenDataGridColumn TItem="AppUserResponse" Filterable="false"
+                <RadzenDataGridColumn TItem="AppUserResponse" Filterable="false"
 				                      Sortable="false" TextAlign="@TextAlign.Center"
 				                      Width="70px">
 					<Template Context="user">
 						@if (user.LockoutEnd > DateTime.UtcNow)
 						{
-							<RadzenButton Icon="lock" ButtonStyle="@ButtonStyle.Danger" Click="@(() => LockUnlock(user.Id))"></RadzenButton>
+							<RadzenButton Icon="lock" ButtonStyle="@ButtonStyle.Danger"
+							              Click="@(() => LockUnlock(user.Id))">
+							</RadzenButton>
 						}
 						else
 						{
-							<RadzenButton Icon="lock_open" ButtonStyle="@ButtonStyle.Success" Click="@(() => LockUnlock(user.Id))"></RadzenButton>
+							<RadzenButton Icon="lock_open" ButtonStyle="@ButtonStyle.Success"
+							              Click="@(() => LockUnlock(user.Id))">
+							</RadzenButton>
 						}
 					</Template>
-
-				</RadzenDataGridColumn>
+                </RadzenDataGridColumn>
 			</CustomGridCols>
 		</RadzenGenericGrid>
 	</div>

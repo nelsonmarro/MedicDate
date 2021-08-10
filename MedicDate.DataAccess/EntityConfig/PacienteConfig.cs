@@ -9,8 +9,11 @@ namespace MedicDate.DataAccess.EntityConfig
     {
         public void Configure(EntityTypeBuilder<Paciente> builder)
         {
-            builder.Property(x => x.Sexo)
-            .HasConversion<string>();
+            builder.HasIndex(x => x.Cedula)
+                .IsUnique();
+
+            builder.HasIndex(x => x.NumHistoria)
+                .IsUnique();
         }
     }
 }

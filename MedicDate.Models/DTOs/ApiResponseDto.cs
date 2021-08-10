@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Drawing;
 
 namespace MedicDate.Models.DTOs
 {
@@ -8,7 +10,7 @@ namespace MedicDate.Models.DTOs
         public int PageIndex { get; set; }
         public int PageSize { get; set; }
         public int TotalCount { get; set; }
-        public int TotalPages { get; set; }
+        public int TotalPages => (int)Math.Ceiling(TotalCount / (double)PageSize);
         public bool HasPreviousPage => PageIndex > 0;
         public bool HasNextPage => PageIndex + 1 < TotalPages;
     }

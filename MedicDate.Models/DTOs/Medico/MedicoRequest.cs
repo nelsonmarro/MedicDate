@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using MedicDate.Models.DTOs.Especialidad;
 
 namespace MedicDate.Models.DTOs.Medico
 {
@@ -25,6 +24,6 @@ namespace MedicDate.Models.DTOs.Medico
         [MaxLength(20, ErrorMessage = "El teléfono no debe tener mas de {1} dígitos")]
         public string PhoneNumber { get; set; }
 
-        public List<int> EspecialidadesId { get; set; } = new();
+        public List<string> EspecialidadesId { get; set; } = new();
     }
 }

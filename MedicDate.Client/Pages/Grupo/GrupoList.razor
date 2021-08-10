@@ -1,0 +1,14 @@
+﻿@page "/grupoList"
+@inherits GrupoListBase
+
+<div class="row">
+	<div class="col-auto col-md-6 text-start">
+		<h2 class="text-radzen-secondary">Grupos</h2>
+	</div>
+	<div class="col-12">
+		<RadzenGenericGrid TItem="GrupoResponse" TotalCount="@TotalCount"
+		                   Headers="@TableHeaders" ItemList="@ItemList"
+		                   OpRoutes="@OpRoutes" OnDeleteData="@DeleteGrupo"
+		                   PropNames="@PropNames"/>
+	</div>
+</div>

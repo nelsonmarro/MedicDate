@@ -2,10 +2,7 @@
 using MedicDate.Client.Services.IServices;
 using MedicDate.Models.DTOs.Medico;
 using Microsoft.AspNetCore.Components;
-using Radzen;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace MedicDate.Client.Pages.Medico
@@ -29,7 +26,7 @@ namespace MedicDate.Client.Pages.Medico
         {
             _isBussy = true;
 
-            var httpResp = await HttpRepo.Post<MedicoRequest, MedicoResponse>("api/Medico/crear", _medicoModel);
+            var httpResp = await HttpRepo.Post("api/Medico/crear", _medicoModel);
 
             _isBussy = false;
 

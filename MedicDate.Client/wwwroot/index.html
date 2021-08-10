@@ -1,45 +1,61 @@
 <!DOCTYPE html>
 <html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <title>Medic Date</title>
+    <base href="/" />
+    <link href="lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="_content/Radzen.Blazor/css/default-base.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+    />
+    <link href="css/app.min.css" rel="stylesheet" />
+    <link href="MedicDate.Client.styles.css" rel="stylesheet" />
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
 
-<head>
-	<meta charset="utf-8"/>
-	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-	<title>Medic Date</title>
-	<base href="/"/>
-	<link href="lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet"/>
-	<link rel="stylesheet" href="_content/Radzen.Blazor/css/default-base.css">
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
-	<link href="css/app.min.css" rel="stylesheet"/>
-	<link href="MedicDate.Client.styles.css" rel="stylesheet"/>
+    <script
+      src="https://kit.fontawesome.com/951efcbaa0.js"
+      crossorigin="anonymous"
+    ></script>
+  </head>
 
-	<script src="https://kit.fontawesome.com/951efcbaa0.js" crossorigin="anonymous"></script>
-</head>
+  <body>
+    <div id="app" style="height: 100%">
+      <div
+        style="position: absolute; top: 30vh; width: 100%; text-align: center"
+      >
+        <span style="font-weight: 300; font-size: 34px" class="me-1"
+          >Cargando</span
+        >
+        <span>
+          <i class="fas fa-spin fa-spinner fa-2x"></i>
+        </span>
+      </div>
+    </div>
 
-<body>
-<div id="app" style="height: 100%">
-	<div style="position: absolute; top: 30vh; width: 100%; text-align: center">
-		<span style="font-weight: lighter; font-size: 34px" class="mr-2">Cargando</span>
-		<span>
-			<i class="fas fa-spin fa-spinner fa-2x"></i>
-		</span>
-	</div>
-</div>
+    <div id="blazor-error-ui">
+      An unhandled error has occurred.
+      <a href="" class="reload">Reload</a>
+      <a class="dismiss">🗙</a>
+    </div>
 
-<div id="blazor-error-ui">
-	An unhandled error has occurred.
-	<a href="" class="reload">Reload</a>
-	<a class="dismiss">🗙</a>
-</div>
-
-<script src="_content/Microsoft.AspNetCore.Components.WebAssembly.Authentication/AuthenticationService.js"></script>
-<script src="_framework/blazor.webassembly.js"></script>
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
-        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
-        crossorigin="anonymous"></script>
-<script src="lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-<script src="_content/Radzen.Blazor/Radzen.Blazor.js"></script>
-<script src="js/app.js"></script>
-
-</body>
-
+    <script src="_content/Microsoft.AspNetCore.Components.WebAssembly.Authentication/AuthenticationService.js"></script>
+    <script src="_framework/blazor.webassembly.js"></script>
+    <script
+      src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+      integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+      crossorigin="anonymous"
+    ></script>
+    <script src="lib/bootstrap/dist/js/bootstrap.bundle.js"></script>
+    <script src="_content/Radzen.Blazor/Radzen.Blazor.js"></script>
+    <script src="js/app.js"></script>
+  </body>
 </html>

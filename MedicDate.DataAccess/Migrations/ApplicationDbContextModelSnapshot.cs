@@ -19,6 +19,44 @@ namespace MedicDate.DataAccess.Migrations
                 .HasAnnotation("ProductVersion", "5.0.8")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+            modelBuilder.Entity("MedicDate.DataAccess.Models.Actividad", b =>
+                {
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Nombre")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Actividad");
+                });
+
+            modelBuilder.Entity("MedicDate.DataAccess.Models.ActividadCita", b =>
+                {
+                    b.Property<string>("CitaId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ActividadId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<bool>("ActividadTerminada")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Detalles")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.HasKey("CitaId", "ActividadId");
+
+                    b.HasIndex("ActividadId");
+
+                    b.ToTable("ActividadCita");
+                });
+
             modelBuilder.Entity("MedicDate.DataAccess.Models.AppRole", b =>
                 {
                     b.Property<string>("Id")
@@ -29,7 +67,8 @@ namespace MedicDate.DataAccess.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Descripcion")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
 
                     b.Property<string>("Name")
                         .HasMaxLength(256)
@@ -100,7 +139,8 @@ namespace MedicDate.DataAccess.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("RefreshToken")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(400)
+                        .HasColumnType("varchar(400)");
 
                     b.Property<DateTime>("RefreshTokenExpiryTime")
                         .HasColumnType("datetime2");
@@ -128,38 +168,72 @@ namespace MedicDate.DataAccess.Migrations
                     b.ToTable("AspNetUsers");
                 });
 
-            modelBuilder.Entity("MedicDate.DataAccess.Models.ArchivoPaciente", b =>
+            modelBuilder.Entity("MedicDate.DataAccess.Models.Archivo", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("PacienteId")
-                        .HasColumnType("int");
+                    b.Property<string>("CitaId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Descripcion")
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
 
                     b.Property<string>("RutaArchivo")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(1000)
+                        .HasColumnType("varchar(1000)");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CitaId");
+
+                    b.ToTable("Archivo");
+                });
+
+            modelBuilder.Entity("MedicDate.DataAccess.Models.Cita", b =>
+                {
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Estado")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<DateTime>("FechaFin")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("FechaInicio")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("MedicoId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("PacienteId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MedicoId");
+
                     b.HasIndex("PacienteId");
 
-                    b.ToTable("ArchivoPaciente");
+                    b.ToTable("Cita");
                 });
 
             modelBuilder.Entity("MedicDate.DataAccess.Models.Especialidad", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("NombreEspecialidad")
                         .IsRequired()
-                        .HasMaxLength(150)
-                        .HasColumnType("nvarchar(150)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.HasKey("Id");
 
@@ -168,15 +242,14 @@ namespace MedicDate.DataAccess.Migrations
 
             modelBuilder.Entity("MedicDate.DataAccess.Models.Grupo", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Nombre")
                         .IsRequired()
-                        .HasMaxLength(150)
-                        .HasColumnType("nvarchar(150)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.HasKey("Id");
 
@@ -185,11 +258,11 @@ namespace MedicDate.DataAccess.Migrations
 
             modelBuilder.Entity("MedicDate.DataAccess.Models.GrupoPaciente", b =>
                 {
-                    b.Property<int>("GrupoId")
-                        .HasColumnType("int");
+                    b.Property<string>("GrupoId")
+                        .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("PacienteId")
-                        .HasColumnType("int");
+                    b.Property<string>("PacienteId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("GrupoId", "PacienteId");
 
@@ -200,10 +273,9 @@ namespace MedicDate.DataAccess.Migrations
 
             modelBuilder.Entity("MedicDate.DataAccess.Models.Medico", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Apellidos")
                         .IsRequired()
@@ -213,7 +285,7 @@ namespace MedicDate.DataAccess.Migrations
                     b.Property<string>("Cedula")
                         .IsRequired()
                         .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
+                        .HasColumnType("varchar(10)");
 
                     b.Property<string>("Nombre")
                         .IsRequired()
@@ -223,20 +295,23 @@ namespace MedicDate.DataAccess.Migrations
                     b.Property<string>("PhoneNumber")
                         .IsRequired()
                         .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                        .HasColumnType("varchar(20)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Cedula")
+                        .IsUnique();
 
                     b.ToTable("Medico");
                 });
 
             modelBuilder.Entity("MedicDate.DataAccess.Models.MedicoEspecialidad", b =>
                 {
-                    b.Property<int>("MedicoId")
-                        .HasColumnType("int");
+                    b.Property<string>("MedicoId")
+                        .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("EspecialidadId")
-                        .HasColumnType("int");
+                    b.Property<string>("EspecialidadId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("MedicoId", "EspecialidadId");
 
@@ -247,10 +322,9 @@ namespace MedicDate.DataAccess.Migrations
 
             modelBuilder.Entity("MedicDate.DataAccess.Models.Paciente", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Apellidos")
                         .IsRequired()
@@ -260,7 +334,7 @@ namespace MedicDate.DataAccess.Migrations
                     b.Property<string>("Cedula")
                         .IsRequired()
                         .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
+                        .HasColumnType("varchar(10)");
 
                     b.Property<string>("Direccion")
                         .HasMaxLength(300)
@@ -279,8 +353,10 @@ namespace MedicDate.DataAccess.Migrations
                         .HasMaxLength(150)
                         .HasColumnType("nvarchar(150)");
 
-                    b.Property<int>("NumHistoria")
-                        .HasColumnType("int");
+                    b.Property<string>("NumHistoria")
+                        .IsRequired()
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
 
                     b.Property<string>("Sexo")
                         .IsRequired()
@@ -289,9 +365,15 @@ namespace MedicDate.DataAccess.Migrations
 
                     b.Property<string>("Telefono")
                         .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                        .HasColumnType("varchar(20)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Cedula")
+                        .IsUnique();
+
+                    b.HasIndex("NumHistoria")
+                        .IsUnique();
 
                     b.ToTable("Paciente");
                 });
@@ -400,13 +482,45 @@ namespace MedicDate.DataAccess.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("MedicDate.DataAccess.Models.ArchivoPaciente", b =>
+            modelBuilder.Entity("MedicDate.DataAccess.Models.ActividadCita", b =>
                 {
-                    b.HasOne("MedicDate.DataAccess.Models.Paciente", "Paciente")
-                        .WithMany("ArchivosPaciente")
-                        .HasForeignKey("PacienteId")
+                    b.HasOne("MedicDate.DataAccess.Models.Actividad", "Actividad")
+                        .WithMany("ActividadesCitas")
+                        .HasForeignKey("ActividadId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("MedicDate.DataAccess.Models.Cita", "Cita")
+                        .WithMany("ActividadesCitas")
+                        .HasForeignKey("CitaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Actividad");
+
+                    b.Navigation("Cita");
+                });
+
+            modelBuilder.Entity("MedicDate.DataAccess.Models.Archivo", b =>
+                {
+                    b.HasOne("MedicDate.DataAccess.Models.Cita", "Cita")
+                        .WithMany("Archivos")
+                        .HasForeignKey("CitaId");
+
+                    b.Navigation("Cita");
+                });
+
+            modelBuilder.Entity("MedicDate.DataAccess.Models.Cita", b =>
+                {
+                    b.HasOne("MedicDate.DataAccess.Models.Medico", "Medico")
+                        .WithMany("Citas")
+                        .HasForeignKey("MedicoId");
+
+                    b.HasOne("MedicDate.DataAccess.Models.Paciente", "Paciente")
+                        .WithMany("Citas")
+                        .HasForeignKey("PacienteId");
+
+                    b.Navigation("Medico");
 
                     b.Navigation("Paciente");
                 });
@@ -414,13 +528,13 @@ namespace MedicDate.DataAccess.Migrations
             modelBuilder.Entity("MedicDate.DataAccess.Models.GrupoPaciente", b =>
                 {
                     b.HasOne("MedicDate.DataAccess.Models.Grupo", "Grupo")
-                        .WithMany()
+                        .WithMany("GruposPacientes")
                         .HasForeignKey("GrupoId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("MedicDate.DataAccess.Models.Paciente", "Paciente")
-                        .WithMany()
+                        .WithMany("GruposPacientes")
                         .HasForeignKey("PacienteId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -500,19 +614,40 @@ namespace MedicDate.DataAccess.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("MedicDate.DataAccess.Models.Actividad", b =>
+                {
+                    b.Navigation("ActividadesCitas");
+                });
+
+            modelBuilder.Entity("MedicDate.DataAccess.Models.Cita", b =>
+                {
+                    b.Navigation("ActividadesCitas");
+
+                    b.Navigation("Archivos");
+                });
+
             modelBuilder.Entity("MedicDate.DataAccess.Models.Especialidad", b =>
                 {
                     b.Navigation("MedicosEspecialidades");
                 });
 
+            modelBuilder.Entity("MedicDate.DataAccess.Models.Grupo", b =>
+                {
+                    b.Navigation("GruposPacientes");
+                });
+
             modelBuilder.Entity("MedicDate.DataAccess.Models.Medico", b =>
                 {
+                    b.Navigation("Citas");
+
                     b.Navigation("MedicosEspecialidades");
                 });
 
             modelBuilder.Entity("MedicDate.DataAccess.Models.Paciente", b =>
                 {
-                    b.Navigation("ArchivosPaciente");
+                    b.Navigation("Citas");
+
+                    b.Navigation("GruposPacientes");
                 });
 #pragma warning restore 612, 618
         }

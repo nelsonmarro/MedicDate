@@ -20,14 +20,10 @@ namespace MedicDate.Client.Services
             await _dialogService.OpenAsync<NotificationDialog>("",
                 new Dictionary<string, object>()
                 {
-                    {"Icon", "fa-check"},
-                    {"Title", title},
-                    {"Text", details},
-                    {"Color", "success"}
-                },
-                new DialogOptions()
-                {
-                    Width = "485px", Height = "340px"
+                    { "Icon", "fa-check" },
+                    { "Title", title },
+                    { "Text", details },
+                    { "Color", "success" }
                 });
         }
 
@@ -36,14 +32,10 @@ namespace MedicDate.Client.Services
             await _dialogService.OpenAsync<NotificationDialog>("",
                 new Dictionary<string, object>()
                 {
-                    {"Icon", "fa-times-circle"},
-                    {"Title", title},
-                    {"Text", details},
-                    {"Color", "danger"}
-                },
-                new DialogOptions()
-                {
-                    Width = "485px", Height = "340px"
+                    { "Icon", "fa-times-circle" },
+                    { "Title", title },
+                    { "Text", details },
+                    { "Color", "danger" }
                 });
         }
 
@@ -52,14 +44,10 @@ namespace MedicDate.Client.Services
             await _dialogService.OpenAsync<NotificationDialog>("",
                 new Dictionary<string, object>()
                 {
-                    {"Icon", "fa-exclamation-triangle"},
-                    {"Title", title},
-                    {"Text", details},
-                    {"Color", "warning"}
-                },
-                new DialogOptions()
-                {
-                    Width = "485px", Height = "340px"
+                    { "Icon", "fa-exclamation-triangle" },
+                    { "Title", title },
+                    { "Text", details },
+                    { "Color", "warning" }
                 });
         }
 
@@ -68,14 +56,10 @@ namespace MedicDate.Client.Services
             await _dialogService.OpenAsync<NotificationDialog>("",
                 new Dictionary<string, object>()
                 {
-                    {"Icon", "fa-exclamation-circle"},
-                    {"Title", title},
-                    {"Text", details},
-                    {"Color", "info"}
-                },
-                new DialogOptions()
-                {
-                    Width = "485px", Height = "340px"
+                    { "Icon", "fa-exclamation-circle" },
+                    { "Title", title },
+                    { "Text", details },
+                    { "Color", "info" }
                 });
         }
     }
