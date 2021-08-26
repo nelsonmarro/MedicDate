@@ -1,0 +1,56 @@
+﻿@page "/usuario/confirmEmail"
+@using MedicDate.API.DTOs.Auth
+@inject NavigationManager _navigationManager
+@inject INotificationService _notificationService
+@inject IHttpRepository _httpRepo
+@inject IAuthenticationService _authService
+
+<h2 class="text-radzen-primary">Email Confirmado</h2>
+
+<p class="mt-2">
+	Gracias por confirmar la cuenta.
+</p>
+
+<RadzenButton Text="inicia sesión" Click="IniciarSession" />
+
+@code {
+
+	[CascadingParameter]
+	public Task<AuthenticationState> AuthenticationState { get; set; }
+
+	private string _code;
+	private string _userId;
+    private readonly ConfirmEmailDto _confirmEmailDto = new();
+	private AuthenticationState _authState;
+
+	protected override async Task OnInitializedAsync()
+	{
+		_authState = await AuthenticationState;
+
+		_navigationManager.TryGetQueryString("code", out _code);
+		_navigationManager.TryGetQueryString("userId", out _userId);
+
+		if (_userId is null || _code is null)
+		{
+			_notificationService.ShowError("Error!", "Error al recibir los datos para la confirmación de la cuenta");
+		}
+		else
+		{
+		    _confirmEmailDto.Code = _code;
+		    _confirmEmailDto.UserId = _userId;
+
+		    var httpResp = await _httpRepo.Post("api/Account/confirmEmail", _confirmEmailDto);
+		}
+	}
+
+	private async Task IniciarSession()
+	{
+		if (_authState.User.Identity.IsAuthenticated)
+		{
+			await _authService.Logout();
+		}
+
+		_navigationManager.NavigateTo("/login");
+	}
+
+}

@@ -1,0 +1,20 @@
+﻿@page "/notFound"
+
+<div class="container">
+    <h2 class="text-radzen-secondary">No Encotrado!</h2>
+    <p>No existe el recurso que intenta acceder</p>
+    <AuthorizeView>
+        <Authorized>
+            <NavLink href="/">
+                <RadzenButton ButtonStyle="ButtonStyle.Secondary"
+                              Text="Ir a la página de Inicio"/>
+            </NavLink>
+        </Authorized>
+        <NotAuthorized>
+            <NavLink href="/login">
+                <RadzenButton ButtonStyle="ButtonStyle.Secondary"
+                              Text="Ir a Inicio de Sesión"/>
+            </NavLink>
+        </NotAuthorized>
+    </AuthorizeView>
+</div>

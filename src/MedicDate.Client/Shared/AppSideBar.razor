@@ -1,0 +1,38 @@
+﻿<RadzenPanelMenu>
+	<p class="pb-2 mb-0 mx-3 mt-2 border-bottom">
+		<AuthorizeView>
+			<Authorized>
+				<RadzenLabel Text="Menú" />
+			</Authorized>
+			<NotAuthorized>
+				<RadzenLabel Text="Inicie Sesión" />
+			</NotAuthorized>
+		</AuthorizeView>
+
+	</p>
+	<AuthorizeView>
+		<Authorized>
+			<RadzenPanelMenuItem Text="Inicio" Icon="home" Path="/" class="mt-2" />
+			<RadzenPanelMenuItem Text="Pacientes" Icon="personal_injury" Path="/pacienteList" />
+			<RadzenPanelMenuItem Text="Doctores" Icon="supervisor_account" Path="/medicoList" />
+			<RadzenPanelMenuItem Text="Especialidades" Icon="psychology" Path="/especialidadList" />
+
+			<RadzenPanelMenuItem Text="Administración del Sistema" Icon="settings">
+				<RadzenPanelMenuItem Text="Usuarios" Path="/usuarioList" Icon="person" />
+				<RadzenPanelMenuItem Text="Grupos" Path="/grupoList" Icon="groups" />
+				<RadzenPanelMenuItem Text="Actividades" Path="/actividadList" Icon="assignment" />
+			</RadzenPanelMenuItem>
+		</Authorized>
+	</AuthorizeView>
+</RadzenPanelMenu>
+
+@code {
+	[CascadingParameter]
+	public Task<AuthenticationState> AuthenticationState { get; set; }
+	private AuthenticationState _authState;
+
+	protected override async Task OnInitializedAsync()
+	{
+		_authState = await AuthenticationState;
+	}
+}

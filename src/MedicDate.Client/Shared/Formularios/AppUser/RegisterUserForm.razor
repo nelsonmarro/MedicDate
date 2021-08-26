@@ -1,0 +1,76 @@
+﻿@using MedicDate.API.DTOs.AppRole
+
+<RadzenCard>
+    <EditForm Model="RegisterModel" OnValidSubmit="OnSubmitData">
+        <DataAnnotationsValidator />
+
+        <div class="row mb-3">
+            <RadzenLabel Text="Nombres" />
+            <div class="mt-1">
+                <RadzenTextBox @bind-Value="RegisterModel.Nombre" class="w-100" />
+                <ValidationMessage For="() => RegisterModel.Nombre" />
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <RadzenLabel Text="Apellidos" />
+            <div class="mt-1">
+                <RadzenTextBox @bind-Value="RegisterModel.Apellidos" class="w-100" />
+                <ValidationMessage For="() => RegisterModel.Apellidos" />
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <RadzenLabel Text="Email" />
+            <div class="mt-1">
+                <RadzenTextBox type="email" @bind-Value="RegisterModel.Email" class="w-100" />
+                <ValidationMessage For="() => RegisterModel.Email" />
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <RadzenLabel Text="Teléfono" />
+            <div class="mt-1">
+                <RadzenTextBox @bind-Value="RegisterModel.PhoneNumber" class="w-100" />
+                <ValidationMessage For="() => RegisterModel.PhoneNumber" />
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <RadzenLabel Text="Contraseña" />
+            <div class="mt-1">
+                <RadzenPassword @bind-Value="RegisterModel.Password" class="w-100" />
+                <ValidationMessage For="() => RegisterModel.Password" />
+            </div>
+        </div>
+        <div class="row mb-3">
+            <RadzenLabel Text="Confirme su contraseña" />
+            <div class="mt-1">
+                <RadzenPassword @bind-Value="RegisterModel.ConfirmPassword" class="w-100" />
+                <ValidationMessage For="() => RegisterModel.ConfirmPassword" />
+            </div>
+        </div>
+        @if (Errors is not null && Errors.Length > 0)
+        {
+            <div>
+                <ul>
+                    @foreach (var error in Errors)
+                    {
+                        <li class="text-danger">@error</li>
+                    }
+                </ul>
+            </div>
+        }
+        <div class="row mb-3">
+            <RadzenLabel Text="Roles" />
+            <div class="mt-2">
+                <SelectableGrid ItemList="@_roleList" TItem="RoleResponseDto"
+                                SelectedItems="@_selectedRoles" Headers="@_headers"
+                                PropNames="@_propName" />
+            </div>
+        </div>
+        <div class="mb-2">
+            <FormButtons NavLinkRoute="usuarioList" />
+        </div>
+    </EditForm>
+</RadzenCard>

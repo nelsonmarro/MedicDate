@@ -1,0 +1,9 @@
+﻿@page "/usuarioCrear"
+@using MedicDate.Client.Shared.Formularios.AppUser
+
+<h2 class="text-radzen-primary mb-2">Crear Usuario</h2>
+
+<CascadingValue Value="@_isBussy">
+    <RegisterUserForm RegisterModel="@_registerModel" Errors="_errors"
+                      OnSubmit="CreateUser" />
+</CascadingValue>

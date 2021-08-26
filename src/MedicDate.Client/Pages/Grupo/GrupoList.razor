@@ -1,0 +1,14 @@
+﻿@page "/grupoList"
+@using MedicDate.API.DTOs.Grupo
+
+<div class="row">
+	<div class="col-auto col-md-6 text-start">
+		<h2 class="text-radzen-secondary">Grupos</h2>
+	</div>
+	<div class="col-12"> 
+        <RadzenGenericGrid TItem="GrupoResponseDto" TotalCount="@_totalCount"
+		                   Headers="@_tableHeaders" ItemList="@_grupoList"
+		                   OpRoutes="@_opRoutes" OnDeleteData="@DeleteGrupo"
+		                   PropNames="@_propNames"/>
+	</div>
+</div>

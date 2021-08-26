@@ -1,0 +1,14 @@
+﻿@page "/especialidadList"
+@using MedicDate.API.DTOs.Especialidad
+
+<div class="row">
+    <div class="col-auto col-md-6 text-start">
+        <h2 class="text-radzen-secondary">Especialidades</h2>
+    </div>
+    <div class="col-12">
+        <RadzenGenericGrid TItem="EspecialidadResponseDto" TotalCount="@_totalCount"
+	                       Headers="@_tableHeaders" ItemList="@_especialidadList"
+	                       OpRoutes="@_opRoutes" PropNames="@_propNames"
+	                       OnDeleteData="@DeleteEspecialidad"/>
+    </div>
+</div>
