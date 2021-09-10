@@ -6,30 +6,30 @@ using System.Threading.Tasks;
 
 namespace MedicDate.Client.Pages.Actividad
 {
-	public partial class ActividadCreate
-	{
-		[Inject] public IHttpRepository HttpRepo { get; set; }
-		[Inject] public NavigationManager NavigationManager { get; set; }
-		[Inject] public INotificationService NotificationService { get; set; }
+    public partial class ActividadCreate
+    {
+        [Inject] public IHttpRepository HttpRepo { get; set; }
+        [Inject] public NavigationManager NavigationManager { get; set; }
+        [Inject] public INotificationService NotificationService { get; set; }
 
-		private bool _isBussy;
+        private bool _isBussy;
 
-		private readonly ActividadRequestDto _actividadModel = new();
+        private readonly ActividadRequestDto _actividadModel = new();
 
-		private async Task CreateActividad()
-		{
-			_isBussy = true;
+        private async Task CreateActividad()
+        {
+            _isBussy = true;
 
-			var httpResp = await HttpRepo.Post("api/Actividad/crear", _actividadModel);
+            var httpResp = await HttpRepo.Post("api/Actividad/crear", _actividadModel);
 
-			_isBussy = false;
+            _isBussy = false;
 
-			if (!httpResp.Error)
-			{
-				NotificationService.ShowSuccess("Operación Exitosa!", "Actividad creada con éxito");
+            if (!httpResp.Error)
+            {
+                NotificationService.ShowSuccess("Operación Exitosa!", "Actividad creada con éxito");
 
-				NavigationManager.NavigateTo("actividadList");
-			}
-		}
-	}
+                NavigationManager.NavigateTo("actividadList");
+            }
+        }
+    }
 }

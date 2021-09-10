@@ -1,6 +1,6 @@
-﻿using System.Threading.Tasks;
-using MedicDate.API.DTOs.Auth;
+﻿using MedicDate.API.DTOs.Auth;
 using MedicDate.Client.Data.HttpRepository.IHttpRepository;
+using System.Threading.Tasks;
 
 namespace MedicDate.Client.Services.IServices
 {

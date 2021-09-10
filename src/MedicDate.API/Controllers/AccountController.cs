@@ -1,7 +1,7 @@
-﻿using MedicDate.Bussines.Repository.IRepository;
+﻿using MedicDate.API.DTOs.Auth;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
-using MedicDate.API.DTOs.Auth;
+using MedicDate.DataAccess.Repository.IRepository;
 
 namespace MedicDate.API.Controllers
 {
@@ -20,10 +20,9 @@ namespace MedicDate.API.Controllers
         public async Task<ActionResult> RegisterAsync(RegisterUserDto registerUserDto)
         {
             var resp = await _accountRepo.RegisterUserAsync(registerUserDto);
-
-            return resp.IsSuccess
-                ? resp.SuccessActionResult
-                : resp.ErrorActionResult;
+            return resp.Succeeded
+                ? resp.SuccessResult
+                : resp.ErrorResult;
         }
 
         [HttpPost("login")]
@@ -31,9 +30,9 @@ namespace MedicDate.API.Controllers
         {
             var resp = await _accountRepo.LoginUserAsync(loginRequestDto);
 
-            return resp.IsSuccess
-                ? resp.ResultData
-                : resp.ErrorActionResult;
+            return resp.Succeeded
+                ? resp.DataResult
+                : resp.ErrorResult;
         }
 
         [HttpPost("forgotPassword")]
@@ -41,9 +40,9 @@ namespace MedicDate.API.Controllers
         {
             var resp = await _accountRepo.SendForgotPasswordRequestAsync(forgotPasswordModel);
 
-            return resp.IsSuccess
-                ? resp.SuccessActionResult
-                : resp.ErrorActionResult;
+            return resp.Succeeded
+                ? resp.SuccessResult
+                : resp.ErrorResult;
         }
 
         [HttpPost("resetPassword")]
@@ -51,9 +50,9 @@ namespace MedicDate.API.Controllers
         {
             var resp = await _accountRepo.ResetPasswordAsync(resetPasswordDto);
 
-            return resp.IsSuccess
-                ? resp.SuccessActionResult
-                : resp.ErrorActionResult;
+            return resp.Succeeded
+                ? resp.SuccessResult
+                : resp.ErrorResult;
         }
 
         [HttpPost("lock")]
@@ -61,9 +60,9 @@ namespace MedicDate.API.Controllers
         {
             var resp = await _accountRepo.LockUserAsync(id);
 
-            return resp.IsSuccess
-                ? resp.SuccessActionResult
-                : resp.ErrorActionResult;
+            return resp.Succeeded
+                ? resp.SuccessResult
+                : resp.ErrorResult;
         }
 
         [HttpPost("unlock")]
@@ -71,9 +70,9 @@ namespace MedicDate.API.Controllers
         {
             var resp = await _accountRepo.UnlockUserAsync(id);
 
-            return resp.IsSuccess
-                ? resp.SuccessActionResult
-                : resp.ErrorActionResult;
+            return resp.Succeeded
+                ? resp.SuccessResult
+                : resp.ErrorResult;
         }
 
         [HttpPost("confirmEmail")]
@@ -81,9 +80,9 @@ namespace MedicDate.API.Controllers
         {
             var resp = await _accountRepo.ConfirmAccountEmailAsync(confirmEmailDto);
 
-            return resp.IsSuccess
-                ? resp.SuccessActionResult
-                : resp.ErrorActionResult;
+            return resp.Succeeded
+                ? resp.SuccessResult
+                : resp.ErrorResult;
         }
 
         [HttpPost("sendConfirmationEmail")]
@@ -91,9 +90,9 @@ namespace MedicDate.API.Controllers
         {
             var resp = await _accountRepo.SendAccountConfirmationEmailAsync(userEmail);
 
-            return resp.IsSuccess
-                ? resp.SuccessActionResult
-                : resp.ErrorActionResult;
+            return resp.Succeeded
+                ? resp.SuccessResult
+                : resp.ErrorResult;
         }
 
         [HttpPost("sendChangeEmailToken")]
@@ -101,9 +100,9 @@ namespace MedicDate.API.Controllers
         {
             var resp = await _accountRepo.SendChangeEmailTokenAsync(changeEmailDto);
 
-            return resp.IsSuccess
-                ? resp.SuccessActionResult
-                : resp.ErrorActionResult;
+            return resp.Succeeded
+                ? resp.SuccessResult
+                : resp.ErrorResult;
         }
 
         [HttpPost("changeEmail/{userId}")]
@@ -111,9 +110,9 @@ namespace MedicDate.API.Controllers
         {
             var resp = await _accountRepo.ChangeEmailAsync(userId, changeEmailDto);
 
-            return resp.IsSuccess
-                ? resp.SuccessActionResult
-                : resp.ErrorActionResult;
+            return resp.Succeeded
+                ? resp.SuccessResult
+                : resp.ErrorResult;
         }
     }
 }

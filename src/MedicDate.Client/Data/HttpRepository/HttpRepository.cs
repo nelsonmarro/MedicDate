@@ -1,9 +1,9 @@
-﻿using System.Net.Http;
+﻿using MedicDate.Client.Helpers;
+using MedicDate.Client.Services.IServices;
+using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text.Json;
 using System.Threading.Tasks;
-using MedicDate.Client.Helpers;
-using MedicDate.Client.Services.IServices;
 
 namespace MedicDate.Client.Data.HttpRepository
 {

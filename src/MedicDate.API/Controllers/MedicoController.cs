@@ -1,12 +1,11 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
-using AutoMapper;
-using MedicDate.API.DTOs;
+﻿using AutoMapper;
 using MedicDate.API.DTOs.Common;
 using MedicDate.API.DTOs.Medico;
-using MedicDate.Bussines.Repository.IRepository;
 using MedicDate.DataAccess.Entities;
 using Microsoft.AspNetCore.Mvc;
+using System.Linq;
+using System.Threading.Tasks;
+using MedicDate.DataAccess.Repository.IRepository;
 
 namespace MedicDate.API.Controllers
 {
@@ -96,9 +95,9 @@ namespace MedicDate.API.Controllers
         {
             var resp = await _medicoRepo.UpdateMedicoAsync(id, medicoRequestDto);
 
-            return resp.IsSuccess
-                ? resp.SuccessActionResult
-                : resp.ErrorActionResult;
+            return resp.Succeeded
+                ? resp.SuccessResult
+                : resp.ErrorResult;
         }
 
         [HttpDelete("eliminar/{id}")]

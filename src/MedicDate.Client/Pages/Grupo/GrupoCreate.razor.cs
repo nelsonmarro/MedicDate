@@ -1,8 +1,8 @@
-﻿using MedicDate.Client.Data.HttpRepository.IHttpRepository;
+﻿using MedicDate.API.DTOs.Grupo;
+using MedicDate.Client.Data.HttpRepository.IHttpRepository;
 using MedicDate.Client.Services.IServices;
 using Microsoft.AspNetCore.Components;
 using System.Threading.Tasks;
-using MedicDate.API.DTOs.Grupo;
 
 namespace MedicDate.Client.Pages.Grupo
 {
@@ -27,7 +27,6 @@ namespace MedicDate.Client.Pages.Grupo
             if (!httpResp.Error)
             {
                 NotificationService.ShowSuccess("Operación Exitosa!", "Grupo creado con éxito");
-
                 NavigationManager.NavigateTo("grupoList");
             }
         }

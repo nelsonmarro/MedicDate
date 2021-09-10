@@ -1,10 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using MedicDate.API.DTOs;
-using MedicDate.API.DTOs.Common;
+﻿using MedicDate.API.DTOs.Common;
 using MedicDate.Client.Data.HttpRepository.IHttpRepository;
 using MedicDate.Client.Services.IServices;
 using Microsoft.AspNetCore.Components;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace MedicDate.Client.Components
 {

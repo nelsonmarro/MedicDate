@@ -22,10 +22,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\..\src\MedicDate.API\MedicDate.API.csproj" />
     <ProjectReference Include="..\MedicDate.Test.Shared\MedicDate.Test.Shared.csproj" />
   </ItemGroup>

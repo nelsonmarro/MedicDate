@@ -1,6 +1,6 @@
 ﻿@page "/especialidadEditar/{id}"
 
-<h2 class="text-radzen-primary mb-2">Editar Especialidad</h2>
+<h2 class="text-primary mb-2">Editar Especialidad</h2>
 
 @if (_especialidadModel is null)
 {
@@ -9,6 +9,6 @@
 else
 {
 	<CascadingValue Value="_isBussy">
-		<EspecialidadForm EspecialidadModel="@_especialidadModel" OnSubmit="@EditEspecialidad"/>
+		<EspecialidadForm EspecialidadModel="@_especialidadModel" OnSubmit="@EditEspecialidad" />
 	</CascadingValue>
 }

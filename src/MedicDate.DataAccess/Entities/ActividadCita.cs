@@ -10,6 +10,6 @@ namespace MedicDate.DataAccess.Entities
         [StringLength(1000)] public string Detalles { get; set; }
 
         public Cita Cita { get; set; }
-        public Actividad Actividad { get; set; }
+        public Actividad Actividad { get; set; } 
     }
 }

@@ -1,16 +1,15 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using AutoMapper;
-using MedicDate.API.DTOs;
+﻿using AutoMapper;
 using MedicDate.API.DTOs.AppRole;
 using MedicDate.API.DTOs.AppUser;
 using MedicDate.API.DTOs.Common;
-using MedicDate.Bussines.Repository.IRepository;
 using MedicDate.DataAccess.Entities;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using MedicDate.Bussines.DomainServices.IDomainServices;
+using MedicDate.DataAccess.Repository.IRepository;
 
-// ReSharper disable ConditionIsAlwaysTrueOrFalse
 namespace MedicDate.API.Controllers
 {
     [Route("api/[controller]")]
@@ -28,13 +27,15 @@ namespace MedicDate.API.Controllers
         }
 
         [HttpGet("listarConPaginacion")]
-        public async Task<ActionResult<PaginatedResourceListDto<AppUserResponseDto>>> GetAllUsersAsync
-        (
-            int pageIndex = 0,
-            int pageSize = 10,
-            [FromQuery] bool traerRoles = false,
-            [FromQuery] string filterRolId = null
-        )
+        public async
+            Task<ActionResult<PaginatedResourceListDto<AppUserResponseDto>>>
+            GetAllUsersAsync
+            (
+                int pageIndex = 0,
+                int pageSize = 10,
+                [FromQuery] bool traerRoles = false,
+                [FromQuery] string filterRolId = null
+            )
         {
             var includeProperties = traerRoles
                 ? "UserRoles.Role"
@@ -58,25 +59,29 @@ namespace MedicDate.API.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<AppUserResponseDto>> GetUserById(string id)
+        public async Task<ActionResult<AppUserResponseDto>> GetUserById(
+            string id)
         {
             return await GetByIdAsync<AppUserResponseDto>(id, "UserRoles.Role");
         }
 
         [HttpGet("obtenerParaEditar/{id}")]
-        public async Task<ActionResult<AppUserRequestDto>> GetPutUserAsync(string id)
+        public async Task<ActionResult<AppUserRequestDto>> GetPutUserAsync(
+            string id)
         {
             return await GetByIdAsync<AppUserRequestDto>(id, "UserRoles.Role");
         }
 
         [HttpPut("editar/{id}")]
-        public async Task<ActionResult> PutAsync(string id, AppUserRequestDto appUserRequestDto)
+        public async Task<ActionResult> PutAsync(string id,
+            AppUserRequestDto appUserRequestDto)
         {
-            var resp = await _appUserRepo.UpdateUserAsync(id, appUserRequestDto);
+            var resp =
+                await _appUserRepo.UpdateUserAsync(id, appUserRequestDto);
 
-            return resp.IsSuccess
-                ? resp.SuccessActionResult
-                : resp.ErrorActionResult;
+            return resp.Succeeded
+                ? resp.SuccessResult
+                : resp.ErrorResult;
         }
 
         [HttpGet("roles")]
@@ -93,17 +98,19 @@ namespace MedicDate.API.Controllers
         }
 
         [HttpDelete("eliminar/{id}")]
-        public async Task<ActionResult> DeleteUserAsync(string id)
+        public async Task<ActionResult> DeleteUserAsync(string id,
+            [FromServices] IUserService userService)
         {
-            var esMasterResp = await _appUserRepo
-                .CheckIfUserIsWebMasterAsync(id);
+            var esMasterResp =
+                await userService.CheckIfUserIsWebMasterAsync(id);
 
-            if (!esMasterResp.IsSuccess)
+            if (!esMasterResp.Succeeded)
             {
-                return esMasterResp.ErrorActionResult;
+                return esMasterResp.ErrorResult;
             }
 
-            if (esMasterResp.ResultData) return BadRequest("No puede eliminar al usuario Web Master");
+            if (esMasterResp.DataResult)
+                return BadRequest("No puede eliminar al usuario Web Master");
 
             return await DeleteResourceAsync(id);
         }

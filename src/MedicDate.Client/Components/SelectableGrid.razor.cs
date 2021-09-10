@@ -1,42 +1,83 @@
-﻿using Microsoft.AspNetCore.Components;
-using System.Collections.Generic;
+﻿using System;
 using MedicDate.Utility.Interfaces;
+using Microsoft.AspNetCore.Components;
+using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Linq;
+using Radzen.Blazor;
 
 namespace MedicDate.Client.Components
 {
     public partial class SelectableGrid<TItem> where TItem : IId
     {
-        [Parameter] public List<TItem> ItemList { get; set; }
+        [Parameter] public IList<TItem> ItemList { get; set; }
 
-        [Parameter] public List<TItem> SelectedItems { get; set; }
+        [Parameter] public IList<TItem> SelectedItems { get; set; }
 
         [Parameter] public string[] Headers { get; set; }
 
         [Parameter] public string[] PropNames { get; set; }
 
-        [Parameter] public bool AllowColumnResize { get; set; } = false;
+        [Parameter] public bool AllowColumnResize { get; set; } = true;
 
-        private void SelectAll(bool args)
+        private RadzenDataGrid<TItem> _dataGrid;
+        private IList<TItem> _tempItemList = new List<TItem>();
+        private IList<TItem> _tempSelectedItems = new List<TItem>();
+
+        protected override void OnParametersSet()
         {
-            if (args)
+            _tempSelectedItems = SelectedItems;
+
+            foreach (var selectedItem in _tempSelectedItems)
             {
-                SelectedItems.AddRange(ItemList);
+                _tempItemList.Add(selectedItem);
+            }
+
+            foreach (var item in ItemList.Where(item =>
+                _tempItemList.Count != ItemList.Count &&
+                _tempItemList.All(x => x.Id != item.Id)))
+            {
+                _tempItemList.Add(item);
+            }
+        }
+
+        private void SelectAll(bool isSelected)
+        {
+            if (isSelected)
+            {
+                _tempSelectedItems = _tempItemList;
+
+                foreach (var tempSelectedItem in _tempSelectedItems)
+                {
+                    SelectedItems.Add(tempSelectedItem);
+                }
             }
             else
             {
+                _tempSelectedItems = new List<TItem>();
                 SelectedItems.Clear();
             }
         }
 
-        private void SelectOne(bool args, TItem selectedItem)
+        private void SelectRow(TItem data)
         {
-            if (args)
+            _tempSelectedItems.Add(data);
+            if (SelectedItems.All(x => x.Id != data.Id))
             {
-                SelectedItems.Add(selectedItem);
+                SelectedItems.Add(data);
             }
-            else
+        }
+
+        private void DeselectRow(TItem data)
+        {
+            _tempSelectedItems.Remove(data);
+            
+            var itemToDelete =
+                SelectedItems.FirstOrDefault(x => x.Id == data.Id);
+                
+            if (itemToDelete is not null)
             {
-                SelectedItems.RemoveAll(x => x.Id == selectedItem.Id);
+                SelectedItems.Remove(itemToDelete);
             }
         }
     }

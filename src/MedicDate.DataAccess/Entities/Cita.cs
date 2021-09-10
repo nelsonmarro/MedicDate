@@ -21,7 +21,7 @@ namespace MedicDate.DataAccess.Entities
 
         public Paciente Paciente { get; set; }
         public Medico Medico { get; set; }
-        public List<ActividadCita> ActividadesCita { get; set; }
-        public List<Archivo> Archivos { get; set; }
+        public List<ActividadCita> ActividadesCita { get; set; } = new();
+        public List<Archivo> Archivos { get; set; } = new();
     }
 }

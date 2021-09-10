@@ -1,8 +1,7 @@
 ﻿@page "/actividadCrear"
 
-<h2 class="text-radzen-primary mb-2">Crear Actividad</h2>
+<h2 class="text-primary mb-2">Crear Actividad</h2>
 
 <CascadingValue Value="_isBussy">
-	<ActividadForm ActividadModel="@_actividadModel" OnSubmit="@CreateActividad"/>
+	<ActividadForm ActividadModel="@_actividadModel" OnSubmit="@CreateActividad" />
 </CascadingValue>
-

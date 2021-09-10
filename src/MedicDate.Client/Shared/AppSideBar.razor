@@ -1,15 +1,9 @@
-﻿<RadzenPanelMenu>
-	<p class="pb-2 mb-0 mx-3 mt-2 border-bottom">
-		<AuthorizeView>
-			<Authorized>
-				<RadzenLabel Text="Menú" />
-			</Authorized>
-			<NotAuthorized>
-				<RadzenLabel Text="Inicie Sesión" />
-			</NotAuthorized>
-		</AuthorizeView>
-
-	</p>
+﻿<RadzenPanelMenu style="height: 100%">
+	<p class="pb-2 mb-0 mt-2 text-center">
+		<RadzenLink Path="/" Text="Medic Date" class="text-white" Style="font-size: 25px; text-decoration: none;"
+			Icon="medical_services">
+		</RadzenLink>
+	</p> 
 	<AuthorizeView>
 		<Authorized>
 			<RadzenPanelMenuItem Text="Inicio" Icon="home" Path="/" class="mt-2" />

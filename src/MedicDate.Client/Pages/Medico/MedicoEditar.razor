@@ -1,6 +1,6 @@
 ﻿@page "/medicoEditar/{id}"
 
-<h2 class="text-radzen-primary mb-2">Editar Doctor</h2>
+<h2 class="text-primary mb-2">Editar Doctor</h2>
 
 @if (_medicoModel is null)
 {
@@ -9,7 +9,7 @@
 else
 {
 	<CascadingValue Value="_isBussy">
-        <MedicoForm MedicoRequestDto="_medicoModel" OnSubmit="EditMedico"/>
+		<MedicoForm MedicoRequestDto="_medicoModel" OnSubmit="EditMedico" />
 	</CascadingValue>
 
 }

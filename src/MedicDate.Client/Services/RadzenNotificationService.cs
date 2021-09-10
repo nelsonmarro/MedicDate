@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using MedicDate.Client.Components;
+﻿using MedicDate.Client.Components;
 using MedicDate.Client.Services.IServices;
 using Radzen;
 

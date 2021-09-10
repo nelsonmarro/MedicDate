@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using MedicDate.Client.Components;
+﻿using MedicDate.Client.Components;
 using MedicDate.Client.Services.IServices;
 using Radzen;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace MedicDate.Client.Services
 {

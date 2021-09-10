@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using MedicDate.Bussines.Repository.IRepository;
+using MedicDate.API.DTOs.Common;
 using MedicDate.Utility.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -7,28 +7,31 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using MedicDate.API.DTOs;
-using MedicDate.API.DTOs.Common;
+using MedicDate.DataAccess.Repository.IRepository;
 
 namespace MedicDate.API.Controllers
 {
-    public class BaseController<TEntity> : ControllerBase where TEntity : class, IId
+    public class BaseController<TEntity> : ControllerBase
+        where TEntity : class, IId
     {
         private readonly IRepository<TEntity> _repository;
         private readonly IMapper _mapper;
 
-        protected BaseController(IRepository<TEntity> repository, IMapper mapper)
+        protected BaseController(IRepository<TEntity> repository,
+            IMapper mapper)
         {
             _repository = repository;
             _mapper = mapper;
         }
 
-        protected async Task<ActionResult<PaginatedResourceListDto<TResponse>>> GetAllWithPagingAsync<TResponse>(
-            int pageIndex = 0,
-            int pageSize = 10,
-            string includeProperties = "",
-            Expression<Func<TEntity, bool>> filter = null,
-            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null)
+        protected async Task<ActionResult<PaginatedResourceListDto<TResponse>>>
+            GetAllWithPagingAsync<TResponse>(
+                int pageIndex = 0,
+                int pageSize = 10,
+                string includeProperties = "",
+                Expression<Func<TEntity, bool>> filter = null,
+                Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy =
+                    null)
             where TResponse : class
         {
             var entityList = await _repository.GetAllWithPagingAsync
@@ -50,10 +53,13 @@ namespace MedicDate.API.Controllers
             };
         }
 
-        protected async Task<ActionResult<List<TResponse>>> GetAllAsync<TResponse>(
-            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null)
+        protected async Task<ActionResult<List<TResponse>>> GetAllAsync<
+            TResponse>(Func<IQueryable<TEntity>,
+            IOrderedQueryable<TEntity>> orderBy = null)
         {
-            var resp = await _repository.GetAllAsync(isTracking: false, orderBy: orderBy);
+            var resp =
+                await _repository.GetAllAsync(isTracking: false,
+                    orderBy: orderBy);
 
             return _mapper.Map<List<TResponse>>(resp);
         }
@@ -74,15 +80,17 @@ namespace MedicDate.API.Controllers
 
             if (!string.IsNullOrEmpty(includeProperties))
                 responseEntity =
-                    await _repository.FirstOrDefaultAsync(x => x.Id == id, includeProperties, false);
+                    await _repository.FirstOrDefaultAsync(x => x.Id == id,
+                        includeProperties, false);
             else
                 responseEntity = await _repository.FindAsync(id);
 
             return _mapper.Map<TResponse>(responseEntity);
         }
 
-        protected async Task<ActionResult> AddResourceAsync<TRequest, TResponse>(TRequest entityRequest,
-            string routeResultName, string includeProperties = null)
+        protected async Task<ActionResult>
+            AddResourceAsync<TRequest, TResponse>(TRequest entityRequest,
+                string routeResultName, string includeProperties = null)
             where TResponse : IId
         {
             var entityDb = _mapper.Map<TEntity>(entityRequest);
@@ -94,7 +102,8 @@ namespace MedicDate.API.Controllers
             if (!string.IsNullOrEmpty(includeProperties))
             {
                 var entityWithRelatedData = await _repository
-                    .FirstOrDefaultAsync(x => x.Id == entityDb.Id, includeProperties, false);
+                    .FirstOrDefaultAsync(x => x.Id == entityDb.Id,
+                        includeProperties, false);
 
                 responseEntity = _mapper.Map<TResponse>(entityWithRelatedData);
             }
@@ -103,7 +112,7 @@ namespace MedicDate.API.Controllers
                 responseEntity = _mapper.Map<TResponse>(entityDb);
             }
 
-            return CreatedAtRoute(routeResultName, new { id = responseEntity.Id },
+            return CreatedAtRoute(routeResultName, new {id = responseEntity.Id},
                 responseEntity);
         }
 
@@ -111,7 +120,8 @@ namespace MedicDate.API.Controllers
         {
             var response = await _repository.RemoveAsync(id);
 
-            if (response == 0) return NotFound("No se encontró el registro a eliminar");
+            if (response == 0)
+                return NotFound("No se encontró el registro a eliminar");
 
             await _repository.SaveAsync();
 

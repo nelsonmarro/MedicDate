@@ -1,8 +1,8 @@
-﻿using System;
+﻿using MedicDate.Utility.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using MedicDate.Utility.Interfaces;
 
 namespace MedicDate.DataAccess.Entities
 {
@@ -29,7 +29,7 @@ namespace MedicDate.DataAccess.Entities
         [Required] [StringLength(100)] public string Email { get; set; }
         [StringLength(300)] public string Direccion { get; set; }
 
-        public List<GrupoPaciente> GruposPacientes { get; set; }
-        public List<Cita> Citas { get; set; }
+        public List<GrupoPaciente> GruposPacientes { get; set; } = new();
+        public List<Cita> Citas { get; set; } = new();
     }
 }

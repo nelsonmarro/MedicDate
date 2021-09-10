@@ -10,7 +10,6 @@
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
-    <StartupObject></StartupObject>
   </PropertyGroup>
 
   <ItemGroup>
@@ -21,18 +20,15 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.1.5" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\MedicDate.Bussines\MedicDate.Bussines.csproj" />
-    <ProjectReference Include="..\MedicDate.DataAccess\MedicDate.DataAccess.csproj" />
-    <ProjectReference Include="..\MedicDate.Models\MedicDate.API.DTOs.csproj" />
-    <ProjectReference Include="..\MedicDate.Utility\MedicDate.Utility.csproj" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.1" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Filters\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MedicDate.Domain\MedicDate.Domain.csproj" />
   </ItemGroup>
 
 </Project>

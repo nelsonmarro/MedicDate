@@ -1,9 +1,9 @@
-﻿using System;
+﻿using MedicDate.Utility.Interfaces;
+using Microsoft.AspNetCore.Identity;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using MedicDate.Utility.Interfaces;
-using Microsoft.AspNetCore.Identity;
 
 namespace MedicDate.DataAccess.Entities
 {
@@ -18,6 +18,6 @@ namespace MedicDate.DataAccess.Entities
 
         public DateTime RefreshTokenExpiryTime { get; set; }
 
-        public virtual ICollection<ApplicationUserRole> UserRoles { get; set; }
+        public virtual List<ApplicationUserRole> UserRoles { get; set; } = new();
     }
 }

@@ -1,10 +1,10 @@
-﻿using Microsoft.AspNetCore.Components;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using MedicDate.API.DTOs.Especialidad;
+﻿using MedicDate.API.DTOs.Especialidad;
 using MedicDate.API.DTOs.Medico;
 using MedicDate.Client.Data.HttpRepository.IHttpRepository;
 using MedicDate.Client.Services.IServices;
+using Microsoft.AspNetCore.Components;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace MedicDate.Client.Shared.Formularios
 {

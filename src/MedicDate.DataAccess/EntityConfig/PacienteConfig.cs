@@ -1,4 +1,3 @@
-using System;
 using MedicDate.DataAccess.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;

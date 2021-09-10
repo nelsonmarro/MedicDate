@@ -1,15 +1,15 @@
 ﻿<RadzenCard>
 	<EditForm Model="@ActividadModel" OnValidSubmit="OnSubmit">
-		<DataAnnotationsValidator/>
-		<div class="row mb-3">
-			<RadzenLabel Text="Nombre Actividad"/>
+		<DataAnnotationsValidator />
+		<div class="mb-3">
+			<RadzenLabel Text="Nombre Actividad" />
 			<div class="mt-1">
-				<RadzenTextBox @bind-Value="ActividadModel.Nombre" class="w-100"/>
-				<ValidationMessage For="() => ActividadModel.Nombre"/>
+				<RadzenTextBox @bind-Value="ActividadModel.Nombre" class="w-100" />
+				<ValidationMessage For="() => ActividadModel.Nombre" />
 			</div>
 		</div>
 		<div class="mb-2">
-			<FormButtons NavLinkRoute="actividadList"/>
+			<FormButtons NavLinkRoute="actividadList" />
 		</div>
 	</EditForm>
 </RadzenCard>

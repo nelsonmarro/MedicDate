@@ -1,14 +1,14 @@
 ﻿@page "/usuarioEditar/{id}"
 @using MedicDate.Client.Shared.Formularios.AppUser
 
-<h2 class="text-radzen-primary mb-2">Editar Usuario</h2>
+<h2 class="text-primary mb-2">Editar Usuario</h2>
 @if (_appUserModel is null)
 {
-    <span>Cargando <i class="fas fa-spinner fa-spin"></i></span>
+	<span>Cargando <i class="fas fa-spinner fa-spin"></i></span>
 }
 else
 {
-    <CascadingValue Value="_isBussy">
-        <EditUserForm EditUserModel="@_appUserModel" OnSubmit="@EditUser"/>
-    </CascadingValue>
+	<CascadingValue Value="_isBussy">
+		<EditUserForm EditUserModel="@_appUserModel" OnSubmit="@EditUser" />
+	</CascadingValue>
 }

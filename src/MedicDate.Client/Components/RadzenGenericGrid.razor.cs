@@ -1,14 +1,13 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Dynamic.Core;
-using System.Threading.Tasks;
-using MedicDate.API.DTOs;
 using MedicDate.API.DTOs.Common;
 using MedicDate.Client.Helpers;
 using Microsoft.AspNetCore.Components;
 using Radzen;
 using Radzen.Blazor;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Dynamic.Core;
+using System.Threading.Tasks;
 
 namespace MedicDate.Client.Components
 {

@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using MedicDate.Utility.Interfaces;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using MedicDate.Utility.Interfaces;
 
 namespace MedicDate.DataAccess.Entities
 {
@@ -12,6 +12,6 @@ namespace MedicDate.DataAccess.Entities
 
         [Required] [StringLength(100)] public string NombreEspecialidad { get; set; }
 
-        public List<MedicoEspecialidad> MedicosEspecialidades { get; set; }
+        public List<MedicoEspecialidad> MedicosEspecialidades { get; set; } = new();
     }
 }

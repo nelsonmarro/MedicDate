@@ -1,8 +1,8 @@
-﻿using MedicDate.Client.Data.HttpRepository.IHttpRepository;
+﻿using MedicDate.API.DTOs.AppUser;
+using MedicDate.Client.Data.HttpRepository.IHttpRepository;
 using MedicDate.Client.Services.IServices;
 using Microsoft.AspNetCore.Components;
 using System.Threading.Tasks;
-using MedicDate.API.DTOs.AppUser;
 
 namespace MedicDate.Client.Pages.AppUser
 {

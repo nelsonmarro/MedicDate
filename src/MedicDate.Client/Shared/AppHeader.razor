@@ -1,23 +1,17 @@
-﻿<nav class="navbar navbar-expand-lg navbar-light bg-light p-0 m-0">
-	<RadzenSidebarToggle class="mr-2" Click="@(async () => await OnToggleClick.InvokeAsync())">
-	</RadzenSidebarToggle>
-	<a href="/" class="text-dark" style="cursor: pointer;">
-		<RadzenLabel Text="Medic Date" class="text-radzen-secondary" Style="cursor: pointer; font-weight: bold" />
-	</a>
-	<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
-		aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-		<span class="navbar-toggler-icon"></span>
-	</button>
-	<div class="collapse navbar-collapse" id="navbarSupportedContent">
-		<ul class="navbar-nav me-auto mb-2 mb-lg-0">
-		</ul>
-		<LoginDisplay />
-	</div>
-</nav>
+﻿<div class="rz-bg-dark row justify-content-start align-items-center">
+    <div class="col-6 d-flex align-items-center">
+        <RadzenSidebarToggle Click="@(async () => await OnToggleClick.InvokeAsync())">
+        </RadzenSidebarToggle>
+    </div>
+
+    <div class="col-6 d-flex align-items-center justify-content-end">
+        <LoginDisplay />
+    </div>
+</div>
 
 @code {
 
-	[Parameter]
-	public EventCallback OnToggleClick { get; set; }
+    [Parameter]
+    public EventCallback OnToggleClick { get; set; }
 
 }

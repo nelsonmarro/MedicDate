@@ -1,7 +1,7 @@
-﻿using System;
-using System.Threading.Tasks;
-using MedicDate.Client.Services.IServices;
+﻿using MedicDate.Client.Services.IServices;
 using Microsoft.AspNetCore.Components.Authorization;
+using System;
+using System.Threading.Tasks;
 
 namespace MedicDate.Client.Services
 {

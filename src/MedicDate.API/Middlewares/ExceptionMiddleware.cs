@@ -1,11 +1,11 @@
-using System;
-using System.Net;
-using System.Text.Json;
-using System.Threading.Tasks;
 using MedicDate.API.DTOs.Errors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using System;
+using System.Net;
+using System.Text.Json;
+using System.Threading.Tasks;
 
 namespace MedicDate.API.Middlewares
 {

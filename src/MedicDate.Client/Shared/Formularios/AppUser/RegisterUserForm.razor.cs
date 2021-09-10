@@ -1,13 +1,12 @@
-﻿using MedicDate.Client.Data.HttpRepository.IHttpRepository;
+﻿using MedicDate.API.DTOs.AppRole;
+using MedicDate.API.DTOs.Auth;
+using MedicDate.Client.Data.HttpRepository.IHttpRepository;
 using MedicDate.Client.Services.IServices;
 using Microsoft.AspNetCore.Components;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using MedicDate.API.DTOs.AppRole;
-using MedicDate.API.DTOs.AppUser;
-using MedicDate.API.DTOs.Auth;
 
 namespace MedicDate.Client.Shared.Formularios.AppUser
 {

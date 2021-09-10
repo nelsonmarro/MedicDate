@@ -1,7 +1,7 @@
-﻿using System.Net.Http.Headers;
-using System.Threading.Tasks;
-using MedicDate.Client.Interceptors.IInterceptors;
+﻿using MedicDate.Client.Interceptors.IInterceptors;
 using MedicDate.Client.Services.IServices;
+using System.Net.Http.Headers;
+using System.Threading.Tasks;
 using Toolbelt.Blazor;
 
 namespace MedicDate.Client.Interceptors

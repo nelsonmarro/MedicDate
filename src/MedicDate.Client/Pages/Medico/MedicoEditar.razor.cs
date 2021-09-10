@@ -1,10 +1,10 @@
-﻿using System;
-using System.Threading.Tasks;
-using MedicDate.API.DTOs.Medico;
+﻿using MedicDate.API.DTOs.Medico;
 using MedicDate.Client.Data.HttpRepository.IHttpRepository;
 using MedicDate.Client.Interceptors.IInterceptors;
 using MedicDate.Client.Services.IServices;
 using Microsoft.AspNetCore.Components;
+using System;
+using System.Threading.Tasks;
 
 namespace MedicDate.Client.Pages.Medico
 {

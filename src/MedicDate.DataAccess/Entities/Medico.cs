@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using MedicDate.Utility.Interfaces;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using MedicDate.Utility.Interfaces;
 
 namespace MedicDate.DataAccess.Entities
 {
@@ -24,7 +24,7 @@ namespace MedicDate.DataAccess.Entities
         [Column(TypeName = "varchar(20)")]
         public string PhoneNumber { get; set; }
 
-        public List<MedicoEspecialidad> MedicosEspecialidades { get; set; }
-        public List<Cita> Citas { get; set; }
+        public List<MedicoEspecialidad> MedicosEspecialidades { get; set; } = new();
+        public List<Cita> Citas { get; set; } = new();
     }
 }

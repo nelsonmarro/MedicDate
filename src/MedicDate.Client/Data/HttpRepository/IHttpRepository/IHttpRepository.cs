@@ -1,5 +1,5 @@
-﻿using System.Threading.Tasks;
-using MedicDate.Client.Helpers;
+﻿using MedicDate.Client.Helpers;
+using System.Threading.Tasks;
 
 namespace MedicDate.Client.Data.HttpRepository.IHttpRepository
 {

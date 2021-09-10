@@ -1,14 +1,13 @@
 ﻿@using Microsoft.AspNetCore.Components.Authorization
-
 <AuthorizeView>
     <Authorized>
-        Hola, @context.User.Identity.Name!
+        <span class="text-white">Hola, @context.User.Identity.Name!</span>
         <NavLink href="logout">
-            <RadzenButton ButtonStyle="@ButtonStyle.Warning" class="mx-3" Text="Salir" />
+            <RadzenButton ButtonStyle="@ButtonStyle.Danger" class="mx-3" Text="Salir" />
         </NavLink>
     </Authorized>
     <NotAuthorized>
-	    <NavLink class="nav-link" href="login">Iniciar Sesión</NavLink>
+        <NavLink class="nav-link" href="login">Iniciar Sesión</NavLink>
     </NotAuthorized>
 </AuthorizeView>
 

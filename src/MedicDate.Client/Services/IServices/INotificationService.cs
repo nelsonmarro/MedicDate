@@ -1,6 +1,4 @@
 ﻿using Radzen;
-using System;
-using System.Threading.Tasks;
 
 namespace MedicDate.Client.Services.IServices
 {

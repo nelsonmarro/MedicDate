@@ -2,13 +2,11 @@
 @using MedicDate.API.DTOs.Actividad
 
 <div class="row">
-	<div class="col-auto col-md-6 text-start">
-		<h2 class="text-radzen-secondary">Actividades</h2>
+	<div class="col-12 text-left">
+		<h2 class="text-primary">Actividades</h2>
 	</div>
-	<div class="col-12"> 
-        <RadzenGenericGrid TItem="ActividadResponseDto" TotalCount="@_totalCount"
-		                   Headers="@_tableHeaders" ItemList="@_actividadList"
-		                   OpRoutes="@_opRoutes" OnDeleteData="@DeleteActividad"
-		                   PropNames="@_propNames"/>
+	<div class="col-12">
+		<RadzenGenericGrid TItem="ActividadResponseDto" TotalCount="@_totalCount" Headers="@_tableHeaders"
+			ItemList="@_actividadList" OpRoutes="@_opRoutes" OnDeleteData="@DeleteActividad" PropNames="@_propNames" />
 	</div>
 </div>

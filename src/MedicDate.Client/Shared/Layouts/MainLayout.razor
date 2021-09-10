@@ -5,11 +5,11 @@
 
 <RadzenHeader>
     <ChildContent>
-        <AppHeader OnToggleClick="@ChangeToggle"/>
+        <AppHeader OnToggleClick="@ChangeToggle" />
     </ChildContent>
 </RadzenHeader>
-
-<div style="width: 100%" class="overflow-auto">
+  
+<div style="width: 100%">
     <RadzenBody @ref="@body" @bind-Expanded="@bodyExpanded">
         <ChildContent>
             <RadzenContentContainer Name="main">
@@ -19,22 +19,22 @@
     </RadzenBody>
 </div>
 
-<RadzenSidebar @ref="@sidebar" @bind-Expanded="@sidebarExpanded">
+<RadzenSidebar @ref="@sidebar" @bind-Expanded="@sidebarExpanded" class="rad-sidebar">
     <ChildContent>
-        <AppSideBar/>
+        <AppSideBar />
     </ChildContent>
 </RadzenSidebar>
 
-<RadzenFooter class="bg-light">
+@* <RadzenFooter class="bg-light">
     <ChildContent>
-        <AppFooter/>
+    <AppFooter/>
     </ChildContent>
-</RadzenFooter>
+    </RadzenFooter> *@
 
-<RadzenDialog/>
-<RadzenNotification Style="position: absolute; top: 20px"/>
-<RadzenContextMenu/>
-<RadzenTooltip/>
+<RadzenDialog />
+<RadzenNotification Style="position: absolute; top: 20px" />
+<RadzenContextMenu />
+<RadzenTooltip />
 
 @code {
     RadzenSidebar sidebar;

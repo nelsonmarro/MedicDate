@@ -1,6 +1,6 @@
 ﻿@page "/grupoEditar/{id}"
 
-<h2 class="text-radzen-primary mb-2">Editar Grupo</h2>
+<h2 class="text-primary mb-2">Editar Grupo</h2>
 
 @if (_grupoModel is null)
 {
@@ -9,6 +9,6 @@
 else
 {
 	<CascadingValue Value="_isBussy">
-		<GrupoForm GrupoModel="@_grupoModel" OnSubmit="@EditGrupo"/>
+		<GrupoForm GrupoModel="@_grupoModel" OnSubmit="@EditGrupo" />
 	</CascadingValue>
 }

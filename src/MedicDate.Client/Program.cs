@@ -18,43 +18,43 @@ using Toolbelt.Blazor.Extensions.DependencyInjection;
 
 namespace MedicDate.Client
 {
-	public class Program
-	{
-		public static async Task Main(string[] args)
-		{
-			var builder = WebAssemblyHostBuilder.CreateDefault(args);
-			builder.RootComponents.Add<App>("#app");
+    public class Program
+    {
+        public static async Task Main(string[] args)
+        {
+            var builder = WebAssemblyHostBuilder.CreateDefault(args);
+            builder.RootComponents.Add<App>("#app");
 
-			builder.Services.AddScoped(sp => new HttpClient
-			{
-				BaseAddress = new Uri(builder.Configuration.GetValue<string>("BaseAPIUrl"))
-			}.EnableIntercept(sp));
+            builder.Services.AddScoped(sp => new HttpClient
+            {
+                BaseAddress = new Uri(builder.Configuration.GetValue<string>("BaseAPIUrl"))
+            }.EnableIntercept(sp));
 
-			ConfigureServices(builder.Services);
+            ConfigureServices(builder.Services);
 
-			await builder.Build().RunAsync();
-		}
+            await builder.Build().RunAsync();
+        }
 
-		public static void ConfigureServices(IServiceCollection services)
-		{
-			services.AddHttpClientInterceptor();
-			services.AddAuthorizationCore();
+        public static void ConfigureServices(IServiceCollection services)
+        {
+            services.AddHttpClientInterceptor();
+            services.AddAuthorizationCore();
 
-			services.AddBlazoredLocalStorage();
-			services.AddScoped<AuthenticationStateProvider, AuthStateProvider>();
-			services.AddScoped<IHttpRepository, HttpRepository>();
+            services.AddBlazoredLocalStorage();
+            services.AddScoped<AuthenticationStateProvider, AuthStateProvider>();
+            services.AddScoped<IHttpRepository, HttpRepository>();
 
-			services.AddScoped<DialogService>();
-			services.AddScoped<NotificationService>();
-			services.AddScoped<TooltipService>();
-			services.AddScoped<ContextMenuService>();
+            services.AddScoped<DialogService>();
+            services.AddScoped<NotificationService>();
+            services.AddScoped<TooltipService>();
+            services.AddScoped<ContextMenuService>();
 
-			services.AddTransient<INotificationService, RadzenNotificationService>();
-			services.AddTransient<IDialogNotificationService, DialogNotificationService>();
-			services.AddScoped<IAuthenticationService, AuthenticationService>();
-			services.AddScoped<IRefreshTokenService, RefreshTokenService>();
-			services.AddTransient<IHttpInterceptorProvider, HttpInterceptorProvider>();
-			services.AddTransient<IBaseListComponentOperations, BaseListComponentOperations>();
-		}
-	}
+            services.AddTransient<INotificationService, RadzenNotificationService>();
+            services.AddTransient<IDialogNotificationService, DialogNotificationService>();
+            services.AddScoped<IAuthenticationService, AuthenticationService>();
+            services.AddScoped<IRefreshTokenService, RefreshTokenService>();
+            services.AddTransient<IHttpInterceptorProvider, HttpInterceptorProvider>();
+            services.AddTransient<IBaseListComponentOperations, BaseListComponentOperations>();
+        }
+    }
 }

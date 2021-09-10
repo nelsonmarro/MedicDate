@@ -2,57 +2,64 @@
 
 <RadzenCard>
 	<EditForm Model="EditUserModel" OnValidSubmit="OnSubmitData">
-		<DataAnnotationsValidator/>
+		<DataAnnotationsValidator />
 
-		<div class="row mb-3">
-			<RadzenLabel Text="Nombres"/>
+		<div class="mb-3">
+			<RadzenLabel Text="Nombres" />
 			<div class="mt-1">
-				<RadzenTextBox @bind-Value="EditUserModel.Nombre" class="w-100"/>
-				<ValidationMessage For="() => EditUserModel.Nombre"/>
+				<RadzenTextBox @bind-Value="EditUserModel.Nombre" class="w-100" />
+				<ValidationMessage For="() => EditUserModel.Nombre" />
 			</div>
 		</div>
 
-		<div class="row mb-3">
-			<RadzenLabel Text="Apellidos"/>
+		<div class="mb-3">
+			<RadzenLabel Text="Apellidos" />
 			<div class="mt-1">
-				<RadzenTextBox @bind-Value="EditUserModel.Apellidos" class="w-100"/>
-				<ValidationMessage For="() => EditUserModel.Apellidos"/>
+				<RadzenTextBox @bind-Value="EditUserModel.Apellidos" class="w-100" />
+				<ValidationMessage For="() => EditUserModel.Apellidos" />
 			</div>
 		</div>
 
-		<div class="row mb-3">
-			<RadzenLabel Text="Email"/>
+		<div class="mb-3">
+			<RadzenLabel Text="Email" />
 			<div class="mt-1">
-				<RadzenTextBox type="email" Value="@EditUserModel.Email" ReadOnly="true" class="w-100"/>
+				<RadzenTextBox type="email" Value="@EditUserModel.Email" ReadOnly="true" class="w-100" />
 			</div>
 		</div>
 
-		<div class="row mb-3">
-			<RadzenLabel Text="Teléfono"/>
+		<div class="mb-3">
+			<RadzenLabel Text="Teléfono" />
 			<div class="mt-1">
-				<RadzenTextBox @bind-Value="EditUserModel.PhoneNumber" class="w-100"/>
-				<ValidationMessage For="() => EditUserModel.PhoneNumber"/>
+				<RadzenTextBox @bind-Value="EditUserModel.PhoneNumber" class="w-100" />
+				<ValidationMessage For="() => EditUserModel.PhoneNumber" />
 			</div>
 		</div>
 		@if (_emailNeedConfirmation)
 		{
 			<div class="my-3 text-center">
 				<RadzenButton Text="Enviar email de confirmación" Icon="check"
-				              ButtonStyle="ButtonStyle.Secondary" Click="SendConfirmationEmail"/>
+							  ButtonStyle="ButtonStyle.Secondary" Click="SendConfirmationEmail" />
 			</div>
 		}
-		<div class="row mb-3">
-			<RadzenLabel Text="Roles"/>
+		<div class="mb-3">
+			<RadzenLabel Text="Roles" />
 			<div class="mt-2">
-                <SelectableGrid ItemList="@_roleList" TItem="RoleResponseDto"
-				                SelectedItems="@_selectedRoles" Headers="@_headers"
-				                PropNames="@_propName"/>
+				@if (_selectedRoles is not null)
+				{
+					<SelectableGrid ItemList="@_roleList" TItem="RoleResponseDto"
+					                SelectedItems="@_selectedRoles" Headers="@_headers"
+					                PropNames="@_propName"/>
+				}
+				else
+				{
+					<span>Cargando <i class="fas fa-spinner fa-spin"></i></span>
+				}
 			</div>
 		</div>
 		<div class="d-flex flex-column flex-md-row my-4 justify-content-center">
-			<div class="me-0 me-md-3 mb-3 mb-md-0">
+			<div class="mr-0 mr-md-3 mb-3 mb-md-0">
 				<NavLink href="usuario/forgotPassword">
-					<RadzenButton Text="Cambiar contraseña" Icon="lock"/>
+					<RadzenButton Text="Cambiar contraseña" Icon="lock" />
 				</NavLink>
 			</div>
 			<div>
@@ -60,12 +67,12 @@
 					var changeEmailRoute = $"/usuario/changeEmail/{EditUserModel.Id}";
 				}
 				<NavLink href="@changeEmailRoute">
-					<RadzenButton Text="Cambiar email" Icon="alternate_email"/>
+					<RadzenButton Text="Cambiar email" Icon="alternate_email" />
 				</NavLink>
 			</div>
 		</div>
 		<div class="mb-2">
-			<FormButtons NavLinkRoute="usuarioList"/>
+			<FormButtons NavLinkRoute="usuarioList" />
 		</div>
 	</EditForm>
 </RadzenCard>

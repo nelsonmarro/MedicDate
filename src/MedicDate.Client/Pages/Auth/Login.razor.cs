@@ -1,8 +1,8 @@
-﻿using Microsoft.AspNetCore.Components;
-using System.Threading.Tasks;
-using MedicDate.API.DTOs.Auth;
+﻿using MedicDate.API.DTOs.Auth;
 using MedicDate.Client.Services.IServices;
+using Microsoft.AspNetCore.Components;
 using Radzen;
+using System.Threading.Tasks;
 
 namespace MedicDate.Client.Pages.Auth
 {
