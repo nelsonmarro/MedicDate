@@ -1,13 +1,10 @@
-using System;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Threading.Tasks;
 using AutoMapper;
-using MedicDate.API.DTOs.Cita;
-using MedicDate.API.DTOs.Common;
 using MedicDate.DataAccess.Entities;
 using MedicDate.DataAccess.Repository.IRepository;
+using MedicDate.Shared.Models.Cita;
+using MedicDate.Shared.Models.Common;
 using Microsoft.AspNetCore.Mvc;
+using System.Linq.Expressions;
 
 namespace MedicDate.API.Controllers
 {
@@ -22,15 +19,22 @@ namespace MedicDate.API.Controllers
             _citaRepo = citaRepo;
         }
 
+        [HttpGet("listarPorFechas")]
+        public async Task<IEnumerable<CitaCalendarDto>> GetCitasByDates([FromQuery] CitaByDatesParams citaByDatesParams)
+        {
+            Console.WriteLine(citaByDatesParams.StartDate);
+            return await _citaRepo.GetCitasByDateRange(citaByDatesParams.StartDate, citaByDatesParams.EndDate);
+        }
+
         [HttpGet("listarConPaginacion")]
         public async Task<ActionResult<PaginatedResourceListDto<CitaCalendarDto>>> GetAllCitasWithPagingAsync(
             int pageIndex = 0,
             int pageSize = 10,
-            [FromQuery] string medicoId = null,
-            [FromQuery] string pacienteId = null
+            [FromQuery] string? medicoId = null,
+            [FromQuery] string? pacienteId = null
         )
         {
-            Expression<Func<Cita, bool>> filter = null;
+            Expression<Func<Cita, bool>>? filter = null;
 
             if (medicoId is not null && pacienteId is null)
                 filter = c => c.MedicoId == medicoId;
@@ -62,6 +66,16 @@ namespace MedicDate.API.Controllers
         public async Task<ActionResult<CitaRequestDto>> GetPutCitaAsyc(string id)
         {
             return await GetByIdAsync<CitaRequestDto>(id, "Medico,Paciente,Archivos,ActividadesCita.Actividad");
+        }
+
+        [HttpPut("actualizarEstado/{id}")]
+        public async Task<ActionResult> UpdateEstadoCitaAsync([FromRoute] string id, [FromBody] string newEstado)
+        {
+            var result = await _citaRepo.UpdateEstadoCitaAsync(id, newEstado);
+
+            return result.Succeeded
+            ? result.SuccessResult
+            : result.ErrorResult;
         }
 
         [HttpPost("crear")]

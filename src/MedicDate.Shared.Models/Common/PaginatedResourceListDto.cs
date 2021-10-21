@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace MedicDate.API.DTOs.Common
+﻿namespace MedicDate.Shared.Models.Common
 {
     public class PaginatedResourceListDto<TResponse>
     {
-        public List<TResponse> DataResult { get; set; }
+        public List<TResponse> DataResult { get; set; } = new List<TResponse>();
         public int PageIndex { get; set; }
         public int PageSize { get; set; }
         public int TotalCount { get; set; }

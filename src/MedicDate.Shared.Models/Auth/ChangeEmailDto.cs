@@ -1,14 +1,14 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace MedicDate.API.DTOs.Auth
+namespace MedicDate.Shared.Models.Auth
 {
     public class ChangeEmailDto
     {
         [Required(ErrorMessage = "Ingrese el nuevo email")]
         [EmailAddress(ErrorMessage = "Ingrese un email correcto")]
-        public string NewEmail { get; set; }
+        public string NewEmail { get; set; } = string.Empty;
 
-        public string CurrentEmail { get; set; }
-        public string Code { get; set; }
+        public string CurrentEmail { get; set; } = string.Empty;
+        public string Code { get; set; } = string.Empty;
     }
 }

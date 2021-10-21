@@ -1,7 +1,7 @@
 ﻿@using Microsoft.AspNetCore.Components.Authorization
 <AuthorizeView>
     <Authorized>
-        <span class="text-white">Hola, @context.User.Identity.Name!</span>
+        <span class="text-white">Hola, @context.User.Identity?.Name!</span>
         <NavLink href="logout">
             <RadzenButton ButtonStyle="@ButtonStyle.Danger" class="mx-3" Text="Salir" />
         </NavLink>

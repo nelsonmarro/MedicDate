@@ -1,7 +1,6 @@
 ﻿using MedicDate.Client.Interceptors.IInterceptors;
 using MedicDate.Client.Services.IServices;
 using System.Net.Http.Headers;
-using System.Threading.Tasks;
 using Toolbelt.Blazor;
 
 namespace MedicDate.Client.Interceptors
@@ -24,6 +23,11 @@ namespace MedicDate.Client.Interceptors
 
         public async Task InterceptBeforeHttpAsync(object sender, HttpClientInterceptorEventArgs e)
         {
+            if (e.Request.RequestUri is null)
+            {
+                return;
+            }
+
             var absPath = e.Request.RequestUri.AbsolutePath;
 
             if (!absPath.Contains("Token") && !absPath.Contains("Account"))

@@ -1,7 +1,5 @@
 ﻿using MedicDate.Client.Services.IServices;
 using Microsoft.AspNetCore.Components.Authorization;
-using System;
-using System.Threading.Tasks;
 
 namespace MedicDate.Client.Services
 {
@@ -21,7 +19,7 @@ namespace MedicDate.Client.Services
             var authState = await _authProvider.GetAuthenticationStateAsync();
             var user = authState.User;
 
-            var exp = user.FindFirst(c => c.Type.Equals("exp")).Value;
+            var exp = user.FindFirst(c => c.Type.Equals("exp"))?.Value;
             var expTime = DateTimeOffset.FromUnixTimeSeconds(Convert.ToInt64(exp));
 
             var timeUtcNow = DateTime.UtcNow;
@@ -29,7 +27,7 @@ namespace MedicDate.Client.Services
             var diff = expTime - timeUtcNow;
             if (diff.TotalMinutes <= 2)
             {
-                return await _authService.RefreshToken();
+                return await _authService.RefreshToken() ?? "";
             }
 
             return string.Empty;

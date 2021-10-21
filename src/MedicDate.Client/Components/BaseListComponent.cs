@@ -1,9 +1,7 @@
-﻿using MedicDate.API.DTOs.Common;
-using MedicDate.Client.Data.HttpRepository.IHttpRepository;
+﻿using MedicDate.Client.Data.HttpRepository.IHttpRepository;
 using MedicDate.Client.Services.IServices;
+using MedicDate.Shared.Models.Common;
 using Microsoft.AspNetCore.Components;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace MedicDate.Client.Components
 {
@@ -12,14 +10,22 @@ namespace MedicDate.Client.Components
         [Inject] protected INotificationService NotificationService { get; set; }
         [Inject] protected IHttpRepository HttpRepo { get; set; }
 
-        protected List<T> ItemList;
+        public BaseListComponent()
+        {
+            if (NotificationService is null || HttpRepo is null)
+            {
+                throw new ArgumentNullException(nameof(NotificationService) + nameof(HttpRepo));
+            }
+        }
+
+        protected List<T>? ItemList;
         protected int TotalCount;
 
         protected async Task LoadItemListAsync
         (
             string getUrl,
-            string filterQuery = null,
-            string filterData = null
+            string? filterQuery = null,
+            string? filterData = null
         )
         {
             var filterRequestQuery = "";
@@ -35,8 +41,13 @@ namespace MedicDate.Client.Components
 
             if (!response.Error)
             {
-                ItemList = response.Response.DataResult;
-                TotalCount = response.Response.TotalCount;
+
+                if (response.Response is not null)
+                {
+                    ItemList = response.Response.DataResult;
+                    TotalCount = response.Response.TotalCount;
+                }
+
             }
         }
 

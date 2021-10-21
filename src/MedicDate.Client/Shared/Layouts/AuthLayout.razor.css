@@ -1,5 +1,5 @@
 ﻿.auth-layout-container {
-    height: 100vh;
+    height: 100vh !important;
     background-image: url("/assets/imgs/dust_scratches.png");
 }
 

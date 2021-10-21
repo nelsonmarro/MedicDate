@@ -2,10 +2,10 @@
 {
     public class MedicoEspecialidad
     {
-        public string MedicoId { get; set; }
-        public string EspecialidadId { get; set; }
+        public string MedicoId { get; set; } = default!;
+        public string EspecialidadId { get; set; } = default!;
 
-        public Medico Medico { get; set; }
-        public Especialidad Especialidad { get; set; }
+        public Medico Medico { get; set; } = default!;
+        public Especialidad Especialidad { get; set; } = default!;
     }
 }

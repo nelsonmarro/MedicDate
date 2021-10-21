@@ -1,5 +1,4 @@
 ﻿using MedicDate.Client.Helpers;
-using System.Threading.Tasks;
 
 namespace MedicDate.Client.Services.IServices
 {
@@ -8,8 +7,8 @@ namespace MedicDate.Client.Services.IServices
         public Task<ResourceListComponentResult<T>> LoadItemListAsync<T>
             (
             string getUrl,
-            string filterQuery = null,
-            string filterData = null
+            string? filterQuery = null,
+            string? filterData = null
             ) where T : class;
 
         public Task<ResourceListComponentResult<T>> DeleteItem<T>(string idString, string deleteUrl, string getUrl) where T : class;

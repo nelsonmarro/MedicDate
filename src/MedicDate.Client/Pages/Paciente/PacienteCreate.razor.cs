@@ -1,17 +1,16 @@
-﻿using MedicDate.API.DTOs.Paciente;
-using MedicDate.Client.Data.HttpRepository.IHttpRepository;
+﻿using MedicDate.Client.Data.HttpRepository.IHttpRepository;
 using MedicDate.Client.Services.IServices;
+using MedicDate.Shared.Models.Paciente;
 using Microsoft.AspNetCore.Components;
-using System.Threading.Tasks;
 
 namespace MedicDate.Client.Pages.Paciente
 {
     public partial class PacienteCreate
     {
-        [Inject] public IHttpRepository HttpRepo { get; set; }
-        [Inject] public NavigationManager NavigationManager { get; set; }
-        [Inject] public INotificationService NotificationService { get; set; }
-        [Inject] public IDialogNotificationService DialogNotificationService { get; set; }
+        [Inject] public IHttpRepository HttpRepo { get; set; } = default!;
+        [Inject] public NavigationManager NavigationManager { get; set; } = default!;
+        [Inject] public INotificationService NotificationService { get; set; } = default!;
+        [Inject] public IDialogNotificationService DialogNotificationService { get; set; } = default!;
 
         private readonly PacienteRequestDto _pacienteModel = new();
         private bool _isBussy;

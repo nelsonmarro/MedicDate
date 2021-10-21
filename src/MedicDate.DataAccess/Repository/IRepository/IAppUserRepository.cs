@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using MedicDate.API.DTOs.AppUser;
 using MedicDate.DataAccess.Entities;
 using MedicDate.DataAccess.Helpers;
+using MedicDate.Shared.Models.AppUser;
 
 namespace MedicDate.DataAccess.Repository.IRepository
 {

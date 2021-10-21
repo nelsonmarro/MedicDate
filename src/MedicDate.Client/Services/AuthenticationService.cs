@@ -1,15 +1,13 @@
 ﻿using Blazored.LocalStorage;
-using MedicDate.API.DTOs.Auth;
 using MedicDate.Client.Auth;
 using MedicDate.Client.Data.HttpRepository;
 using MedicDate.Client.Services.IServices;
+using MedicDate.Shared.Models.Auth;
 using MedicDate.Utility;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
-using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
-using System.Threading.Tasks;
 
 namespace MedicDate.Client.Services
 {
@@ -32,16 +30,16 @@ namespace MedicDate.Client.Services
             _navigationManager = navigationManager;
         }
 
-        public async Task<LoginResponseDto> Login(LoginRequestDto loginRequestDto)
+        public async Task<LoginResponseDto?> Login(LoginRequestDto loginRequestDto)
         {
             var response = await Post<LoginRequestDto, LoginResponseDto>("api/Account/login", loginRequestDto);
 
             if (response.Error) return await response.HttpResponseMessage.Content.ReadFromJsonAsync<LoginResponseDto>();
 
-            await _localStorage.SetItemAsync(Sd.TOKEN_ACCESS, response.Response.Token);
-            await _localStorage.SetItemAsync(Sd.TOKEN_REFRESH, response.Response.RefreshToken);
+            await _localStorage.SetItemAsync(Sd.TOKEN_ACCESS, response.Response?.Token);
+            await _localStorage.SetItemAsync(Sd.TOKEN_REFRESH, response.Response?.RefreshToken);
 
-            ((AuthStateProvider)_authStateProvider).NotifyLogin(response.Response.Token);
+            ((AuthStateProvider)_authStateProvider).NotifyLogin(response.Response?.Token ?? "");
 
             return new LoginResponseDto { IsAuthSuccessful = true };
         }
@@ -54,7 +52,7 @@ namespace MedicDate.Client.Services
             _http.DefaultRequestHeaders.Authorization = null;
         }
 
-        public async Task<string> RefreshToken()
+        public async Task<string?> RefreshToken()
         {
             var token = await _localStorage.GetItemAsync<string>(Sd.TOKEN_ACCESS);
             var refreshToken = await _localStorage.GetItemAsync<string>(Sd.TOKEN_REFRESH);
@@ -75,13 +73,13 @@ namespace MedicDate.Client.Services
                 return "";
             }
 
-            await _localStorage.SetItemAsync(Sd.TOKEN_ACCESS, refreshResult.Response.Token);
-            await _localStorage.SetItemAsync(Sd.TOKEN_REFRESH, refreshResult.Response.RefreshToken);
+            await _localStorage.SetItemAsync(Sd.TOKEN_ACCESS, refreshResult.Response?.Token);
+            await _localStorage.SetItemAsync(Sd.TOKEN_REFRESH, refreshResult.Response?.RefreshToken);
 
             _http.DefaultRequestHeaders.Authorization =
-                new AuthenticationHeaderValue("bearer", refreshResult.Response.Token);
+                new AuthenticationHeaderValue("bearer", refreshResult.Response?.Token);
 
-            return refreshResult.Response.Token;
+            return refreshResult.Response?.Token;
         }
     }
 }

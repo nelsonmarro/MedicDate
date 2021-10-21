@@ -1,6 +1,11 @@
-﻿using MedicDate.API.DTOs.Auth;
+﻿using MedicDate.Bussines.ApplicationServices;
+using MedicDate.Bussines.ApplicationServices.IApplicationServices;
+using MedicDate.Bussines.DomainServices;
+using MedicDate.Bussines.DomainServices.IDomainServices;
 using MedicDate.DataAccess;
 using MedicDate.DataAccess.Entities;
+using MedicDate.DataAccess.Helpers;
+using MedicDate.Shared.Models.Auth;
 using MedicDate.Test.Shared;
 using MedicDate.Utility;
 using Microsoft.AspNetCore.Authentication;
@@ -15,16 +20,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moq;
-using System;
-using System.Collections.Generic;
 using System.Net;
 using System.Text.Json;
-using System.Threading.Tasks;
-using MedicDate.DataAccess.Helpers;
-using MedicDate.DataAccess.Repository;
-using MedicDate.DataAccess.Repository.IRepository;
-using MedicDate.DataAccess.Services;
-using MedicDate.DataAccess.Services.IServices;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -33,13 +30,22 @@ namespace MedicDate.API.Controllers
     public class AccountControllerTest : BaseDbTest
     {
         private readonly ITestOutputHelper _iTestOutputHelper;
-        private IAccountRepository _accountRepo;
-        private AccountController _sut;
-        private readonly Mock<IOptions<JwtSettings>> _jwtSettingsMock;
-        private ITokenService _tokenService;
-        private readonly Mock<IEmailSender> _emailSenderMock;
-        private UserManager<ApplicationUser> _userManager;
-        private RoleManager<AppRole> _roleManager;
+
+        private IAccountService? _accountService;
+
+        private AccountController? _sut;
+
+        private readonly Mock<IOptions<JwtSettings>> _jwtSettingsMock =
+            new Mock<IOptions<JwtSettings>>();
+
+        private ITokenBuilderService? _tokenBuilderService;
+
+        private readonly Mock<IEmailSender> _emailSenderMock =
+            new Mock<IEmailSender>();
+
+        private UserManager<ApplicationUser>? _userManager;
+
+        private RoleManager<AppRole>? _roleManager;
 
         private readonly RegisterUserDto _newUser = new()
         {
@@ -71,7 +77,8 @@ namespace MedicDate.API.Controllers
 
         public class RegisterAsync : AccountControllerTest
         {
-            public RegisterAsync(ITestOutputHelper iTestOutputHelper) : base(iTestOutputHelper)
+            public RegisterAsync(ITestOutputHelper iTestOutputHelper) : base(
+                iTestOutputHelper)
             {
             }
 
@@ -86,15 +93,16 @@ namespace MedicDate.API.Controllers
                 var successResult = result as GenericActionResult;
 
                 //Assert
-                Assert.Equal(HttpStatusCode.OK, successResult.HttpStatusCode);
+                Assert.Equal(HttpStatusCode.OK, successResult?.HttpStatusCode);
 
-                var user = await _userManager.Users
+                var user = await _userManager!.Users
                     .AsNoTracking()
                     .FirstOrDefaultAsync();
 
                 Assert.NotNull(user);
 
-                var isInDoctorRole = await _userManager.IsInRoleAsync(user, Sd.ROLE_DOCTOR);
+                var isInDoctorRole =
+                    await _userManager.IsInRoleAsync(user!, Sd.ROLE_DOCTOR);
 
                 Assert.True(isInDoctorRole);
             }
@@ -102,43 +110,47 @@ namespace MedicDate.API.Controllers
 
         public class LoginAsync : AccountControllerTest
         {
-            public LoginAsync(ITestOutputHelper iTestOutputHelper) : base(iTestOutputHelper)
+            public LoginAsync(ITestOutputHelper iTestOutputHelper) : base(
+                iTestOutputHelper)
             {
             }
 
             [Fact]
-            public async Task Should_return_propper_error_LoginResponseDto_when_Login_fails()
+            public async Task
+                Should_return_propper_error_LoginResponseDto_when_Login_fails()
             {
                 //Arrange
                 var dbName = Guid.NewGuid().ToString();
                 await CreateUserAsync(dbName);
 
                 //Act
-                var loginResult = await _sut.LoginAsync(_invalidLoginRequest);
+                var loginResult = await _sut!.LoginAsync(_invalidLoginRequest);
                 var errorResult = loginResult.Result as GenericActionResult;
-                var loginResultDto = JsonSerializer.Deserialize<LoginResponseDto>(errorResult.ResponseBody);
+                var loginResultDto =
+                    JsonSerializer.Deserialize<LoginResponseDto>(errorResult?.ResponseBody ?? "");
 
                 //Assert
-                Assert.Equal(HttpStatusCode.BadRequest, errorResult.HttpStatusCode);
-                Assert.False(loginResultDto.IsAuthSuccessful);
-                Assert.Equal("Inicio de sesión incorrecto.", loginResultDto.ErrorMessage);
+                Assert.Equal(HttpStatusCode.BadRequest, errorResult?.HttpStatusCode);
+                Assert.False(loginResultDto?.IsAuthSuccessful);
+                Assert.Equal("Inicio de sesión incorrecto.", loginResultDto?.ErrorMessage);
             }
 
             [Fact]
-            public async Task Should_response_a_success_LoginResponseDto_when_the_user_credentials_are_valid()
+            public async Task
+                Should_response_a_success_LoginResponseDto_when_the_user_credentials_are_valid()
             {
                 //Arrange
                 var dbName = Guid.NewGuid().ToString();
                 await CreateUserAsync(dbName);
 
                 //Act
-                var loginResult = await _sut.LoginAsync(_validLoginRequest);
+                var loginResult = await _sut!.LoginAsync(_validLoginRequest);
 
                 //Assert
                 Assert.NotNull(loginResult.Value);
-                Assert.NotNull(loginResult.Value.Token);
-                Assert.NotNull(loginResult.Value.RefreshToken);
-                Assert.True(loginResult.Value.IsAuthSuccessful);
+                Assert.NotNull(loginResult.Value?.Token);
+                Assert.NotNull(loginResult.Value?.RefreshToken);
+                Assert.True(loginResult.Value?.IsAuthSuccessful);
             }
         }
 
@@ -151,20 +163,22 @@ namespace MedicDate.API.Controllers
         // Source: https://github.com/dotnet/aspnetcore/blob/master/src/Identity/test/Shared/MockHelpers.cs
         // Source: https://github.com/dotnet/aspnetcore/blob/master/src/Identity/test/Identity.Test/SignInManagerTest.cs.
 
-        private async Task<AccountController> BuildAccountControllerAsync(string dbName)
+        private async Task<AccountController> BuildAccountControllerAsync(
+            string dbName)
         {
             var context = BuildDbContext(dbName);
 
             var userStore =
                 new UserStore<ApplicationUser, AppRole,
                     ApplicationDbContext, string, IdentityUserClaim<string>,
-                    ApplicationUserRole, IdentityUserLogin<string>, IdentityUserToken<string>,
+                    ApplicationUserRole, IdentityUserLogin<string>,
+                    IdentityUserToken<string>,
                     IdentityRoleClaim<string>>(context);
 
             var serviceProvider = BuildServiceProviderForUserManager();
             _userManager = BuildUserManager(userStore, serviceProvider);
 
-            _tokenService = new TokenService(_userManager);
+            _tokenBuilderService = new TokenBuilderService(_userManager);
 
             var httpContext = new DefaultHttpContext();
             MockAuth(httpContext);
@@ -179,25 +193,29 @@ namespace MedicDate.API.Controllers
 
             var jwtSettings = new JwtSettings
             {
-                ExpiryInMinutes = "60",
-                SecretKey = "@NcRfUjXn2r5u8x/A?D(G+KaPdSgVkYp3s6v9y$B&E)H@McQeThWmZq4t7w!z%C*",
-                ValidAudience = "https://localhost:5005",
+                ExpiryInMinutes = "60"
+                ,
+                SecretKey =
+                    "@NcRfUjXn2r5u8x/A?D(G+KaPdSgVkYp3s6v9y$B&E)H@McQeThWmZq4t7w!z%C*"
+                ,
+                ValidAudience = "https://localhost:5005"
+                ,
                 ValidIssuer = "MedicDateAPI"
             };
 
             _jwtSettingsMock.Setup(x => x.Value).Returns(jwtSettings);
 
-            _accountRepo = new AccountRepository
+            _accountService = new AccountService
             (
                 _userManager,
-                _emailSenderMock.Object,
+                signInManager,
                 _roleManager,
-                _tokenService,
+                _tokenBuilderService,
                 _jwtSettingsMock.Object,
-                signInManager
+                _emailSenderMock.Object
             );
 
-            return new AccountController(_accountRepo);
+            return new AccountController(_accountService);
         }
 
         private IServiceProvider BuildServiceProviderForUserManager()
@@ -210,8 +228,9 @@ namespace MedicDate.API.Controllers
             return services.BuildServiceProvider();
         }
 
-        private UserManager<TUser> BuildUserManager<TUser>(IUserStore<TUser> store = null,
-            IServiceProvider serviceProvider = null) where TUser : class
+        private UserManager<TUser> BuildUserManager<TUser>(
+            IUserStore<TUser>? store = null,
+            IServiceProvider? serviceProvider = null) where TUser : class
         {
             store ??= new Mock<IUserStore<TUser>>().Object;
             var options = new Mock<IOptions<IdentityOptions>>();
@@ -233,16 +252,20 @@ namespace MedicDate.API.Controllers
 
             var userManager = new UserManager<TUser>(store, options.Object,
                 new PasswordHasher<TUser>(), userValidators, pwdValidators,
-                new UpperInvariantLookupNormalizer(), new IdentityErrorDescriber(), serviceProvider,
+                new UpperInvariantLookupNormalizer()
+                , new IdentityErrorDescriber(), serviceProvider,
                 new Mock<ILogger<UserManager<TUser>>>().Object);
 
-            validator.Setup(v => v.ValidateAsync(userManager, It.IsAny<TUser>()))
+            validator
+                .Setup(v => v.ValidateAsync(userManager, It.IsAny<TUser>()))
                 .Returns(Task.FromResult(IdentityResult.Success)).Verifiable();
 
-            var fakeUserTokenProvider = new Mock<IUserTwoFactorTokenProvider<TUser>>();
+            var fakeUserTokenProvider =
+                new Mock<IUserTwoFactorTokenProvider<TUser>>();
 
             fakeUserTokenProvider.Setup(x =>
-                    x.CanGenerateTwoFactorTokenAsync(It.IsAny<UserManager<TUser>>(),
+                    x.CanGenerateTwoFactorTokenAsync(
+                        It.IsAny<UserManager<TUser>>(),
                         It.IsAny<TUser>()))
                 .ReturnsAsync(true);
 
@@ -251,28 +274,36 @@ namespace MedicDate.API.Controllers
                 .ReturnsAsync(string.Empty);
 
             fakeUserTokenProvider.Setup(x => x.ValidateAsync(It.IsAny<string>(),
-                    It.IsAny<string>(), It.IsAny<UserManager<TUser>>(), It.IsAny<TUser>()))
+                    It.IsAny<string>(), It.IsAny<UserManager<TUser>>()
+                    , It.IsAny<TUser>()))
                 .ReturnsAsync(false);
 
-            userManager.RegisterTokenProvider("Default", fakeUserTokenProvider.Object);
+            userManager.RegisterTokenProvider("Default"
+                , fakeUserTokenProvider.Object);
 
             return userManager;
         }
 
-        private SignInManager<TUser> SetupSignInManager<TUser>(UserManager<TUser> manager,
-            HttpContext context, ILogger logger = null, IdentityOptions identityOptions = null,
-            IAuthenticationSchemeProvider schemeProvider = null) where TUser : class
+        private SignInManager<TUser> SetupSignInManager<TUser>(
+            UserManager<TUser> manager,
+            HttpContext context, ILogger? logger = null,
+            IdentityOptions? identityOptions = null,
+            IAuthenticationSchemeProvider? schemeProvider = null)
+            where TUser : class
         {
             var contextAccessor = new Mock<IHttpContextAccessor>();
             contextAccessor.Setup(a => a.HttpContext).Returns(context);
             identityOptions ??= new IdentityOptions();
             var options = new Mock<IOptions<IdentityOptions>>();
             options.Setup(a => a.Value).Returns(identityOptions);
-            var claimsFactory = new UserClaimsPrincipalFactory<TUser>(manager, options.Object);
+            var claimsFactory =
+                new UserClaimsPrincipalFactory<TUser>(manager, options.Object);
             schemeProvider ??= new Mock<IAuthenticationSchemeProvider>().Object;
-            var sm = new SignInManager<TUser>(manager, contextAccessor.Object, claimsFactory, options.Object, null,
+            var sm = new SignInManager<TUser>(manager, contextAccessor.Object
+                , claimsFactory, options.Object, null,
                 schemeProvider, new DefaultUserConfirmation<TUser>());
-            sm.Logger = logger ?? new Mock<ILogger<SignInManager<TUser>>>().Object;
+            sm.Logger = logger ??
+                        new Mock<ILogger<SignInManager<TUser>>>().Object;
             return sm;
         }
 
@@ -286,10 +317,12 @@ namespace MedicDate.API.Controllers
             return auth;
         }
 
-        private RoleManager<TRole> BuildRoleManager<TRole>(IRoleStore<TRole> store = null) where TRole : class
+        private RoleManager<TRole> BuildRoleManager<TRole>(
+            IRoleStore<TRole>? store = null) where TRole : class
         {
             store ??= new Mock<IRoleStore<TRole>>().Object;
-            var roles = new List<IRoleValidator<TRole>> { new RoleValidator<TRole>() };
+            var roles = new List<IRoleValidator<TRole>>
+                {new RoleValidator<TRole>()};
             return new RoleManager<TRole>(store, roles,
                 new UpperInvariantLookupNormalizer(),
                 new IdentityErrorDescriber(),

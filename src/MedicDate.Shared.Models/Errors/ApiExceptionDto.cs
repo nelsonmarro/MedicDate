@@ -1,8 +1,8 @@
-namespace MedicDate.API.DTOs.Errors
+namespace MedicDate.Shared.Models.Errors
 {
     public class ApiExceptionDto
     {
-        public ApiExceptionDto(int statusCode, string message = null, string details = null)
+        public ApiExceptionDto(int statusCode, string? message = null, string? details = null)
         {
             StatusCode = statusCode;
             Message = message;
@@ -10,7 +10,7 @@ namespace MedicDate.API.DTOs.Errors
         }
 
         public int StatusCode { get; set; }
-        public string Message { get; set; }
-        public string Details { get; set; }
+        public string? Message { get; set; }
+        public string? Details { get; set; }
     }
 }

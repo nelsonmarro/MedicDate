@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
+﻿using System.Security.Claims;
 using System.Text.Json;
 
 namespace MedicDate.Client.Helpers
@@ -15,11 +12,11 @@ namespace MedicDate.Client.Helpers
 
             var jsonBytes = ParseBase64WithoutPadding(payload);
 
-            var keyValuePairs = JsonSerializer.Deserialize<Dictionary<string, object>>(jsonBytes);
+            var keyValuePairs = JsonSerializer.Deserialize<Dictionary<string, object>>(jsonBytes) ?? new();
 
             ExtractRolesFromJWT(claims, keyValuePairs);
 
-            claims.AddRange(keyValuePairs.Select(kvp => new Claim(kvp.Key, kvp.Value.ToString())));
+            claims.AddRange(keyValuePairs.Select(kvp => new Claim(kvp.Key, kvp.Value.ToString()!)));
 
             return claims;
         }
@@ -45,7 +42,7 @@ namespace MedicDate.Client.Helpers
 
             if (roles == null) return;
 
-            var parsedRoles = roles.ToString().Trim().TrimStart('[').TrimEnd(']').Split(',');
+            var parsedRoles = roles.ToString()!.Trim().TrimStart('[').TrimEnd(']').Split(',');
 
             if (parsedRoles.Length > 1)
                 claims.AddRange(parsedRoles.Select(parsedRole => new Claim(ClaimTypes.Role, parsedRole.Trim('"'))));

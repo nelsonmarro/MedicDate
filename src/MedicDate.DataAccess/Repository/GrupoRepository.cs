@@ -1,9 +1,9 @@
 ﻿using System.Threading.Tasks;
 using AutoMapper;
-using MedicDate.API.DTOs.Grupo;
 using MedicDate.DataAccess.Entities;
 using MedicDate.DataAccess.Helpers;
 using MedicDate.DataAccess.Repository.IRepository;
+using MedicDate.Shared.Models.Grupo;
 using static System.Net.HttpStatusCode;
 
 namespace MedicDate.DataAccess.Repository

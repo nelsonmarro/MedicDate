@@ -1,5 +1,5 @@
-﻿using System.Net;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using System.Net;
 
 namespace MedicDate.DataAccess.Helpers
 {
@@ -11,18 +11,23 @@ namespace MedicDate.DataAccess.Helpers
 
         public abstract bool Succeeded { get; }
 
-        public virtual ActionResult SuccessResult { get; init; }
+        public virtual ActionResult SuccessResult { get; init; } = new GenericActionResult(HttpStatusCode.OK, "Operación exitosa");
 
-        public virtual ActionResult ErrorResult { get; init; }
+        public virtual ActionResult ErrorResult { get; init; } = new GenericActionResult(HttpStatusCode.BadGateway, "Operación fallida");
 
         public static OperationResult Success(HttpStatusCode statusCode,
-            object responseBody = null)
+            object? responseBody = null)
         {
-            return new SuccessOperationResult(statusCode, responseBody);
+            return new SuccessOperationResultWithMessage(statusCode, responseBody);
+        }
+
+        public static OperationResult Success()
+        {
+            return new SuccessOperationResult();
         }
 
         public static OperationResult Error(HttpStatusCode statusCode,
-            object responseBody = null)
+            object? responseBody = null)
         {
             return new ErrorOperationResult(statusCode, responseBody);
         }
@@ -32,10 +37,10 @@ namespace MedicDate.DataAccess.Helpers
             return new ErrorOperationResult(errorResult);
         }
 
-        public sealed class SuccessOperationResult : OperationResult
+        public sealed class SuccessOperationResultWithMessage : OperationResult
         {
-            public SuccessOperationResult(HttpStatusCode statusCode,
-                object responseBody = null)
+            public SuccessOperationResultWithMessage(HttpStatusCode statusCode,
+                object? responseBody = null)
             {
                 SuccessResult =
                     GenericActionResultBuilder.BuildResult(statusCode,
@@ -46,10 +51,15 @@ namespace MedicDate.DataAccess.Helpers
             public override ActionResult SuccessResult { get; init; }
         }
 
+        public sealed class SuccessOperationResult : OperationResult
+        {
+            public override bool Succeeded => true;
+        }
+
         public sealed class ErrorOperationResult : OperationResult
         {
             public ErrorOperationResult(HttpStatusCode statusCode,
-                object responseBody = null)
+                object? responseBody = null)
             {
                 ErrorResult = GenericActionResultBuilder.BuildResult(
                     statusCode, responseBody);
@@ -69,8 +79,8 @@ namespace MedicDate.DataAccess.Helpers
     public abstract class OperationResult<T>
     {
         public abstract bool Succeeded { get; }
-        public virtual ActionResult ErrorResult { get; }
-        public virtual T DataResult { get; }
+        public virtual ActionResult ErrorResult { get; init; } = new GenericActionResult(HttpStatusCode.BadGateway, "Operación fallida");
+        public virtual T? DataResult { get; }
 
         public static OperationResult<T> Success(T dataResult)
         {
@@ -78,7 +88,7 @@ namespace MedicDate.DataAccess.Helpers
         }
 
         public static OperationResult<T> Error(HttpStatusCode statusCode,
-            object responseBody = null)
+            object? responseBody = null)
         {
             return new ErrorOperationDataResult(statusCode, responseBody);
         }
@@ -97,10 +107,10 @@ namespace MedicDate.DataAccess.Helpers
         public sealed class ErrorOperationDataResult : OperationResult<T>
         {
             private readonly HttpStatusCode _statusCode;
-            private readonly object _responseBody;
+            private readonly object? _responseBody;
 
             public ErrorOperationDataResult(HttpStatusCode statusCode,
-                object responseBody)
+                object? responseBody)
             {
                 _statusCode = statusCode;
                 _responseBody = responseBody;
@@ -109,8 +119,7 @@ namespace MedicDate.DataAccess.Helpers
             public override bool Succeeded => false;
 
             public override ActionResult ErrorResult =>
-                GenericActionResultBuilder.BuildResult(_statusCode,
-                    _responseBody);
+                GenericActionResultBuilder.BuildResult(_statusCode, _responseBody);
         }
     }
 }

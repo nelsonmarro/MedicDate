@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using MedicDate.DataAccess.Repository.IRepository;
 using MedicDate.Test.Shared;
 using MedicDate.Utility.Interfaces;
@@ -11,13 +7,13 @@ using Xunit;
 namespace MedicDate.Bussiness.Repository
 {
     public abstract class BaseRepositoryTest<TEntity> : BaseDbTest
-        where TEntity : class, IId
+        where TEntity : class, IId, new()
     {
-        protected IRepository<TEntity> BaseSut;
+        protected IRepository<TEntity>? BaseSut;
         protected readonly IMapper Mapper;
         protected readonly string DbName = Guid.NewGuid().ToString();
-        protected IEnumerable<TEntity> EntityList;
-        protected TEntity ToAddEntity;
+        protected IEnumerable<TEntity> EntityList = Array.Empty<TEntity>();
+        protected TEntity ToAddEntity = new();
 
         public BaseRepositoryTest()
         {
@@ -27,6 +23,9 @@ namespace MedicDate.Bussiness.Repository
         [Fact]
         public async Task FindAsync_should_return_one_record()
         {
+            if (BaseSut is null)
+                throw new ArgumentNullException(nameof(BaseSut));
+
             var result = await BaseSut.FindAsync(EntityList.Select(x => x.Id).First());
 
             Assert.NotNull(result);
@@ -35,6 +34,9 @@ namespace MedicDate.Bussiness.Repository
         [Fact]
         public async Task GetAllAsync_should_return_all_records()
         {
+            if (BaseSut is null)
+                throw new ArgumentNullException(nameof(BaseSut));
+
             var result = await BaseSut.GetAllAsync();
 
             Assert.Equal(3, result.Count);
@@ -43,6 +45,9 @@ namespace MedicDate.Bussiness.Repository
         [Fact]
         public async Task GetAllWithPagingAsync_should_return_all_records_properly_paginated()
         {
+            if (BaseSut is null)
+                throw new ArgumentNullException(nameof(BaseSut));
+
             var result = await BaseSut.GetAllWithPagingAsync(pageIndex: 0, pageSize: 2);
 
             Assert.Equal(2, result.Count);
@@ -53,6 +58,9 @@ namespace MedicDate.Bussiness.Repository
         {
             var entityId = EntityList.Select(x => x.Id).First();
 
+            if (BaseSut is null)
+                throw new ArgumentNullException(nameof(BaseSut));
+
             var result = await BaseSut.FirstOrDefaultAsync(x => x.Id == entityId);
 
             Assert.Equal(result.Id, entityId);
@@ -61,6 +69,9 @@ namespace MedicDate.Bussiness.Repository
         [Fact]
         public async Task AddAsync_should_create_a_record_in_db()
         {
+            if (BaseSut is null)
+                throw new ArgumentNullException(nameof(BaseSut));
+
             await BaseSut.AddAsync(ToAddEntity);
             await BaseSut.SaveAsync();
 
@@ -76,6 +87,9 @@ namespace MedicDate.Bussiness.Repository
         public async Task RemoveAsync_should_delete_a_record_with_the_passed_Id()
         {
             var entityId = EntityList.Select(x => x.Id).First();
+
+            if (BaseSut is null)
+                throw new ArgumentNullException(nameof(BaseSut));
 
             var result = await BaseSut.RemoveAsync(entityId);
             await BaseSut.SaveAsync();

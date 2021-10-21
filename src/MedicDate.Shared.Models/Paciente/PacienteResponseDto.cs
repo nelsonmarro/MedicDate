@@ -1,27 +1,25 @@
-﻿using MedicDate.API.DTOs.Grupo;
+﻿using MedicDate.Shared.Models.Grupo;
 using MedicDate.Utility.Extensions;
 using MedicDate.Utility.Interfaces;
-using System;
-using System.Collections.Generic;
 
-namespace MedicDate.API.DTOs.Paciente
+namespace MedicDate.Shared.Models.Paciente
 {
     public class PacienteResponseDto : IId
     {
-        public string Id { get; set; }
-        public string NumHistoria { get; set; }
-        public string Nombres { get; set; }
-        public string Apellidos { get; set; }
-        public string Sexo { get; set; }
-        public string Cedula { get; set; }
+        public string Id { get; set; } = string.Empty;
+        public string NumHistoria { get; set; } = string.Empty;
+        public string Nombres { get; set; } = string.Empty;
+        public string Apellidos { get; set; } = string.Empty;
+        public string Sexo { get; set; } = string.Empty;
+        public string Cedula { get; set; } = string.Empty;
 
         public int Edad => FechaNacimiento.GetAge();
 
         public DateTime FechaNacimiento { get; set; }
-        public string Email { get; set; }
-        public string Telefono { get; set; }
-        public string Direccion { get; set; }
+        public string Email { get; set; } = string.Empty;
+        public string? Telefono { get; set; }
+        public string? Direccion { get; set; }
 
-        public List<GrupoResponseDto> Grupos { get; set; }
+        public List<GrupoResponseDto> Grupos { get; set; } = new();
     }
 }

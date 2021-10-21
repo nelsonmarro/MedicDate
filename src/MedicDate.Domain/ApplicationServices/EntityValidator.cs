@@ -2,11 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq.Dynamic.Core;
 using System.Threading.Tasks;
-using MedicDate.DataAccess.Services.IServices;
+using MedicDate.Bussines.ApplicationServices.IApplicationServices;
+using MedicDate.DataAccess;
 using MedicDate.Utility;
 using Microsoft.EntityFrameworkCore.DynamicLinq;
 
-namespace MedicDate.DataAccess.Services
+namespace MedicDate.Bussines.ApplicationServices
 {
     public class EntityValidator : IEntityValidator
     {

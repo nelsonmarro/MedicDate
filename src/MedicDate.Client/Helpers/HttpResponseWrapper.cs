@@ -1,11 +1,8 @@
-﻿using System.Net.Http;
-using System.Threading.Tasks;
-
-namespace MedicDate.Client.Helpers
+﻿namespace MedicDate.Client.Helpers
 {
     public class HttpResponseWrapper<T>
     {
-        public HttpResponseWrapper(T response, bool error, HttpResponseMessage httpResponseMessage)
+        public HttpResponseWrapper(T? response, bool error, HttpResponseMessage httpResponseMessage)
         {
             Response = response;
             Error = error;
@@ -13,7 +10,7 @@ namespace MedicDate.Client.Helpers
         }
 
         public bool Error { get; set; }
-        public T Response { get; set; }
+        public T? Response { get; set; }
         public HttpResponseMessage HttpResponseMessage { get; set; }
 
         public async Task<string> GetResponseBody()

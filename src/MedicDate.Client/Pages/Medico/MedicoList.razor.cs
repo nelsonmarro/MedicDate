@@ -1,27 +1,25 @@
-﻿using MedicDate.API.DTOs.Especialidad;
-using MedicDate.API.DTOs.Medico;
-using MedicDate.Client.Components;
+﻿using MedicDate.Client.Components;
 using MedicDate.Client.Data.HttpRepository.IHttpRepository;
 using MedicDate.Client.Helpers;
 using MedicDate.Client.Services.IServices;
+using MedicDate.Shared.Models.Especialidad;
+using MedicDate.Shared.Models.Medico;
 using Microsoft.AspNetCore.Components;
 using Radzen;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace MedicDate.Client.Pages.Medico
 {
     public partial class MedicoList
     {
         [Inject]
-        public IBaseListComponentOperations BaseListComponentOps { get; set; }
+        public IBaseListComponentOperations BaseListComponentOps { get; set; } = default!;
 
         [Inject]
-        public IHttpRepository HttpRepo { get; set; }
+        public IHttpRepository HttpRepo { get; set; } = default!;
 
-        [Inject] public DialogService DialogService { get; set; }
+        [Inject] public DialogService DialogService { get; set; } = default!;
 
-        private IEnumerable<MedicoResponseDto> _medicoList;
+        private IEnumerable<MedicoResponseDto>? _medicoList;
         private int _totalCount = 0;
         private const string GetUrl = "api/Medico/listarConPaginacion?traerEspecialidades=true";
         private List<EspecialidadResponseDto> _especialidadList = new();
@@ -55,7 +53,10 @@ namespace MedicDate.Client.Pages.Medico
 
             if (!httpResponse.Error)
             {
-                _especialidadList = httpResponse.Response;
+                if (httpResponse.Response is not null)
+                {
+                    _especialidadList = httpResponse.Response;
+                }
             }
         }
 

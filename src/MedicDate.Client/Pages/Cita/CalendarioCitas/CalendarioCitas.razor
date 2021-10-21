@@ -1,6 +1,52 @@
-﻿@page "/CalendarioCitas"
-<h3>CalendarioCitas</h3>
+﻿@page "/calendarioCitas"
+@using MedicDate.Shared.Models.Cita
+
+<RadzenScheduler TItem="CitaCalendarDto" Data="_citasCalendar"
+                 StartProperty="FechaInicio" EndProperty="FechaFin"
+                 TextProperty="InfoCita" SlotSelect="@OnSlotSelect"
+                 LoadData="@((args) => LoadCitas(args))" AppointmentRender="OnCitaRender"
+                 class="w-100" Style="height:82vh" @ref="@_scheduler">
+    <Template Context="data">
+        @if (data.InfoCita is not null)
+        {
+            <div class="w-100 h-100 cita-card"
+             @oncontextmenu=@(args => ShowContextMenuWithContent(args, data))
+             @oncontextmenu:preventDefault=true>
+                @foreach (var item in data.InfoCita.Split("."))
+                {
+                    <span>@item</span>
+                    <br />
+                }
+            </div>
+        }
+    </Template>
+    <ChildContent>
+        <RadzenDayView />
+        <RadzenWeekView />
+        <RadzenMonthView />
+    </ChildContent>
+</RadzenScheduler>
 
 @code {
-  
+    private RenderFragment<CitaCalendarDto> DisplayCitaEstadosMenu => cita => __builder =>
+        {
+        <RadzenMenu Click="@((args) => OnMenuItemClick(args, cita))">
+            <RadzenMenuItem Path=@($"citaEditar/{cita.Id}") Text="Editar Cita"
+                    Icon="edit" />
+            <RadzenMenuItem Text="Estados" Icon="pending_actions">
+                @foreach (var estado in Sd.ListadoEstadosCita)
+                    {
+                        if (estado == cita.Estado)
+                        {
+                        <RadzenMenuItem Text="@estado" Value="@estado"
+                        Visible="false" />
+                        }
+                        else
+                        {
+                        <RadzenMenuItem Text="@estado" Value="@estado" />
+                        }
+                    }
+            </RadzenMenuItem>
+        </RadzenMenu>
+        };
 }

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace MedicDate.DataAccess.Services.IServices
+namespace MedicDate.Bussines.ApplicationServices.IApplicationServices
 {
     public interface IEntityValidator
     {

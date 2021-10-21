@@ -10,6 +10,10 @@ namespace MedicDate.API.Extensions
             this IServiceCollection services)
         {
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IAccountService, AccountService>();
+            services.AddScoped<IMedicoService, MedicoService>();
+            services.AddScoped<ITokenService, TokenService>();
+            services.AddScoped<IPacienteService, PacienteService>();
 
             return services;
         }

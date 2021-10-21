@@ -1,7 +1,6 @@
-﻿using MedicDate.API.DTOs.Auth;
+﻿using MedicDate.Bussines.DomainServices.IDomainServices;
+using MedicDate.Shared.Models.Auth;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
-using MedicDate.DataAccess.Repository.IRepository;
 
 namespace MedicDate.API.Controllers
 {
@@ -9,20 +8,20 @@ namespace MedicDate.API.Controllers
     [ApiController]
     public class TokenController : ControllerBase
     {
-        private readonly ITokenRepository _tokenRepo;
+        private readonly ITokenService _tokenService;
 
-        public TokenController(ITokenRepository tokenRepo)
+        public TokenController(ITokenService tokenService)
         {
-            _tokenRepo = tokenRepo;
+            _tokenService = tokenService;
         }
 
         [HttpPost("refresh")]
         public async Task<ActionResult<LoginResponseDto>> RefreshAsync(RefreshTokenDto refreshTokenDto)
         {
-            var resp = await _tokenRepo.RefreshTokenAsync(refreshTokenDto);
+            var resp = await _tokenService.RefreshTokenAsync(refreshTokenDto);
 
             return resp.Succeeded
-                ? resp.DataResult
+                ? resp.DataResult ?? new LoginResponseDto()
                 : resp.ErrorResult;
         }
     }

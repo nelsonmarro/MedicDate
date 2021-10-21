@@ -5,9 +5,7 @@ $source-sans-path: '../fonts';
   font-style: normal;
   font-weight: 400;
   src: local('Material Icons'), local('MaterialIcons-Regular'),
-  url('#{$source-sans-path}/MaterialIcons-Regular.woff2') format('woff2'),
-  url('#{$source-sans-path}/MaterialIcons-Regular.woff') format('woff'),
-  url('#{$source-sans-path}/MaterialIcons-Regular.ttf') format('truetype');
+    url('#{$source-sans-path}/MaterialIcons-Regular.woff') format('woff');
 }
 
 @if $material == false and $fluent == false {
@@ -17,7 +15,7 @@ $source-sans-path: '../fonts';
     font-style: normal;
     font-stretch: normal;
     src: local('SourceSansPro-ExtraLight'), local('Source Sans Pro'),
-    url('#{$source-sans-path}/SourceSansPro-ExtraLight.woff') format('woff');
+      url('#{$source-sans-path}/SourceSansPro-ExtraLight.woff') format('woff');
   }
 
   @font-face {
@@ -26,7 +24,7 @@ $source-sans-path: '../fonts';
     font-style: normal;
     font-stretch: normal;
     src: local('SourceSansPro-Light'), local('Source Sans Pro'),
-    url('#{$source-sans-path}/SourceSansPro-Light.woff') format('woff');
+      url('#{$source-sans-path}/SourceSansPro-Light.woff') format('woff');
   }
 
   @font-face {
@@ -35,7 +33,7 @@ $source-sans-path: '../fonts';
     font-style: normal;
     font-stretch: normal;
     src: local('SourceSansPro-Regular'), local('Source Sans Pro'),
-    url('#{$source-sans-path}/SourceSansPro-Regular.woff') format('woff');
+      url('#{$source-sans-path}/SourceSansPro-Regular.woff') format('woff');
   }
 
   @font-face {
@@ -44,7 +42,7 @@ $source-sans-path: '../fonts';
     font-style: normal;
     font-stretch: normal;
     src: local('SourceSansPro-Semibold'), local('Source Sans Pro Semibold'),
-    url('#{$source-sans-path}/SourceSansPro-Semibold.woff') format('woff');
+      url('#{$source-sans-path}/SourceSansPro-Semibold.woff') format('woff');
   }
 
   @font-face {
@@ -53,7 +51,7 @@ $source-sans-path: '../fonts';
     font-style: normal;
     font-stretch: normal;
     src: local('SourceSansPro-Bold'), local('Source Sans Pro Bold'),
-    url('#{$source-sans-path}/SourceSansPro-Bold.woff') format('woff');
+      url('#{$source-sans-path}/SourceSansPro-Bold.woff') format('woff');
   }
 
   @font-face {
@@ -62,7 +60,7 @@ $source-sans-path: '../fonts';
     font-style: normal;
     font-stretch: normal;
     src: local('SourceSansPro-Black'), local('Source Sans Pro Black'),
-    url('#{$source-sans-path}/SourceSansPro-Black.woff') format('woff');
+      url('#{$source-sans-path}/SourceSansPro-Black.woff') format('woff');
   }
 
   @font-face {
@@ -71,7 +69,7 @@ $source-sans-path: '../fonts';
     font-style: italic;
     font-stretch: normal;
     src: local('SourceSansPro-ExtraLightIt'), local('Source Sans Pro'),
-    url('#{$source-sans-path}/SourceSansPro-ExtraLightIt.woff') format('woff');
+      url('#{$source-sans-path}/SourceSansPro-ExtraLightIt.woff') format('woff');
   }
 
   @font-face {
@@ -80,7 +78,7 @@ $source-sans-path: '../fonts';
     font-style: italic;
     font-stretch: normal;
     src: local('SourceSansPro-LightIt'), local('Source Sans Pro'),
-    url('#{$source-sans-path}/SourceSansPro-LightIt.woff') format('woff');
+      url('#{$source-sans-path}/SourceSansPro-LightIt.woff') format('woff');
   }
 
   @font-face {
@@ -89,7 +87,7 @@ $source-sans-path: '../fonts';
     font-style: italic;
     font-stretch: normal;
     src: local('SourceSansPro-It'), local('Source Sans Pro'),
-    url('#{$source-sans-path}/SourceSansPro-It.woff') format('woff');
+      url('#{$source-sans-path}/SourceSansPro-It.woff') format('woff');
   }
 
   @font-face {
@@ -98,7 +96,7 @@ $source-sans-path: '../fonts';
     font-style: italic;
     font-stretch: normal;
     src: local('SourceSansPro-SemiboldIt'), local('Source Sans Pro'),
-    url('#{$source-sans-path}/SourceSansPro-SemiboldIt.woff') format('woff');
+      url('#{$source-sans-path}/SourceSansPro-SemiboldIt.woff') format('woff');
   }
 
   @font-face {
@@ -107,7 +105,7 @@ $source-sans-path: '../fonts';
     font-style: italic;
     font-stretch: normal;
     src: local('SourceSansPro-BoldIt'), local('Source Sans Pro'),
-    url('#{$source-sans-path}/SourceSansPro-BoldIt.woff') format('woff');
+      url('#{$source-sans-path}/SourceSansPro-BoldIt.woff') format('woff');
   }
 
   @font-face {
@@ -116,54 +114,16 @@ $source-sans-path: '../fonts';
     font-style: italic;
     font-stretch: normal;
     src: local('SourceSansPro-BlackIt'), local('Source Sans Pro'),
-    url('#{$source-sans-path}/SourceSansPro-BlackIt.woff') format('woff');
+      url('#{$source-sans-path}/SourceSansPro-BlackIt.woff') format('woff');
   }
 }
 
-@font-face {
-  font-family: 'Roboto';
-  font-style: normal;
-  font-weight: 400;
-  src: local('Roboto'), local('Roboto-Regular'),
-  url('#{$source-sans-path}/Roboto-Regular.ttf') format('truetype');
-}
-
-@font-face {
-  font-family: 'Roboto';
-  font-style: normal;
-  font-weight: 500;
-  src: local('Roboto'), local('Roboto-Medium'),
-  url('#{$source-sans-path}/Roboto-Medium.ttf') format('truetype');
-}
-
-@font-face {
-  font-family: 'Roboto';
-  font-style: normal;
-  font-weight: 300;
-  src: local('Roboto'), local('Roboto-Light'),
-  url('#{$source-sans-path}/Roboto-Light.ttf') format('truetype');
-}
-
-@font-face {
-  font-family: 'Roboto';
-  font-style: normal;
-  font-weight: 400;
-  src: local('Roboto'), local('Roboto-Regular'),
-  url('#{$source-sans-path}/Roboto-Regular.ttf') format('truetype');
-}
-
-@font-face {
-  font-family: 'Roboto';
-  font-style: normal;
-  font-weight: 700;
-  src: local('Roboto'), local('Roboto-Bold'),
-  url('#{$source-sans-path}/Roboto-Bold.ttf') format('truetype');
-}
-
-@font-face {
-  font-family: 'Roboto';
-  font-style: normal;
-  font-weight: 900;
-  src: local('Roboto'), local('Roboto-Black'),
-  url('#{$source-sans-path}/Roboto-Black.ttf') format('truetype');
+@if $material == true {
+  @font-face {
+    font-family: 'Roboto';
+    font-style: normal;
+    font-weight: 400;
+    src: local('Roboto'), local('Roboto-Regular'),
+      url('#{$source-sans-path}/roboto-v15-latin-regular.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+  }
 }

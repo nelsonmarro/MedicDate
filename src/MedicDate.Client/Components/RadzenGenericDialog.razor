@@ -10,13 +10,19 @@
     }
     else if (ListBodyContent is not null)
     {
-        <div class="d-flex flex-row flex-wrap mb-2 list-container">
-
-            @foreach (var item in ItemList)
-            {
-                @ListBodyContent(item)
-            }
-        </div>
+        if (ItemList is null)
+        {
+            <p>Noy hay elementos que mostrar</p>
+        }
+        else
+        {
+            <div class="d-flex flex-row flex-wrap mb-2 list-container">
+                @foreach (var item in ItemList)
+                {
+                    @ListBodyContent(item)
+                }
+            </div>
+        }
     }
     else
     {
@@ -35,20 +41,20 @@
 
 @code {
     [Parameter]
-    public string Heading { get; set; }
+    public string? Heading { get; set; }
 
     [Parameter]
-    public string BodyText { get; set; }
+    public string? BodyText { get; set; }
 
     [Parameter]
     public bool ShowBackButton { get; set; }
 
     [Parameter]
-    public object[] ItemList { get; set; }
+    public object[]? ItemList { get; set; }
 
     [Parameter]
-    public RenderFragment SimpleBodyContent { get; set; }
+    public RenderFragment? SimpleBodyContent { get; set; }
 
     [Parameter]
-    public RenderFragment<object> ListBodyContent { get; set; }
+    public RenderFragment<object>? ListBodyContent { get; set; }
 }

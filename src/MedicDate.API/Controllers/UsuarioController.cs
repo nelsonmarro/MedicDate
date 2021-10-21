@@ -1,14 +1,11 @@
 ﻿using AutoMapper;
-using MedicDate.API.DTOs.AppRole;
-using MedicDate.API.DTOs.AppUser;
-using MedicDate.API.DTOs.Common;
-using MedicDate.DataAccess.Entities;
-using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using MedicDate.Bussines.DomainServices.IDomainServices;
+using MedicDate.DataAccess.Entities;
 using MedicDate.DataAccess.Repository.IRepository;
+using MedicDate.Shared.Models.AppRole;
+using MedicDate.Shared.Models.AppUser;
+using MedicDate.Shared.Models.Common;
+using Microsoft.AspNetCore.Mvc;
 
 namespace MedicDate.API.Controllers
 {
@@ -34,7 +31,7 @@ namespace MedicDate.API.Controllers
                 int pageIndex = 0,
                 int pageSize = 10,
                 [FromQuery] bool traerRoles = false,
-                [FromQuery] string filterRolId = null
+                [FromQuery] string? filterRolId = null
             )
         {
             var includeProperties = traerRoles

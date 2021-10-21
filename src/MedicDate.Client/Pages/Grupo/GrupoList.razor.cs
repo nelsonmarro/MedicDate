@@ -1,18 +1,16 @@
-﻿using MedicDate.API.DTOs.Grupo;
-using MedicDate.Client.Helpers;
+﻿using MedicDate.Client.Helpers;
 using MedicDate.Client.Services.IServices;
+using MedicDate.Shared.Models.Grupo;
 using Microsoft.AspNetCore.Components;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace MedicDate.Client.Pages.Grupo
 {
     public partial class GrupoList
     {
         [Inject]
-        public IBaseListComponentOperations BaseListComponentOps { get; set; }
+        public IBaseListComponentOperations BaseListComponentOps { get; set; } = default!;
 
-        private IEnumerable<GrupoResponseDto> _grupoList;
+        private IEnumerable<GrupoResponseDto>? _grupoList;
         private int _totalCount = 0;
         private readonly string[] _tableHeaders = { "Nombre" };
         private readonly string[] _propNames = { "Nombre" };

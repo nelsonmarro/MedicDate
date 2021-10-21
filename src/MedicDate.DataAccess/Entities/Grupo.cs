@@ -1,5 +1,4 @@
 using MedicDate.Utility.Interfaces;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -8,10 +7,10 @@ namespace MedicDate.DataAccess.Entities
     public class Grupo : IId
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        [Key] public string Id { get; set; }
+        [Key] public string Id { get; set; } = default!;
 
-        [Required] [StringLength(100)] public string Nombre { get; set; }
+        [StringLength(100)] public string Nombre { get; set; } = default!;
 
-        public List<GrupoPaciente> GruposPacientes { get; set; } = new();
+        public List<GrupoPaciente> GruposPacientes { get; set; } = null!;
     }
 }

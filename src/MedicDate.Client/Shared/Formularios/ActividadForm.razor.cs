@@ -1,4 +1,4 @@
-﻿using MedicDate.API.DTOs.Actividad;
+﻿using MedicDate.Shared.Models.Actividad;
 using Microsoft.AspNetCore.Components;
 
 namespace MedicDate.Client.Shared.Formularios

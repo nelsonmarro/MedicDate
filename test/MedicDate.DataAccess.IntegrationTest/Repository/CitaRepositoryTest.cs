@@ -1,17 +1,14 @@
-﻿using MedicDate.API.DTOs.Actividad;
-using MedicDate.API.DTOs.Archivo;
-using MedicDate.API.DTOs.Cita;
-using MedicDate.DataAccess;
+﻿using MedicDate.DataAccess;
 using MedicDate.DataAccess.Entities;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Threading.Tasks;
 using MedicDate.DataAccess.Helpers;
 using MedicDate.DataAccess.Repository;
 using MedicDate.DataAccess.Repository.IRepository;
+using MedicDate.Shared.Models.Actividad;
+using MedicDate.Shared.Models.Archivo;
+using MedicDate.Shared.Models.Cita;
+using MedicDate.Utility;
+using Microsoft.EntityFrameworkCore;
+using System.Net;
 using Xunit;
 
 namespace MedicDate.Bussiness.Repository
@@ -19,7 +16,7 @@ namespace MedicDate.Bussiness.Repository
     public class CitaRepositoryTest : BaseRepositoryTest<Cita>
     {
         private readonly ApplicationDbContext _context;
-        private ICitaRepository _sut;
+        private ICitaRepository? _sut;
 
         private readonly List<Paciente> _pacientesCita = new()
         {
@@ -78,7 +75,7 @@ namespace MedicDate.Bussiness.Repository
             {
                 new()
                 {
-                    Estado = "Cancelada",
+                    Estado = Sd.ESTADO_CITA_CANCELADA,
                     FechaInicio = DateTime.Now,
                     FechaFin = DateTime.Now,
                     MedicoId = _medicosCita[0].Id,
@@ -86,7 +83,7 @@ namespace MedicDate.Bussiness.Repository
                 },
                 new()
                 {
-                    Estado = "Acabada",
+                    Estado = Sd.ESTADO_CITA_ANULADA,
                     FechaInicio = DateTime.Now,
                     FechaFin = DateTime.Now.AddHours(2),
                     MedicoId = _medicosCita[0].Id,
@@ -94,7 +91,7 @@ namespace MedicDate.Bussiness.Repository
                 },
                 new()
                 {
-                    Estado = "No Asistió",
+                    Estado = Sd.ESTADO_CITA_NOASISTIOPACIENTE,
                     FechaInicio = DateTime.Now,
                     FechaFin = DateTime.Now,
                     MedicoId = _medicosCita[0].Id,
@@ -106,7 +103,7 @@ namespace MedicDate.Bussiness.Repository
 
             ToAddEntity = new Cita
             {
-                Estado = "Pendiente",
+                Estado = Sd.ESTADO_CITA_PORCONFIRMAR,
                 FechaInicio = DateTime.Now,
                 FechaFin = DateTime.Now.AddDays(2),
                 MedicoId = _medicosCita[0].Id,
@@ -140,7 +137,7 @@ namespace MedicDate.Bussiness.Repository
             var context1 = BuildDbContext(DbName);
             var newCita = new Cita
             {
-                Estado = "Pendiente",
+                Estado = Sd.ESTADO_CITA_PORCONFIRMAR,
                 FechaInicio = DateTime.Now,
                 FechaFin = DateTime.Now.AddDays(2),
                 MedicoId = _medicosCita[0].Id,
@@ -169,7 +166,7 @@ namespace MedicDate.Bussiness.Repository
 
             var citaUpdate = new CitaRequestDto
             {
-                Estado = "Pendiente 2",
+                Estado = Sd.ESTADO_CITA_CONFIRMADA,
                 FechaInicio = DateTime.Now,
                 FechaFin = DateTime.Now.AddDays(3),
                 MedicoId = _medicosCita[1].Id,
@@ -199,7 +196,7 @@ namespace MedicDate.Bussiness.Repository
             var successResult = result.SuccessResult as GenericActionResult;
 
             Assert.True(result.Succeeded);
-            Assert.Equal(HttpStatusCode.OK, successResult.HttpStatusCode);
+            Assert.Equal(HttpStatusCode.OK, successResult?.HttpStatusCode);
 
             var context2 = BuildDbContext(DbName);
             var citaDb = await context2.Cita
@@ -208,14 +205,14 @@ namespace MedicDate.Bussiness.Repository
                 .Include(x => x.ActividadesCita)
                 .FirstOrDefaultAsync(x => x.Id == newCita.Id);
 
-            Assert.Equal(citaUpdate.Estado, citaDb.Estado);
+            Assert.Equal(citaUpdate.Estado, citaDb?.Estado);
 
             Assert.Equal(citaUpdate.Archivos.Select(x => x.RutaArchivo).First(),
-                citaDb.Archivos.Select(x => x.RutaArchivo).First());
+                citaDb?.Archivos.Select(x => x.RutaArchivo).First());
 
             Assert.Equal(
                 citaUpdate.ActividadesCita.Select(x => x.Detalles).First(),
-                citaDb.ActividadesCita.Select(x => x.Detalles).First());
+                citaDb?.ActividadesCita.Select(x => x.Detalles).First());
         }
 
         private async Task CreateCitaRelatedEntities()

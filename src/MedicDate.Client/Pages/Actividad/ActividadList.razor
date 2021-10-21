@@ -1,12 +1,12 @@
 ﻿@page "/actividadList"
-@using MedicDate.API.DTOs.Actividad
+@using MedicDate.Shared.Models.Actividad
 
 <div class="row">
-	<div class="col-12 text-left">
-		<h2 class="text-primary">Actividades</h2>
-	</div>
-	<div class="col-12">
-		<RadzenGenericGrid TItem="ActividadResponseDto" TotalCount="@_totalCount" Headers="@_tableHeaders"
-			ItemList="@_actividadList" OpRoutes="@_opRoutes" OnDeleteData="@DeleteActividad" PropNames="@_propNames" />
-	</div>
+    <div class="col-12 text-left">
+        <h2 class="text-primary">Actividades</h2>
+    </div>
+    <div class="col-12">
+        <RadzenGenericGrid TItem="ActividadResponseDto" TotalCount="@_totalCount" Headers="@_tableHeaders"
+                           ItemList="@_actividadList" OpRoutes="@_opRoutes" OnDeleteData="@DeleteActividad" PropNames="@_propNames" />
+    </div>
 </div>

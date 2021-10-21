@@ -1,5 +1,4 @@
 ﻿using MedicDate.Utility.Interfaces;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -8,10 +7,12 @@ namespace MedicDate.DataAccess.Entities
     public class Especialidad : IId
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        [Key] public string Id { get; set; }
+        [Key]
+        public string Id { get; set; } = default!;
 
-        [Required] [StringLength(100)] public string NombreEspecialidad { get; set; }
+        [StringLength(100)]
+        public string NombreEspecialidad { get; set; } = default!;
 
-        public List<MedicoEspecialidad> MedicosEspecialidades { get; set; } = new();
+        public List<MedicoEspecialidad> MedicosEspecialidades { get; set; } = default!;
     }
 }

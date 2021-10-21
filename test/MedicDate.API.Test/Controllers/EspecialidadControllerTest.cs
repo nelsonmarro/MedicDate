@@ -1,17 +1,13 @@
 ﻿using AutoMapper;
-using MedicDate.API.DTOs.Especialidad;
 using MedicDate.DataAccess.Entities;
-using MedicDate.Test.Shared;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Threading.Tasks;
 using MedicDate.DataAccess.Helpers;
 using MedicDate.DataAccess.Repository;
 using MedicDate.DataAccess.Repository.IRepository;
+using MedicDate.Shared.Models.Especialidad;
+using MedicDate.Test.Shared;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System.Net;
 using Xunit;
 
 namespace MedicDate.API.Controllers
@@ -19,15 +15,15 @@ namespace MedicDate.API.Controllers
     public class EspecialidadControllerTest : BaseDbTest
     {
         private readonly IMapper _mapper;
-        private IEspecialidadRepository _especialidadRepo;
-        private EspecialidadController _sut;
+        private IEspecialidadRepository? _especialidadRepo;
+        private EspecialidadController? _sut;
 
         private readonly List<Especialidad> _tempEspecialidadList = new()
         {
-            new Especialidad {NombreEspecialidad = "Esp 3"},
-            new Especialidad {NombreEspecialidad = "Esp 1"},
-            new Especialidad {NombreEspecialidad = "Esp 4"},
-            new Especialidad {NombreEspecialidad = "Esp 2"}
+            new Especialidad { NombreEspecialidad = "Esp 3" },
+            new Especialidad { NombreEspecialidad = "Esp 1" },
+            new Especialidad { NombreEspecialidad = "Esp 4" },
+            new Especialidad { NombreEspecialidad = "Esp 2" }
         };
 
         protected EspecialidadControllerTest()
@@ -64,10 +60,10 @@ namespace MedicDate.API.Controllers
                 //Assert
 
                 //Check correct count of total pages
-                Assert.Equal(2, result.Value.TotalPages);
+                Assert.Equal(2, result.Value?.TotalPages);
 
                 //Check correct count of specialityes
-                Assert.Equal(4, result.Value.TotalCount);
+                Assert.Equal(4, result.Value?.TotalCount);
             }
         }
 
@@ -95,7 +91,7 @@ namespace MedicDate.API.Controllers
 
                 //Assert
 
-                Assert.Equal(4, result.Value.Count);
+                Assert.Equal(4, result.Value?.Count);
             }
 
             [Fact]
@@ -119,6 +115,11 @@ namespace MedicDate.API.Controllers
 
                 var result = await _sut.GetAllEspecialidadesAsync();
 
+                if (result.Value is null)
+                {
+                    Assert.Fail("La lista de especialidades fue nula");
+                }
+
                 //Assert
                 Assert.Collection(result.Value,
                     esp => Assert.Equal("Esp 1", esp.NombreEspecialidad),
@@ -132,7 +133,7 @@ namespace MedicDate.API.Controllers
         public class GetPutEspecialidadAsync : EspecialidadControllerTest
         {
             private readonly Especialidad _tempEspecialidad = new()
-                {NombreEspecialidad = "Esp 1"};
+            { NombreEspecialidad = "Esp 1" };
 
             [Theory]
             [InlineData("invalidId")]
@@ -178,18 +179,18 @@ namespace MedicDate.API.Controllers
                 _sut = new EspecialidadController(_especialidadRepo, _mapper);
 
                 var result =
-                    await _sut.GetPutEspecialidadAsync(validEspecialidadId);
+                    await _sut.GetPutEspecialidadAsync(validEspecialidadId ?? "0");
 
                 //Assert
                 Assert.Equal(_tempEspecialidad.NombreEspecialidad,
-                    result.Value.NombreEspecialidad);
+                    result?.Value?.NombreEspecialidad);
             }
         }
 
         public class GetEspecialidadAsync : EspecialidadControllerTest
         {
             private readonly Especialidad _tempEspecialidad = new()
-                {NombreEspecialidad = "Esp 1"};
+            { NombreEspecialidad = "Esp 1" };
 
             [Theory]
             [InlineData("invalidId")]
@@ -236,10 +237,10 @@ namespace MedicDate.API.Controllers
                 _sut = new EspecialidadController(_especialidadRepo, _mapper);
 
                 var result =
-                    await _sut.GetEspecialidadAsync(validEspecialidadId);
+                    await _sut.GetEspecialidadAsync(validEspecialidadId ?? "0");
 
                 //Assert
-                Assert.Equal(validEspecialidadId, result.Value.Id);
+                Assert.Equal(validEspecialidadId, result.Value?.Id);
             }
         }
 
@@ -248,7 +249,7 @@ namespace MedicDate.API.Controllers
             public static TheoryData<EspecialidadRequestDto> NewEspecialidad =
                 new()
                 {
-                    {new EspecialidadRequestDto {NombreEspecialidad = "Esp 1"}}
+                    { new EspecialidadRequestDto { NombreEspecialidad = "Esp 1" } }
                 };
 
             [Theory]
@@ -292,7 +293,7 @@ namespace MedicDate.API.Controllers
                 {
                     {
                         new EspecialidadRequestDto
-                            {NombreEspecialidad = "Esp-123"}
+                        { NombreEspecialidad = "Esp-123" }
                     }
                 };
 

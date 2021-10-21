@@ -1,24 +1,22 @@
-﻿using MedicDate.API.DTOs.AppRole;
-using System;
-using System.Collections.Generic;
+﻿using MedicDate.Shared.Models.AppRole;
 
-namespace MedicDate.API.DTOs.AppUser
+namespace MedicDate.Shared.Models.AppUser
 {
     public class AppUserResponseDto
     {
-        public string Id { get; set; }
+        public string Id { get; set; } = string.Empty;
 
-        public string Nombre { get; set; }
+        public string Nombre { get; set; } = string.Empty;
 
-        public string Apellidos { get; set; }
+        public string Apellidos { get; set; } = string.Empty;
 
-        public string Email { get; set; }
+        public string Email { get; set; } = string.Empty;
 
         public bool EmailConfirmed { get; set; }
 
-        public string PhoneNumber { get; set; }
+        public string? PhoneNumber { get; set; }
 
-        public List<RoleResponseDto> Roles { get; set; }
+        public List<RoleResponseDto> Roles { get; set; } = new();
 
         public DateTimeOffset? LockoutEnd { get; set; }
     }

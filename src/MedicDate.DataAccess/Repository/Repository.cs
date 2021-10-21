@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Threading.Tasks;
-using MedicDate.DataAccess.Repository.IRepository;
+﻿using MedicDate.DataAccess.Repository.IRepository;
 using MedicDate.Utility.Extensions;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace MedicDate.DataAccess.Repository
 {
@@ -20,15 +16,15 @@ namespace MedicDate.DataAccess.Repository
             _dBSet = context.Set<TEntity>();
         }
 
-        public async Task<TEntity> FindAsync(string id)
+        public async Task<TEntity?> FindAsync(string id)
         {
             return await _dBSet.FindAsync(id);
         }
 
         public async Task<List<TEntity>> GetAllAsync(
-            Expression<Func<TEntity, bool>> filter = null,
-            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
-            string includeProperties = null,
+            Expression<Func<TEntity, bool>>? filter = null,
+            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
+            string? includeProperties = null,
             bool isTracking = true
         )
         {
@@ -39,9 +35,9 @@ namespace MedicDate.DataAccess.Repository
         }
 
         public async Task<List<TEntity>> GetAllWithPagingAsync(
-            Expression<Func<TEntity, bool>> filter = null,
-            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
-            string includeProperties = null,
+            Expression<Func<TEntity, bool>>? filter = null,
+            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
+            string? includeProperties = null,
             bool isTracking = true, int pageIndex = 0, int pageSize = 10)
         {
             var query = EntityFetchQueryBuilder(filter, orderBy,
@@ -52,17 +48,19 @@ namespace MedicDate.DataAccess.Repository
             return await query.ToListAsync();
         }
 
-        public async Task<TEntity> FirstOrDefaultAsync
+        public async Task<TEntity?> FirstOrDefaultAsync
         (
-            Expression<Func<TEntity, bool>> filter = null,
-            string includeProperties = null,
+            Expression<Func<TEntity, bool>>? filter = null,
+            string? includeProperties = null,
             bool isTracking = true
         )
         {
             var query = EntityFetchQueryBuilder(filter, null,
                 includeProperties, isTracking);
 
-            return await query.FirstOrDefaultAsync();
+            var entityDb = await query.FirstOrDefaultAsync();
+
+            return entityDb;
         }
 
         public async Task AddAsync(TEntity entity)
@@ -112,9 +110,9 @@ namespace MedicDate.DataAccess.Repository
         }
 
         private IQueryable<TEntity> EntityFetchQueryBuilder(
-            Expression<Func<TEntity, bool>> filter = null,
-            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
-            string includeProperties = null,
+            Expression<Func<TEntity, bool>>? filter = null,
+            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
+            string? includeProperties = null,
             bool isTracking = true)
         {
             IQueryable<TEntity> query = _dBSet;

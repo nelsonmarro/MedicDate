@@ -1,27 +1,24 @@
-﻿using MedicDate.API.DTOs.AppRole;
-using MedicDate.API.DTOs.AppUser;
-using MedicDate.Client.Data.HttpRepository.IHttpRepository;
+﻿using MedicDate.Client.Data.HttpRepository.IHttpRepository;
 using MedicDate.Client.Helpers;
 using MedicDate.Client.Services.IServices;
+using MedicDate.Shared.Models.AppRole;
+using MedicDate.Shared.Models.AppUser;
 using Microsoft.AspNetCore.Components;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace MedicDate.Client.Pages.AppUser
 {
     public partial class AppUserList
     {
         [Inject]
-        public IBaseListComponentOperations BaseListComponentOps { get; set; }
+        public IBaseListComponentOperations BaseListComponentOps { get; set; } = default!;
 
         [Inject]
-        public INotificationService NotificationService { get; set; }
+        public INotificationService NotificationService { get; set; } = default!;
 
         [Inject]
-        public IHttpRepository HttpRepo { get; set; }
+        public IHttpRepository HttpRepo { get; set; } = default!;
 
-        private IEnumerable<AppUserResponseDto> _userList;
+        private IEnumerable<AppUserResponseDto>? _userList;
         private int _totalCount = 0;
         private static string GetUrl = "api/Usuario/listarConPaginacion?traerRoles=true";
         private List<RoleResponseDto> _roleList = new();
@@ -46,7 +43,10 @@ namespace MedicDate.Client.Pages.AppUser
 
             if (!httpResponse.Error)
             {
-                _roleList = httpResponse.Response;
+                if (httpResponse.Response is not null)
+                {
+                    _roleList = httpResponse.Response;
+                }
             }
         }
 

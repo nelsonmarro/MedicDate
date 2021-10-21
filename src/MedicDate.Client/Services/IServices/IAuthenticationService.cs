@@ -1,13 +1,12 @@
-﻿using MedicDate.API.DTOs.Auth;
-using MedicDate.Client.Data.HttpRepository.IHttpRepository;
-using System.Threading.Tasks;
+﻿using MedicDate.Client.Data.HttpRepository.IHttpRepository;
+using MedicDate.Shared.Models.Auth;
 
 namespace MedicDate.Client.Services.IServices
 {
     public interface IAuthenticationService : IHttpRepository
     {
-        Task<LoginResponseDto> Login(LoginRequestDto loginRequestDto);
+        Task<LoginResponseDto?> Login(LoginRequestDto loginRequestDto);
         Task Logout();
-        Task<string> RefreshToken();
+        Task<string?> RefreshToken();
     }
 }

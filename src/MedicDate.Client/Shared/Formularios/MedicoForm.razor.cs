@@ -1,24 +1,22 @@
-﻿using MedicDate.API.DTOs.Especialidad;
-using MedicDate.API.DTOs.Medico;
-using MedicDate.Client.Data.HttpRepository.IHttpRepository;
+﻿using MedicDate.Client.Data.HttpRepository.IHttpRepository;
 using MedicDate.Client.Services.IServices;
+using MedicDate.Shared.Models.Especialidad;
+using MedicDate.Shared.Models.Medico;
 using Microsoft.AspNetCore.Components;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace MedicDate.Client.Shared.Formularios
 {
     public partial class MedicoForm
     {
-        [Inject] public IHttpRepository HttpRepo { get; set; }
-        [Inject] public INotificationService NotificationService { get; set; }
+        [Inject] public IHttpRepository HttpRepo { get; set; } = default!;
+        [Inject] public INotificationService NotificationService { get; set; } = default!;
 
         [Parameter] public MedicoRequestDto MedicoRequestDto { get; set; } = new();
 
         [Parameter] public EventCallback OnSubmit { get; set; }
 
-        private List<EspecialidadResponseDto> _especialidades;
-        private IEnumerable<string> _especialidadesIds;
+        private List<EspecialidadResponseDto>? _especialidades;
+        private IEnumerable<string>? _especialidadesIds;
 
         protected override async Task OnInitializedAsync()
         {

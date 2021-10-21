@@ -1,11 +1,11 @@
-using System.Linq;
+using MedicDate.Bussines.ApplicationServices.IApplicationServices;
+using MedicDate.DataAccess;
 using MedicDate.DataAccess.Entities;
-using MedicDate.DataAccess.Services.IServices;
 using MedicDate.Utility;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
-namespace MedicDate.DataAccess.Services
+namespace MedicDate.Bussines.ApplicationServices
 {
     public class DbInitializer : IDbInitializer
     {
@@ -60,10 +60,10 @@ namespace MedicDate.DataAccess.Services
         {
             _userManager.CreateAsync(new ApplicationUser
             {
+                Nombre = "Web",
+                Apellidos = "Master",
                 UserName = "nelsonmarro99@gmail.com",
                 Email = "nelsonmarro99@gmail.com",
-                Apellidos = "Master",
-                Nombre = "Web",
 
                 EmailConfirmed = true
             }, "Admin123*").GetAwaiter().GetResult();
@@ -71,8 +71,10 @@ namespace MedicDate.DataAccess.Services
             var user = _context.ApplicationUser.FirstOrDefault(x =>
                 x.Email == "nelsonmarro99@gmail.com");
 
-            _userManager.AddToRoleAsync(user, Sd.ROLE_ADMIN).GetAwaiter()
-                .GetResult();
+            if (user is not null)
+            {
+                _userManager.AddToRoleAsync(user, Sd.ROLE_ADMIN).GetAwaiter().GetResult();
+            }
         }
     }
 }

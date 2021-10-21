@@ -1,17 +1,15 @@
-using System.IO;
+using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using System.Text;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
 
 namespace MedicDate.DataAccess.Helpers
 {
     public class GenericActionResult : ActionResult
     {
         public HttpStatusCode HttpStatusCode { get; init; }
-        public string ResponseBody { get; init; }
+        public string? ResponseBody { get; init; }
 
-        public GenericActionResult(HttpStatusCode httpStatusCode, string responseBody)
+        public GenericActionResult(HttpStatusCode httpStatusCode, string? responseBody)
         {
             HttpStatusCode = httpStatusCode;
             ResponseBody = responseBody;

@@ -1,21 +1,20 @@
-﻿using MedicDate.API.DTOs.AppUser;
-using MedicDate.Client.Data.HttpRepository.IHttpRepository;
+﻿using MedicDate.Client.Data.HttpRepository.IHttpRepository;
 using MedicDate.Client.Services.IServices;
+using MedicDate.Shared.Models.AppUser;
 using Microsoft.AspNetCore.Components;
-using System.Threading.Tasks;
 
 namespace MedicDate.Client.Pages.AppUser
 {
     public partial class AppUserEdit
     {
-        [Inject] public IHttpRepository HttpRepo { get; set; }
-        [Inject] public NavigationManager NavigationManager { get; set; }
-        [Inject] public INotificationService NotificationService { get; set; }
-        [Inject] public IDialogNotificationService DialogNotificationService { get; set; }
+        [Inject] public IHttpRepository HttpRepo { get; set; } = default!;
+        [Inject] public NavigationManager NavigationManager { get; set; } = default!;
+        [Inject] public INotificationService NotificationService { get; set; } = default!;
+        [Inject] public IDialogNotificationService DialogNotificationService { get; set; } = default!;
 
-        [Parameter] public string Id { get; set; }
+        [Parameter] public string? Id { get; set; }
 
-        private AppUserRequestDto _appUserModel;
+        private AppUserRequestDto _appUserModel = new();
         private bool _isBussy;
 
         protected override async Task OnInitializedAsync()
@@ -24,7 +23,10 @@ namespace MedicDate.Client.Pages.AppUser
 
             if (!httpResp.Error)
             {
-                _appUserModel = httpResp.Response;
+                if (httpResp.Response is not null)
+                {
+                    _appUserModel = httpResp.Response;
+                }
             }
         }
 
@@ -32,7 +34,7 @@ namespace MedicDate.Client.Pages.AppUser
         {
             if (_appUserModel.Roles.Count == 0)
             {
-                await DialogNotificationService
+                await DialogNotificationService!
                     .ShowError("Error!", "Debe seleccionar al menos un rol para el usuario");
 
                 return;
@@ -48,7 +50,7 @@ namespace MedicDate.Client.Pages.AppUser
             {
                 NotificationService.ShowSuccess("Operación exitosa!",
                     "Registro editado con éxito");
-                NavigationManager.NavigateTo("usuarioList");
+                NavigationManager!.NavigateTo("usuarioList");
             }
         }
     }

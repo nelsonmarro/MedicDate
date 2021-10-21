@@ -18,24 +18,8 @@ namespace MedicDate.DataAccess
         {
             base.OnModelCreating(builder);
 
-            //TODO: Encapsulate ApplicationUser Entity Config
-            builder.Entity<ApplicationUser>(b =>
-            {
-                b.HasMany(e => e.UserRoles)
-                    .WithOne(e => e.User)
-                    .HasForeignKey(ur => ur.UserId)
-                    .IsRequired();
-            });
-
-            builder.Entity<AppRole>(b =>
-            {
-                // Each Role can have many entries in the UserRole join table
-                b.HasMany(e => e.UserRoles)
-                    .WithOne(e => e.Role)
-                    .HasForeignKey(ur => ur.RoleId)
-                    .IsRequired();
-            });
-
+            builder.ApplyConfiguration(new ApplicationUserConfig());
+            builder.ApplyConfiguration(new AppRoleConfig());
             builder.ApplyConfiguration(new MedicoConfig());
             builder.ApplyConfiguration(new MedicoEspecialidadConfig());
             builder.ApplyConfiguration(new PacienteConfig());
@@ -43,18 +27,18 @@ namespace MedicDate.DataAccess
             builder.ApplyConfiguration(new ActividadCitaConfig());
         }
 
-        public DbSet<ApplicationUser> ApplicationUser { get; set; }
-        public DbSet<AppRole> AppRole { get; set; }
-        public DbSet<Medico> Medico { get; set; }
-        public DbSet<ApplicationUserRole> ApplicationUserRoles { get; set; }
-        public DbSet<Especialidad> Especialidad { get; set; }
-        public DbSet<MedicoEspecialidad> MedicoEspecialidad { get; set; }
-        public DbSet<Paciente> Paciente { get; set; }
-        public DbSet<Grupo> Grupo { get; set; }
-        public DbSet<GrupoPaciente> GrupoPaciente { get; set; }
-        public DbSet<Cita> Cita { get; set; }
-        public DbSet<Actividad> Actividad { get; set; }
-        public DbSet<ActividadCita> ActividadCita { get; set; }
-        public DbSet<Archivo> Archivo { get; set; }
+        public DbSet<ApplicationUser> ApplicationUser => Set<ApplicationUser>();
+        public DbSet<AppRole> AppRole => Set<AppRole>();
+        public DbSet<Medico> Medico => Set<Medico>();
+        public DbSet<ApplicationUserRole> ApplicationUserRoles => Set<ApplicationUserRole>();
+        public DbSet<Especialidad> Especialidad => Set<Especialidad>();
+        public DbSet<MedicoEspecialidad> MedicoEspecialidad => Set<MedicoEspecialidad>();
+        public DbSet<Paciente> Paciente => Set<Paciente>();
+        public DbSet<Grupo> Grupo => Set<Grupo>();
+        public DbSet<GrupoPaciente> GrupoPaciente => Set<GrupoPaciente>();
+        public DbSet<Cita> Cita => Set<Cita>();
+        public DbSet<Actividad> Actividad => Set<Actividad>();
+        public DbSet<ActividadCita> ActividadCita => Set<ActividadCita>();
+        public DbSet<Archivo> Archivo => Set<Archivo>();
     }
 }

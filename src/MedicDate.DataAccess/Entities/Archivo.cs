@@ -7,15 +7,16 @@ namespace MedicDate.DataAccess.Entities
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Key]
-        public string Id { get; set; }
+        public string Id { get; set; } = default!;
 
         [StringLength(1000)]
         [Column(TypeName = "varchar(1000)")]
-        public string RutaArchivo { get; set; }
+        [Required]
+        public string RutaArchivo { get; set; } = default!;
 
-        [StringLength(300)] public string Descripcion { get; set; }
-        public string CitaId { get; set; }
+        [StringLength(300)] public string? Descripcion { get; set; }
 
-        public Cita Cita { get; set; }
+        public string CitaId { get; set; } = default!;
+        public Cita Cita { get; set; } = default!;
     }
 }

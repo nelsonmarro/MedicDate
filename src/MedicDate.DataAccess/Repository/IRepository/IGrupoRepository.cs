@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
-using MedicDate.API.DTOs.Grupo;
 using MedicDate.DataAccess.Entities;
 using MedicDate.DataAccess.Helpers;
+using MedicDate.Shared.Models.Grupo;
 
 namespace MedicDate.DataAccess.Repository.IRepository
 {

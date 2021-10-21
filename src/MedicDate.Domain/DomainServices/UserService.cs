@@ -14,12 +14,12 @@ namespace MedicDate.Bussines.DomainServices
         {
             _appUserRepository = appUserRepository;
         }
-        
+
         public async Task<OperationResult<bool>> CheckIfUserIsWebMasterAsync(
             string userId)
         {
             var userDb = await _appUserRepository.FindAsync(userId);
-            
+
             return userDb is null
                 ? OperationResult<bool>.Error(NotFound,
                     "No se encotró el usuario el id requerido")

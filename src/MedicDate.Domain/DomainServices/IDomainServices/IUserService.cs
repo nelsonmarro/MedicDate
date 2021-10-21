@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using MedicDate.DataAccess.Helpers;
+﻿using MedicDate.DataAccess.Helpers;
 
 namespace MedicDate.Bussines.DomainServices.IDomainServices
 {

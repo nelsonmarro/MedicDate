@@ -1,26 +1,22 @@
-﻿using System;
-using MedicDate.Utility.Interfaces;
+﻿using MedicDate.Utility.Interfaces;
 using Microsoft.AspNetCore.Components;
-using System.Collections.Generic;
-using System.Collections.Immutable;
-using System.Linq;
 using Radzen.Blazor;
 
 namespace MedicDate.Client.Components
 {
     public partial class SelectableGrid<TItem> where TItem : IId
     {
-        [Parameter] public IList<TItem> ItemList { get; set; }
+        [Parameter] public IList<TItem> ItemList { get; set; } = new List<TItem>();
 
-        [Parameter] public IList<TItem> SelectedItems { get; set; }
+        [Parameter] public IList<TItem> SelectedItems { get; set; } = new List<TItem>();
 
-        [Parameter] public string[] Headers { get; set; }
+        [Parameter] public string[] Headers { get; set; } = { };
 
-        [Parameter] public string[] PropNames { get; set; }
+        [Parameter] public string[] PropNames { get; set; } = { };
 
         [Parameter] public bool AllowColumnResize { get; set; } = true;
 
-        private RadzenDataGrid<TItem> _dataGrid;
+        private RadzenDataGrid<TItem>? _dataGrid;
         private IList<TItem> _tempItemList = new List<TItem>();
         private IList<TItem> _tempSelectedItems = new List<TItem>();
 
@@ -71,10 +67,10 @@ namespace MedicDate.Client.Components
         private void DeselectRow(TItem data)
         {
             _tempSelectedItems.Remove(data);
-            
+
             var itemToDelete =
                 SelectedItems.FirstOrDefault(x => x.Id == data.Id);
-                
+
             if (itemToDelete is not null)
             {
                 SelectedItems.Remove(itemToDelete);

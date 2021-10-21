@@ -1,22 +1,22 @@
-﻿using MedicDate.API.DTOs.Actividad;
-using MedicDate.API.DTOs.Archivo;
-using System;
-using System.Collections.Generic;
+﻿using MedicDate.Shared.Models.Actividad;
+using MedicDate.Shared.Models.Archivo;
 using System.ComponentModel.DataAnnotations;
 
-namespace MedicDate.API.DTOs.Cita
+namespace MedicDate.Shared.Models.Cita
 {
     public class CitaRequestDto
     {
-        [Required] public DateTime FechaInicio { get; set; }
-        [Required] public DateTime FechaFin { get; set; }
-        [Required] [StringLength(400)] public string Estado { get; set; }
+        [Required]
+        public DateTime FechaInicio { get; set; }
+        [Required]
+        public DateTime FechaFin { get; set; }
+        public string Estado { get; set; } = string.Empty;
 
-        public string PacienteId { get; set; }
-        public string MedicoId { get; set; }
+        public string? PacienteId { get; set; }
+        public string? MedicoId { get; set; }
 
-        public List<ActividadCitaRequestDto> ActividadesCita { get; set; }
-        public List<ArchivoRequestDto> Archivos { get; set; }
+        public List<ActividadCitaRequestDto> ActividadesCita { get; set; } = new();
+        public List<ArchivoRequestDto> Archivos { get; set; } = new();
 
     }
 }

@@ -1,16 +1,14 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using AutoMapper;
-using MedicDate.API.DTOs.Actividad;
-using MedicDate.API.DTOs.AppRole;
-using MedicDate.API.DTOs.AppUser;
-using MedicDate.API.DTOs.Archivo;
-using MedicDate.API.DTOs.Cita;
-using MedicDate.API.DTOs.Especialidad;
-using MedicDate.API.DTOs.Grupo;
-using MedicDate.API.DTOs.Medico;
-using MedicDate.API.DTOs.Paciente;
+﻿using AutoMapper;
 using MedicDate.DataAccess.Entities;
+using MedicDate.Shared.Models.Actividad;
+using MedicDate.Shared.Models.AppRole;
+using MedicDate.Shared.Models.AppUser;
+using MedicDate.Shared.Models.Archivo;
+using MedicDate.Shared.Models.Cita;
+using MedicDate.Shared.Models.Especialidad;
+using MedicDate.Shared.Models.Grupo;
+using MedicDate.Shared.Models.Medico;
+using MedicDate.Shared.Models.Paciente;
 
 namespace MedicDate.DataAccess.Mapper
 {
@@ -42,9 +40,13 @@ namespace MedicDate.DataAccess.Mapper
             CreateMap<Paciente, PacienteResponseDto>()
                 .ForMember(x => x.Grupos, opts => opts.MapFrom(MapGrupos));
 
+            CreateMap<Paciente, PacienteCitaResponseDto>()
+                .ForMember(x => x.FullInfo, opts => opts.Ignore());
+
             CreateMap<Medico, MedicoResponseDto>()
                 .ForMember(x => x.Especialidades,
                     opts => opts.MapFrom(MapEspecialidades));
+
             CreateMap<MedicoRequestDto, Medico>()
                 .ForMember(x => x.Id, opts => opts.Ignore())
                 .ForMember(x => x.Citas, opts => opts.Ignore())
@@ -54,6 +56,9 @@ namespace MedicDate.DataAccess.Mapper
             CreateMap<Medico, MedicoRequestDto>()
                 .ForMember(x => x.EspecialidadesId,
                     opts => opts.MapFrom(MapEspecialidadesIds));
+
+            CreateMap<Medico, MedicoCitaResponseDto>()
+                .ForMember(x => x.FullInfo, opts => opts.Ignore());
 
             CreateMap<ApplicationUser, AppUserResponseDto>()
                 .ForMember(x => x.Roles,
@@ -80,8 +85,6 @@ namespace MedicDate.DataAccess.Mapper
             CreateMap<ApplicationUser, AppUserRequestDto>()
                 .ForMember(x => x.Roles, opts => opts.MapFrom(MapRolesRequest));
 
-            CreateMap<Paciente, PacienteCitaResponseDto>();
-            CreateMap<Medico, MedicoCitaResponseDto>();
             CreateMap<Archivo, ArchivoResponseDto>();
             CreateMap<ArchivoRequestDto, Archivo>()
                 .ForMember(x => x.Id, opts => opts.Ignore())
@@ -104,7 +107,8 @@ namespace MedicDate.DataAccess.Mapper
                 .ForMember(x => x.ActividadesCita,
                     opts => opts.MapFrom(MapActividadesCitaForCreate));
 
-            CreateMap<Cita, CitaCalendarDto>();
+            CreateMap<Cita, CitaCalendarDto>()
+                .ForMember(x => x.InfoCita, opt => opt.Ignore());
         }
 
         private List<ActividadCita> MapActividadesCitaForCreate(
@@ -118,9 +122,9 @@ namespace MedicDate.DataAccess.Mapper
             }
 
             result.AddRange(citaReqDto.ActividadesCita.Select(x =>
-                new ActividadCita
+                new ActividadCita()
                 {
-                    ActividadId = x.ActividadId,
+                    ActividadId = x.ActividadId ?? "",
                     ActividadTerminada = x.ActividadTerminada,
                     Detalles = x.Detalles
                 }));
@@ -132,9 +136,10 @@ namespace MedicDate.DataAccess.Mapper
             Cita cita,
             CitaDetailsDto citaDetailsDto)
         {
-            var result = new List<ActividadCitaResponseDto>();
+            List<ActividadCitaResponseDto> result = new();
 
-            if (cita.ActividadesCita is null)
+            if (cita.ActividadesCita is null ||
+                cita.ActividadesCita.First().Actividad is null)
             {
                 return result;
             }
@@ -263,10 +268,7 @@ namespace MedicDate.DataAccess.Mapper
                 pacienteRequestDto.GruposId.Count == 0) return result;
 
             result.AddRange(pacienteRequestDto.GruposId.Select(grupoId =>
-                new GrupoPaciente
-                {
-                    GrupoId = grupoId
-                }));
+                new GrupoPaciente { GrupoId = grupoId }));
 
             return result;
         }
@@ -333,10 +335,7 @@ namespace MedicDate.DataAccess.Mapper
                 return result;
 
             result.AddRange(medicoRequestDto.EspecialidadesId.Select(
-                especialidadId => new MedicoEspecialidad
-                {
-                    EspecialidadId = especialidadId
-                }));
+                especialidadId => new MedicoEspecialidad { EspecialidadId = especialidadId }));
 
             return result;
         }

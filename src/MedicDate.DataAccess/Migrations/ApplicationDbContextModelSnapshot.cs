@@ -6,6 +6,8 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
+#nullable disable
+
 namespace MedicDate.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
@@ -15,11 +17,12 @@ namespace MedicDate.DataAccess.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("ProductVersion", "5.0.8")
-                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                .HasAnnotation("ProductVersion", "6.0.0-rc.1.21452.10")
+                .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
-            modelBuilder.Entity("MedicDate.DataAccess.Models.Actividad", b =>
+            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
+
+            modelBuilder.Entity("MedicDate.DataAccess.Entities.Actividad", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
@@ -32,10 +35,10 @@ namespace MedicDate.DataAccess.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Actividad");
+                    b.ToTable("Actividad", (string)null);
                 });
 
-            modelBuilder.Entity("MedicDate.DataAccess.Models.ActividadCita", b =>
+            modelBuilder.Entity("MedicDate.DataAccess.Entities.ActividadCita", b =>
                 {
                     b.Property<string>("CitaId")
                         .HasColumnType("nvarchar(450)");
@@ -54,41 +57,10 @@ namespace MedicDate.DataAccess.Migrations
 
                     b.HasIndex("ActividadId");
 
-                    b.ToTable("ActividadCita");
+                    b.ToTable("ActividadCita", (string)null);
                 });
 
-            modelBuilder.Entity("MedicDate.DataAccess.Models.AppRole", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("ConcurrencyStamp")
-                        .IsConcurrencyToken()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Descripcion")
-                        .HasMaxLength(300)
-                        .HasColumnType("nvarchar(300)");
-
-                    b.Property<string>("Name")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<string>("NormalizedName")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("NormalizedName")
-                        .IsUnique()
-                        .HasDatabaseName("RoleNameIndex")
-                        .HasFilter("[NormalizedName] IS NOT NULL");
-
-                    b.ToTable("AspNetRoles");
-                });
-
-            modelBuilder.Entity("MedicDate.DataAccess.Models.ApplicationUser", b =>
+            modelBuilder.Entity("MedicDate.DataAccess.Entities.ApplicationUser", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
@@ -165,10 +137,10 @@ namespace MedicDate.DataAccess.Migrations
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
-                    b.ToTable("AspNetUsers");
+                    b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("MedicDate.DataAccess.Models.ApplicationUserRole", b =>
+            modelBuilder.Entity("MedicDate.DataAccess.Entities.ApplicationUserRole", b =>
                 {
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
@@ -180,16 +152,48 @@ namespace MedicDate.DataAccess.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("AspNetUserRoles");
+                    b.ToTable("AspNetUserRoles", (string)null);
                 });
 
-            modelBuilder.Entity("MedicDate.DataAccess.Models.Archivo", b =>
+            modelBuilder.Entity("MedicDate.DataAccess.Entities.AppRole", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Descripcion")
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("NormalizedName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedName")
+                        .IsUnique()
+                        .HasDatabaseName("RoleNameIndex")
+                        .HasFilter("[NormalizedName] IS NOT NULL");
+
+                    b.ToTable("AspNetRoles", (string)null);
+                });
+
+            modelBuilder.Entity("MedicDate.DataAccess.Entities.Archivo", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("CitaId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Descripcion")
@@ -197,6 +201,7 @@ namespace MedicDate.DataAccess.Migrations
                         .HasColumnType("nvarchar(300)");
 
                     b.Property<string>("RutaArchivo")
+                        .IsRequired()
                         .HasMaxLength(1000)
                         .HasColumnType("varchar(1000)");
 
@@ -204,10 +209,10 @@ namespace MedicDate.DataAccess.Migrations
 
                     b.HasIndex("CitaId");
 
-                    b.ToTable("Archivo");
+                    b.ToTable("Archivo", (string)null);
                 });
 
-            modelBuilder.Entity("MedicDate.DataAccess.Models.Cita", b =>
+            modelBuilder.Entity("MedicDate.DataAccess.Entities.Cita", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
@@ -225,9 +230,11 @@ namespace MedicDate.DataAccess.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("MedicoId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("PacienteId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
@@ -236,10 +243,10 @@ namespace MedicDate.DataAccess.Migrations
 
                     b.HasIndex("PacienteId");
 
-                    b.ToTable("Cita");
+                    b.ToTable("Cita", (string)null);
                 });
 
-            modelBuilder.Entity("MedicDate.DataAccess.Models.Especialidad", b =>
+            modelBuilder.Entity("MedicDate.DataAccess.Entities.Especialidad", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
@@ -252,10 +259,10 @@ namespace MedicDate.DataAccess.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Especialidad");
+                    b.ToTable("Especialidad", (string)null);
                 });
 
-            modelBuilder.Entity("MedicDate.DataAccess.Models.Grupo", b =>
+            modelBuilder.Entity("MedicDate.DataAccess.Entities.Grupo", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
@@ -268,10 +275,10 @@ namespace MedicDate.DataAccess.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Grupo");
+                    b.ToTable("Grupo", (string)null);
                 });
 
-            modelBuilder.Entity("MedicDate.DataAccess.Models.GrupoPaciente", b =>
+            modelBuilder.Entity("MedicDate.DataAccess.Entities.GrupoPaciente", b =>
                 {
                     b.Property<string>("GrupoId")
                         .HasColumnType("nvarchar(450)");
@@ -283,10 +290,10 @@ namespace MedicDate.DataAccess.Migrations
 
                     b.HasIndex("PacienteId");
 
-                    b.ToTable("GrupoPaciente");
+                    b.ToTable("GrupoPaciente", (string)null);
                 });
 
-            modelBuilder.Entity("MedicDate.DataAccess.Models.Medico", b =>
+            modelBuilder.Entity("MedicDate.DataAccess.Entities.Medico", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
@@ -317,10 +324,10 @@ namespace MedicDate.DataAccess.Migrations
                     b.HasIndex("Cedula")
                         .IsUnique();
 
-                    b.ToTable("Medico");
+                    b.ToTable("Medico", (string)null);
                 });
 
-            modelBuilder.Entity("MedicDate.DataAccess.Models.MedicoEspecialidad", b =>
+            modelBuilder.Entity("MedicDate.DataAccess.Entities.MedicoEspecialidad", b =>
                 {
                     b.Property<string>("MedicoId")
                         .HasColumnType("nvarchar(450)");
@@ -332,10 +339,10 @@ namespace MedicDate.DataAccess.Migrations
 
                     b.HasIndex("EspecialidadId");
 
-                    b.ToTable("MedicoEspecialidad");
+                    b.ToTable("MedicoEspecialidad", (string)null);
                 });
 
-            modelBuilder.Entity("MedicDate.DataAccess.Models.Paciente", b =>
+            modelBuilder.Entity("MedicDate.DataAccess.Entities.Paciente", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
@@ -390,15 +397,16 @@ namespace MedicDate.DataAccess.Migrations
                     b.HasIndex("NumHistoria")
                         .IsUnique();
 
-                    b.ToTable("Paciente");
+                    b.ToTable("Paciente", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("ClaimType")
                         .HasColumnType("nvarchar(max)");
@@ -414,15 +422,16 @@ namespace MedicDate.DataAccess.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("AspNetRoleClaims");
+                    b.ToTable("AspNetRoleClaims", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("ClaimType")
                         .HasColumnType("nvarchar(max)");
@@ -438,7 +447,7 @@ namespace MedicDate.DataAccess.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("AspNetUserClaims");
+                    b.ToTable("AspNetUserClaims", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
@@ -460,7 +469,7 @@ namespace MedicDate.DataAccess.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("AspNetUserLogins");
+                    b.ToTable("AspNetUserLogins", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
@@ -479,19 +488,19 @@ namespace MedicDate.DataAccess.Migrations
 
                     b.HasKey("UserId", "LoginProvider", "Name");
 
-                    b.ToTable("AspNetUserTokens");
+                    b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("MedicDate.DataAccess.Models.ActividadCita", b =>
+            modelBuilder.Entity("MedicDate.DataAccess.Entities.ActividadCita", b =>
                 {
-                    b.HasOne("MedicDate.DataAccess.Models.Actividad", "Actividad")
+                    b.HasOne("MedicDate.DataAccess.Entities.Actividad", "Actividad")
                         .WithMany("ActividadesCitas")
                         .HasForeignKey("ActividadId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("MedicDate.DataAccess.Models.Cita", "Cita")
-                        .WithMany("ActividadesCitas")
+                    b.HasOne("MedicDate.DataAccess.Entities.Cita", "Cita")
+                        .WithMany("ActividadesCita")
                         .HasForeignKey("CitaId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -501,15 +510,15 @@ namespace MedicDate.DataAccess.Migrations
                     b.Navigation("Cita");
                 });
 
-            modelBuilder.Entity("MedicDate.DataAccess.Models.ApplicationUserRole", b =>
+            modelBuilder.Entity("MedicDate.DataAccess.Entities.ApplicationUserRole", b =>
                 {
-                    b.HasOne("MedicDate.DataAccess.Models.AppRole", "Role")
+                    b.HasOne("MedicDate.DataAccess.Entities.AppRole", "Role")
                         .WithMany("UserRoles")
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("MedicDate.DataAccess.Models.ApplicationUser", "User")
+                    b.HasOne("MedicDate.DataAccess.Entities.ApplicationUser", "User")
                         .WithMany("UserRoles")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -520,39 +529,45 @@ namespace MedicDate.DataAccess.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("MedicDate.DataAccess.Models.Archivo", b =>
+            modelBuilder.Entity("MedicDate.DataAccess.Entities.Archivo", b =>
                 {
-                    b.HasOne("MedicDate.DataAccess.Models.Cita", "Cita")
+                    b.HasOne("MedicDate.DataAccess.Entities.Cita", "Cita")
                         .WithMany("Archivos")
-                        .HasForeignKey("CitaId");
+                        .HasForeignKey("CitaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Cita");
                 });
 
-            modelBuilder.Entity("MedicDate.DataAccess.Models.Cita", b =>
+            modelBuilder.Entity("MedicDate.DataAccess.Entities.Cita", b =>
                 {
-                    b.HasOne("MedicDate.DataAccess.Models.Medico", "Medico")
+                    b.HasOne("MedicDate.DataAccess.Entities.Medico", "Medico")
                         .WithMany("Citas")
-                        .HasForeignKey("MedicoId");
+                        .HasForeignKey("MedicoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.HasOne("MedicDate.DataAccess.Models.Paciente", "Paciente")
+                    b.HasOne("MedicDate.DataAccess.Entities.Paciente", "Paciente")
                         .WithMany("Citas")
-                        .HasForeignKey("PacienteId");
+                        .HasForeignKey("PacienteId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Medico");
 
                     b.Navigation("Paciente");
                 });
 
-            modelBuilder.Entity("MedicDate.DataAccess.Models.GrupoPaciente", b =>
+            modelBuilder.Entity("MedicDate.DataAccess.Entities.GrupoPaciente", b =>
                 {
-                    b.HasOne("MedicDate.DataAccess.Models.Grupo", "Grupo")
+                    b.HasOne("MedicDate.DataAccess.Entities.Grupo", "Grupo")
                         .WithMany("GruposPacientes")
                         .HasForeignKey("GrupoId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("MedicDate.DataAccess.Models.Paciente", "Paciente")
+                    b.HasOne("MedicDate.DataAccess.Entities.Paciente", "Paciente")
                         .WithMany("GruposPacientes")
                         .HasForeignKey("PacienteId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -563,15 +578,15 @@ namespace MedicDate.DataAccess.Migrations
                     b.Navigation("Paciente");
                 });
 
-            modelBuilder.Entity("MedicDate.DataAccess.Models.MedicoEspecialidad", b =>
+            modelBuilder.Entity("MedicDate.DataAccess.Entities.MedicoEspecialidad", b =>
                 {
-                    b.HasOne("MedicDate.DataAccess.Models.Especialidad", "Especialidad")
+                    b.HasOne("MedicDate.DataAccess.Entities.Especialidad", "Especialidad")
                         .WithMany("MedicosEspecialidades")
                         .HasForeignKey("EspecialidadId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("MedicDate.DataAccess.Models.Medico", "Medico")
+                    b.HasOne("MedicDate.DataAccess.Entities.Medico", "Medico")
                         .WithMany("MedicosEspecialidades")
                         .HasForeignKey("MedicoId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -584,7 +599,7 @@ namespace MedicDate.DataAccess.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
-                    b.HasOne("MedicDate.DataAccess.Models.AppRole", null)
+                    b.HasOne("MedicDate.DataAccess.Entities.AppRole", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -593,7 +608,7 @@ namespace MedicDate.DataAccess.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("MedicDate.DataAccess.Models.ApplicationUser", null)
+                    b.HasOne("MedicDate.DataAccess.Entities.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -602,7 +617,7 @@ namespace MedicDate.DataAccess.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("MedicDate.DataAccess.Models.ApplicationUser", null)
+                    b.HasOne("MedicDate.DataAccess.Entities.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -611,53 +626,53 @@ namespace MedicDate.DataAccess.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("MedicDate.DataAccess.Models.ApplicationUser", null)
+                    b.HasOne("MedicDate.DataAccess.Entities.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("MedicDate.DataAccess.Models.Actividad", b =>
+            modelBuilder.Entity("MedicDate.DataAccess.Entities.Actividad", b =>
                 {
                     b.Navigation("ActividadesCitas");
                 });
 
-            modelBuilder.Entity("MedicDate.DataAccess.Models.AppRole", b =>
+            modelBuilder.Entity("MedicDate.DataAccess.Entities.ApplicationUser", b =>
                 {
                     b.Navigation("UserRoles");
                 });
 
-            modelBuilder.Entity("MedicDate.DataAccess.Models.ApplicationUser", b =>
+            modelBuilder.Entity("MedicDate.DataAccess.Entities.AppRole", b =>
                 {
                     b.Navigation("UserRoles");
                 });
 
-            modelBuilder.Entity("MedicDate.DataAccess.Models.Cita", b =>
+            modelBuilder.Entity("MedicDate.DataAccess.Entities.Cita", b =>
                 {
-                    b.Navigation("ActividadesCitas");
+                    b.Navigation("ActividadesCita");
 
                     b.Navigation("Archivos");
                 });
 
-            modelBuilder.Entity("MedicDate.DataAccess.Models.Especialidad", b =>
+            modelBuilder.Entity("MedicDate.DataAccess.Entities.Especialidad", b =>
                 {
                     b.Navigation("MedicosEspecialidades");
                 });
 
-            modelBuilder.Entity("MedicDate.DataAccess.Models.Grupo", b =>
+            modelBuilder.Entity("MedicDate.DataAccess.Entities.Grupo", b =>
                 {
                     b.Navigation("GruposPacientes");
                 });
 
-            modelBuilder.Entity("MedicDate.DataAccess.Models.Medico", b =>
+            modelBuilder.Entity("MedicDate.DataAccess.Entities.Medico", b =>
                 {
                     b.Navigation("Citas");
 
                     b.Navigation("MedicosEspecialidades");
                 });
 
-            modelBuilder.Entity("MedicDate.DataAccess.Models.Paciente", b =>
+            modelBuilder.Entity("MedicDate.DataAccess.Entities.Paciente", b =>
                 {
                     b.Navigation("Citas");
 

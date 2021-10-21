@@ -2,5 +2,10 @@
 
 public enum EstadoCita
 {
-    
+    PorConfirmar,
+    Anulada,
+    Completada,
+    Confirmada,
+    NoAsistioPaciente,
+    Cancelada
 }

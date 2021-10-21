@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MedicDate.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20211005185256_AddChangeEstadoColumnInCitaTable")]
-    partial class AddChangeEstadoColumnInCitaTable
+    [Migration("20210919170441_FixNullableFields")]
+    partial class FixNullableFields
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

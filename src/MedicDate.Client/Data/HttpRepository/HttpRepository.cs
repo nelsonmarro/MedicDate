@@ -1,9 +1,7 @@
 ﻿using MedicDate.Client.Helpers;
 using MedicDate.Client.Services.IServices;
-using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace MedicDate.Client.Data.HttpRepository
 {
@@ -15,12 +13,10 @@ namespace MedicDate.Client.Data.HttpRepository
         };
 
         private readonly HttpClient _http;
-        private readonly INotificationService _notificationService;
 
         public HttpRepository(HttpClient http, INotificationService notificationService)
         {
             _http = http;
-            _notificationService = notificationService;
         }
 
         public async Task<HttpResponseWrapper<T>> Get<T>(string url)
@@ -83,9 +79,8 @@ namespace MedicDate.Client.Data.HttpRepository
             return new HttpResponseWrapper<TResponse>(deserializedResponse, false, response);
         }
 
-        private static async Task<T> DeserializeResponse<T>(HttpResponseMessage httpResponseMessage,
-            JsonSerializerOptions
-                jsonSerializerOptions)
+        private static async Task<T?> DeserializeResponse<T>(HttpResponseMessage httpResponseMessage,
+            JsonSerializerOptions jsonSerializerOptions)
         {
             var responseString = await httpResponseMessage.Content.ReadAsStringAsync();
             return JsonSerializer.Deserialize<T>(responseString, jsonSerializerOptions);

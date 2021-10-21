@@ -1,15 +1,12 @@
 using MedicDate.Bussines.ApplicationServices;
+using MedicDate.Bussines.ApplicationServices.IApplicationServices;
 using MedicDate.DataAccess;
 using MedicDate.DataAccess.Helpers;
 using MedicDate.DataAccess.Mapper;
 using MedicDate.DataAccess.Repository;
 using MedicDate.DataAccess.Repository.IRepository;
-using MedicDate.DataAccess.Services;
-using MedicDate.DataAccess.Services.IServices;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace MedicDate.API.Extensions
 {
@@ -34,18 +31,16 @@ namespace MedicDate.API.Extensions
 
             services.AddSingleton<IEmailSender, MailJetEmailSender>();
             services.AddScoped<IDbInitializer, DbInitializer>();
-            services.AddScoped<ITokenService, TokenService>();
+            services.AddScoped<ITokenBuilderService, TokenBuilderService>();
             services.AddScoped<IEntityValidator, EntityValidator>();
 
-            services.AddScoped<IAccountRepository, AccountRepository>();
             services.AddScoped<IAppUserRepository, AppUserRepository>();
             services.AddScoped<IActividadRepository, ActividadRepository>();
             services.AddScoped<IGrupoRepository, GrupoRepository>();
-            services
-                .AddScoped<IEspecialidadRepository, EspecialidadRepository>();
+            services.AddScoped<IEspecialidadRepository, EspecialidadRepository>();
             services.AddScoped<IMedicoRepository, MedicoRepository>();
             services.AddScoped<IPacienteRepository, PacienteRepository>();
-            services.AddScoped<ITokenRepository, TokenRepository>();
+            services.AddScoped<ICitaRepository, CitaRepository>();
 
             return services;
         }

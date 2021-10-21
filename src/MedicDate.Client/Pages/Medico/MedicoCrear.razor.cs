@@ -1,16 +1,15 @@
-﻿using MedicDate.API.DTOs.Medico;
-using MedicDate.Client.Data.HttpRepository.IHttpRepository;
+﻿using MedicDate.Client.Data.HttpRepository.IHttpRepository;
 using MedicDate.Client.Services.IServices;
+using MedicDate.Shared.Models.Medico;
 using Microsoft.AspNetCore.Components;
-using System.Threading.Tasks;
 
 namespace MedicDate.Client.Pages.Medico
 {
     public partial class MedicoCrear
     {
-        [Inject] public IHttpRepository HttpRepo { get; set; }
-        [Inject] public NavigationManager NavigationManager { get; set; }
-        [Inject] public INotificationService NotificationService { get; set; }
+        [Inject] public IHttpRepository HttpRepo { get; set; } = default!;
+        [Inject] public NavigationManager NavigationManager { get; set; } = default!;
+        [Inject] public INotificationService NotificationService { get; set; } = default!;
 
         private readonly MedicoRequestDto _medicoModel = new();
         private bool _isBussy;

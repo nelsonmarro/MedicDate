@@ -1,23 +1,27 @@
-using System;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace MedicDate.Bussines.ApplicationServices
 {
     public class ServiceActivator
     {
-        private static IServiceProvider _serviceProvider;
+        private static IServiceProvider? _serviceProvider;
 
         public static void Configure(IServiceProvider serviceProvider)
         {
             _serviceProvider = serviceProvider;
         }
 
-        public static IServiceScope GetScope(IServiceProvider serviceProvider = null)
+        public static IServiceScope GetScope(IServiceProvider? serviceProvider = null)
         {
             var provider = serviceProvider ?? _serviceProvider;
-            return provider?
-                .GetRequiredService<IServiceScopeFactory>()
-                .CreateScope();
+            var scope = provider?.GetRequiredService<IServiceScopeFactory>().CreateScope();
+
+            if (scope != null)
+            {
+                return scope;
+            }
+
+            throw new NotSupportedException("No se pudo obtener el servicio requerido");
         }
     }
 }

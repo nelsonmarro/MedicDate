@@ -4,12 +4,12 @@ namespace MedicDate.DataAccess.Entities
 {
     public class ActividadCita
     {
-        public string CitaId { get; set; }
-        public string ActividadId { get; set; }
+        public string CitaId { get; set; } = default!;
+        public string ActividadId { get; set; } = default!;
         public bool ActividadTerminada { get; set; }
-        [StringLength(1000)] public string Detalles { get; set; }
+        [StringLength(1000)] public string Detalles { get; set; } = default!;
 
-        public Cita Cita { get; set; }
-        public Actividad Actividad { get; set; } 
+        public Cita Cita { get; set; } = default!;
+        public Actividad Actividad { get; set; } = default!;
     }
 }

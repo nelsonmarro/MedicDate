@@ -1,13 +1,12 @@
 ﻿using AutoMapper;
 using MedicDate.DataAccess;
 using MedicDate.DataAccess.Entities;
-using MedicDate.Test.Shared;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using MedicDate.DataAccess.Repository;
 using MedicDate.DataAccess.Repository.IRepository;
+using MedicDate.Test.Shared;
+using MedicDate.Utility;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.DynamicLinq;
 using Xunit;
 
 namespace MedicDate.API.Controllers
@@ -15,14 +14,14 @@ namespace MedicDate.API.Controllers
     public class CitaControllerTest : BaseDbTest
     {
         private readonly IMapper _mapper;
-        private ICitaRepository _citaRepo;
-        private CitaController _sut;
-        private static string _dbName = Guid.NewGuid().ToString();
-        private readonly ApplicationDbContext _context;
+        private ICitaRepository? _citaRepo;
+        private CitaController? _sut;
+        private static string _dbName1 = Guid.NewGuid().ToString();
+        private static string _dbName2 = Guid.NewGuid().ToString();
 
         private readonly List<Paciente> _pacientesCita = new()
         {
-            new()
+            new Paciente
             {
                 Id = "e32c6cdc-b2b3-4935-a3dd-6913c7e68fd7",
                 Nombres = "Nelson",
@@ -33,7 +32,7 @@ namespace MedicDate.API.Controllers
                 FechaNacimiento = new DateTime(1999, 1, 9),
                 Email = "nelsonmarro99@gmail.com"
             },
-            new()
+            new Paciente
             {
                 Id = "377c3c02-ccdc-4eb6-8922-6f9c8d02361b",
                 Nombres = "Maria",
@@ -66,47 +65,97 @@ namespace MedicDate.API.Controllers
             }
         };
 
-        private readonly List<Actividad> _actividadesCita = new List<Actividad>
+        private readonly List<Actividad> _actividadesCita = new()
         {
-            new() {Nombre = "Act 1"},
-            new() {Nombre = "Act 2"}
+            new Actividad { Nombre = "Act 1" },
+            new Actividad { Nombre = "Act 2" }
         };
 
-        public static TheoryData<string, string> PacienteAndMedicoIds = new()
+        public static TheoryData<string?, string?> PacienteAndMedicoIds = new()
         {
-            {"e32c6cdc-b2b3-4935-a3dd-6913c7e68fd7", null},
-            {null, "693eaaca-3fa0-48f6-8dd3-b69174bb9bbb"},
-            {"e32c6cdc-b2b3-4935-a3dd-6913c7e68fd7", "693eaaca-3fa0-48f6-8dd3-b69174bb9bbb"},
+            { "e32c6cdc-b2b3-4935-a3dd-6913c7e68fd7", null },
+            { null, "693eaaca-3fa0-48f6-8dd3-b69174bb9bbb" },
+            {
+                "e32c6cdc-b2b3-4935-a3dd-6913c7e68fd7",
+                "693eaaca-3fa0-48f6-8dd3-b69174bb9bbb"
+            },
+        };
+
+        public static TheoryData<DateTime, DateTime> FilterDatesForCitas = new()
+        {
+            {
+                DateTime.Today,
+                DateTime.Today.AddDays(3)
+            }
         };
 
         public CitaControllerTest()
         {
             _mapper = BuildMapper();
+        }
 
-            _context = BuildDbContext(_dbName);
-            CreateCitaRelatedEntities(_context).GetAwaiter().GetResult();
+        public class GetCitasByDates : CitaControllerTest
+        {
+            [Theory]
+            [MemberData(nameof(FilterDatesForCitas))]
+            public async Task Should_return_citas_in_the_given_date_range(
+                DateTime startDate,
+                DateTime endDate)
+            {
+                //Arrange
+                var context1 = BuildDbContext(_dbName1);
+                if (!await context1.Medico.AnyAsync())
+                {
+                    await CreateCitaRelatedEntities(context1);
+                }
+
+                var context2 = BuildDbContext(_dbName1);
+                await CreateTestCitaList(context2);
+
+                var context3 = BuildDbContext(_dbName1);
+                _citaRepo = new CitaRepository(context3, _mapper);
+                _sut = new CitaController(_citaRepo, _mapper);
+
+                //Act
+                var citasList = await _sut.GetCitasByDates(new Shared.Models.Cita.CitaByDatesParams { StartDate = startDate, EndDate = endDate });
+
+                //Assert
+                Assert.Equal(2, citasList.Count());
+            }
         }
 
         public class GetAllCitasWithPagingAsync : CitaControllerTest
         {
             [Theory]
             [MemberData(nameof(PacienteAndMedicoIds))]
-            public async Task Should_return_the_data_properly_filter_by_the_passed_filter_ids(string pacienteId,
-                string medicoId)
+            public async Task
+                Should_return_the_data_properly_filter_by_the_passed_filter_ids(
+                    string? pacienteId, string? medicoId)
             {
                 //Arrange
-                var context1 = BuildDbContext(_dbName);
-                await CreateTestCitaList(context1);
+                var context1 = BuildDbContext(_dbName2);
+                if (!await context1.Medico.AnyAsync())
+                {
+                    await CreateCitaRelatedEntities(context1);
+                }
 
-                var context2 = BuildDbContext(_dbName);
-                _citaRepo = new CitaRepository(context2, _mapper);
+                var context2 = BuildDbContext(_dbName2);
+                await CreateTestCitaList(context2);
+
+                var context3 = BuildDbContext(_dbName2);
+                _citaRepo = new CitaRepository(context3, _mapper);
                 _sut = new CitaController(_citaRepo, _mapper);
 
                 //Act
                 var result = await _sut.GetAllCitasWithPagingAsync(0, 10,
                     medicoId, pacienteId);
 
-                var citaResponseList = result.Value.DataResult;
+                var citaResponseList = result.Value?.DataResult;
+
+                if (citaResponseList is null)
+                {
+                    Assert.Fail("La lista de citas esta vacia");
+                }
 
                 //Assert
                 if (pacienteId is not null && medicoId is null)
@@ -114,13 +163,15 @@ namespace MedicDate.API.Controllers
                     Assert.Collection(citaResponseList,
                         cita =>
                         {
-                            Assert.Equal("Pendiente 1", cita.Estado);
-                            Assert.Equal(_pacientesCita[0].Id, cita.Paciente.Id);
+                            Assert.Equal(Sd.ESTADO_CITA_PORCONFIRMAR, cita.Estado);
+                            Assert.Equal(_pacientesCita[0].Id
+                                , cita.Paciente.Id);
                         },
                         cita =>
                         {
-                            Assert.Equal("Pendiente 2", cita.Estado);
-                            Assert.Equal(_pacientesCita[0].Id, cita.Paciente.Id);
+                            Assert.Equal(Sd.ESTADO_CITA_COMPLETADA, cita.Estado);
+                            Assert.Equal(_pacientesCita[0].Id
+                                , cita.Paciente.Id);
                         });
                 }
 
@@ -129,12 +180,12 @@ namespace MedicDate.API.Controllers
                     Assert.Collection(citaResponseList,
                         cita =>
                         {
-                            Assert.Equal("Pendiente 2", cita.Estado);
+                            Assert.Equal(Sd.ESTADO_CITA_COMPLETADA, cita.Estado);
                             Assert.Equal(_medicosCita[1].Id, cita.Medico.Id);
                         },
                         cita =>
                         {
-                            Assert.Equal("Pendiente 3", cita.Estado);
+                            Assert.Equal(Sd.ESTADO_CITA_ANULADA, cita.Estado);
                             Assert.Equal(_medicosCita[1].Id, cita.Medico.Id);
                         });
                 }
@@ -144,24 +195,23 @@ namespace MedicDate.API.Controllers
                     Assert.Collection(citaResponseList,
                         cita =>
                         {
-                            Assert.Equal("Pendiente 2", cita.Estado);
+                            Assert.Equal(Sd.ESTADO_CITA_COMPLETADA, cita.Estado);
 
                             Assert.Equal(_medicosCita[1].Id, cita.Medico.Id);
-                            Assert.Equal(_pacientesCita[0].Id, cita.Paciente.Id);
+                            Assert.Equal(_pacientesCita[0].Id
+                                , cita.Paciente.Id);
                         });
                 }
             }
         }
 
-        private async Task CreateCitaRelatedEntities(ApplicationDbContext context)
+        private async Task CreateCitaRelatedEntities(
+            ApplicationDbContext context)
         {
-            if (!await context.Medico.AnyAsync())
-            {
-                await context.Medico.AddRangeAsync(_medicosCita);
-                await context.Paciente.AddRangeAsync(_pacientesCita);
-                await context.Actividad.AddRangeAsync(_actividadesCita);
-                await context.SaveChangesAsync();
-            }
+            await context.Medico.AddRangeAsync(_medicosCita);
+            await context.Paciente.AddRangeAsync(_pacientesCita);
+            await context.Actividad.AddRangeAsync(_actividadesCita);
+            await context.SaveChangesAsync();
         }
 
         private async Task CreateTestCitaList(ApplicationDbContext context)
@@ -170,27 +220,23 @@ namespace MedicDate.API.Controllers
             {
                 new Cita
                 {
-                    Estado = "Pendiente 1",
+                    Estado = Sd.ESTADO_CITA_PORCONFIRMAR,
                     FechaInicio = DateTime.Now,
-                    FechaFin = DateTime.Now.AddDays(2),
+                    FechaFin = DateTime.Now.AddDays(1),
                     MedicoId = _medicosCita[0].Id,
                     PacienteId = _pacientesCita[0].Id,
                 },
-
                 new Cita
                 {
-                    Estado = "Pendiente 2",
-                    FechaInicio = DateTime.Now,
+                    Estado = Sd.ESTADO_CITA_COMPLETADA, FechaInicio = DateTime.Now,
                     FechaFin = DateTime.Now.AddDays(2),
                     MedicoId = _medicosCita[1].Id,
                     PacienteId = _pacientesCita[0].Id,
                 },
-
                 new Cita
                 {
-                    Estado = "Pendiente 3",
-                    FechaInicio = DateTime.Now,
-                    FechaFin = DateTime.Now.AddDays(2),
+                    Estado = Sd.ESTADO_CITA_ANULADA, FechaInicio = DateTime.Now,
+                    FechaFin = DateTime.Now.AddDays(4),
                     MedicoId = _medicosCita[1].Id,
                     PacienteId = _pacientesCita[1].Id,
                 },

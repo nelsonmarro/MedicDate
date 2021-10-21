@@ -1,19 +1,17 @@
-﻿using MedicDate.API.DTOs.Auth;
-using MedicDate.Client.Data.HttpRepository.IHttpRepository;
+﻿using MedicDate.Client.Data.HttpRepository.IHttpRepository;
 using MedicDate.Client.Services.IServices;
+using MedicDate.Shared.Models.Auth;
 using Microsoft.AspNetCore.Components;
-using System;
 using System.Net.Http.Json;
-using System.Threading.Tasks;
 
 namespace MedicDate.Client.Pages.AppUser
 {
     public partial class AppUserCreate
     {
-        [Inject] public IHttpRepository HttpRepo { get; set; }
-        [Inject] public NavigationManager NavigationManager { get; set; }
-        [Inject] public INotificationService NotificationService { get; set; }
-        [Inject] public IDialogNotificationService DialogNotificationService { get; set; }
+        [Inject] public IHttpRepository HttpRepo { get; set; } = default!;
+        [Inject] public NavigationManager NavigationManager { get; set; } = default!;
+        [Inject] public INotificationService NotificationService { get; set; } = default!;
+        [Inject] public IDialogNotificationService DialogNotificationService { get; set; } = default!;
 
         private bool _isBussy;
         private readonly RegisterUserDto _registerModel = new();
@@ -36,7 +34,9 @@ namespace MedicDate.Client.Pages.AppUser
 
             if (httpResp.Error)
             {
-                _errors = await httpResp.HttpResponseMessage.Content.ReadFromJsonAsync<string[]>();
+                _errors = await httpResp.HttpResponseMessage.Content
+                    .ReadFromJsonAsync<string[]>() ?? new string[] { };
+
                 NotificationService.ShowError("Error!", "Error al crear el usuario");
             }
             else

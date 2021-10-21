@@ -1,22 +1,21 @@
-﻿using MedicDate.API.DTOs.Especialidad;
-using MedicDate.Client.Data.HttpRepository.IHttpRepository;
+﻿using MedicDate.Client.Data.HttpRepository.IHttpRepository;
 using MedicDate.Client.Services.IServices;
+using MedicDate.Shared.Models.Especialidad;
 using Microsoft.AspNetCore.Components;
-using System.Threading.Tasks;
 
 namespace MedicDate.Client.Pages.Especialidad
 {
     public partial class EspecialidadEditar
     {
-        [Inject] public IHttpRepository HttpRepo { get; set; }
-        [Inject] public NavigationManager NavigationManager { get; set; }
-        [Inject] public INotificationService NotificationService { get; set; }
+        [Inject] public IHttpRepository HttpRepo { get; set; } = default!;
+        [Inject] public NavigationManager NavigationManager { get; set; } = default!;
+        [Inject] public INotificationService NotificationService { get; set; } = default!;
 
-        [Parameter] public string Id { get; set; }
+        [Parameter] public string? Id { get; set; }
 
         private bool _isBussy;
 
-        private EspecialidadRequestDto _especialidadModel;
+        private EspecialidadRequestDto? _especialidadModel;
 
         protected override async Task OnParametersSetAsync()
         {

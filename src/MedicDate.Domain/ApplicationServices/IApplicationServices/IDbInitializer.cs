@@ -1,4 +1,4 @@
-namespace MedicDate.DataAccess.Services.IServices
+namespace MedicDate.Bussines.ApplicationServices.IApplicationServices
 {
     public interface IDbInitializer
     {

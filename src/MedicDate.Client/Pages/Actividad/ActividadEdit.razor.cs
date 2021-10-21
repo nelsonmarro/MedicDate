@@ -1,22 +1,21 @@
-﻿using MedicDate.API.DTOs.Actividad;
-using MedicDate.Client.Data.HttpRepository.IHttpRepository;
+﻿using MedicDate.Client.Data.HttpRepository.IHttpRepository;
 using MedicDate.Client.Services.IServices;
+using MedicDate.Shared.Models.Actividad;
 using Microsoft.AspNetCore.Components;
-using System.Threading.Tasks;
 
 namespace MedicDate.Client.Pages.Actividad
 {
     public partial class ActividadEdit
     {
-        [Inject] public IHttpRepository HttpRepo { get; set; }
-        [Inject] public NavigationManager NavigationManager { get; set; }
-        [Inject] public INotificationService NotificationService { get; set; }
+        [Inject] public IHttpRepository HttpRepo { get; set; } = default!;
+        [Inject] public NavigationManager NavigationManager { get; set; } = default!;
+        [Inject] public INotificationService NotificationService { get; set; } = default!;
 
-        [Parameter] public string Id { get; set; }
+        [Parameter] public string? Id { get; set; }
 
         private bool _isBussy;
 
-        private ActividadRequestDto _actividadModel;
+        private ActividadRequestDto? _actividadModel;
 
         protected override async Task OnParametersSetAsync()
         {

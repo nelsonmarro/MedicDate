@@ -1,29 +1,29 @@
 ﻿using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Threading.Tasks;
-using MedicDate.API.DTOs.Auth;
 using MedicDate.Bussines.ApplicationServices.IApplicationServices;
 using MedicDate.Bussines.DomainServices.IDomainServices;
 using MedicDate.DataAccess.Entities;
 using MedicDate.DataAccess.Helpers;
+using MedicDate.Shared.Models.Auth;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using static System.Net.HttpStatusCode;
 
 namespace MedicDate.Bussines.DomainServices
 {
-    public class TokenRepository : ITokenRepository
+    public class TokenService : ITokenService
     {
         private readonly UserManager<ApplicationUser> _userManager;
-        private readonly ITokenService _tokenService;
+        private readonly ITokenBuilderService _tokenBuilderService;
         private readonly JwtSettings _jwtSettings;
 
-        public TokenRepository(
+        public TokenService(
             UserManager<ApplicationUser> userManager,
-            ITokenService tokenService, IOptions<JwtSettings> jwtOptions)
+            ITokenBuilderService tokenBuilderService, IOptions<JwtSettings> jwtOptions)
         {
             _userManager = userManager;
-            _tokenService = tokenService;
+            _tokenBuilderService = tokenBuilderService;
             _jwtSettings = jwtOptions.Value;
         }
 
@@ -34,7 +34,7 @@ namespace MedicDate.Bussines.DomainServices
                 return OperationResult<LoginResponseDto>.Error(NotFound,
                     "Error al validar la sesión del usuario");
 
-            var principal = _tokenService.GetPrincipalFromExpiredToken(
+            var principal = _tokenBuilderService.GetPrincipalFromExpiredToken(
                 refreshTokenDto.Token, _jwtSettings.SecretKey,
                 _jwtSettings.ValidAudience, _jwtSettings.ValidIssuer);
 
@@ -55,20 +55,21 @@ namespace MedicDate.Bussines.DomainServices
                     });
 
             var signinCreds =
-                _tokenService.GetSigningCredentials(_jwtSettings.SecretKey);
-            var claims = await _tokenService.GetClaims(user);
-            var tokenOptions = _tokenService.GenerateTokenOptions(signinCreds,
+                _tokenBuilderService.GetSigningCredentials(_jwtSettings.SecretKey);
+            var claims = await _tokenBuilderService.GetClaims(user);
+            var tokenOptions = _tokenBuilderService.GenerateTokenOptions(signinCreds,
                 claims, _jwtSettings.ValidAudience, _jwtSettings.ValidIssuer,
                 _jwtSettings.ExpiryInMinutes);
             var token = new JwtSecurityTokenHandler().WriteToken(tokenOptions);
-            user.RefreshToken = _tokenService.GenerateRefreshToken();
+            user.RefreshToken = _tokenBuilderService.GenerateRefreshToken();
 
             await _userManager.UpdateAsync(user);
 
             return OperationResult<LoginResponseDto>.Success(
                 new LoginResponseDto
                 {
-                    Token = token, RefreshToken = user.RefreshToken,
+                    Token = token,
+                    RefreshToken = user.RefreshToken,
                     IsAuthSuccessful = true
                 });
         }

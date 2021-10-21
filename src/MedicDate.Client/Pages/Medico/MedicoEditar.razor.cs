@@ -1,24 +1,22 @@
-﻿using MedicDate.API.DTOs.Medico;
-using MedicDate.Client.Data.HttpRepository.IHttpRepository;
+﻿using MedicDate.Client.Data.HttpRepository.IHttpRepository;
 using MedicDate.Client.Interceptors.IInterceptors;
 using MedicDate.Client.Services.IServices;
+using MedicDate.Shared.Models.Medico;
 using Microsoft.AspNetCore.Components;
-using System;
-using System.Threading.Tasks;
 
 namespace MedicDate.Client.Pages.Medico
 {
     public partial class MedicoEditar : IDisposable
     {
-        [Inject] public IHttpRepository HttpRepo { get; set; }
-        [Inject] public NavigationManager NavigationManager { get; set; }
-        [Inject] public INotificationService NotificationService { get; set; }
-        [Inject] public IHttpInterceptorProvider HttpInterceptorProvider { get; set; }
+        [Inject] public IHttpRepository HttpRepo { get; set; } = default!;
+        [Inject] public NavigationManager NavigationManager { get; set; } = default!;
+        [Inject] public INotificationService NotificationService { get; set; } = default!;
+        [Inject] public IHttpInterceptorProvider HttpInterceptorProvider { get; set; } = default!;
 
         [Parameter]
-        public string Id { get; set; }
+        public string? Id { get; set; }
 
-        private MedicoRequestDto _medicoModel;
+        private MedicoRequestDto? _medicoModel;
         private bool _isBussy;
 
         protected override async Task OnInitializedAsync()

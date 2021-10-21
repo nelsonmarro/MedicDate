@@ -1,23 +1,25 @@
-using MedicDate.API.DTOs.Grupo;
-using MedicDate.API.DTOs.Paciente;
+using MedicDate.Client.Components;
 using MedicDate.Client.Data.HttpRepository.IHttpRepository;
 using MedicDate.Client.Helpers;
 using MedicDate.Client.Services.IServices;
+using MedicDate.Shared.Models.Grupo;
+using MedicDate.Shared.Models.Paciente;
 using Microsoft.AspNetCore.Components;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+using Radzen;
 
 namespace MedicDate.Client.Pages.Paciente
 {
     public partial class PacienteList
     {
         [Inject]
-        public IBaseListComponentOperations BaseListComponentOps { get; set; }
+        public IBaseListComponentOperations BaseListComponentOps { get; set; } = default!;
 
         [Inject]
-        public IHttpRepository HttpRepo { get; set; }
+        public IHttpRepository HttpRepo { get; set; } = default!;
 
-        private IEnumerable<PacienteResponseDto> _pacienteList;
+        [Inject] public DialogService DialogService { get; set; } = default!;
+
+        private IEnumerable<PacienteResponseDto>? _pacienteList;
         private int _totalCount = 0;
         private const string GetUrl = "api/Paciente/listarConPaginacion?traerGrupos=true";
         private List<GrupoResponseDto> _grupoList = new();
@@ -52,7 +54,10 @@ namespace MedicDate.Client.Pages.Paciente
 
             if (!httpResponse.Error)
             {
-                _grupoList = httpResponse.Response;
+                if (httpResponse.Response is not null)
+                {
+                    _grupoList = httpResponse.Response;
+                }
             }
         }
 
@@ -79,6 +84,28 @@ namespace MedicDate.Client.Pages.Paciente
                 _pacienteList = result.ItemList;
                 _totalCount = result.TotalCount;
             }
+        }
+
+        private readonly RenderFragment<object> _especialidadesDialogContent = obj => builder =>
+        {
+            var grupo = (GrupoResponseDto)obj;
+
+            builder.OpenElement(0, "div");
+            builder.AddAttribute(1, "class", "mx-3 my-2");
+            builder.AddContent(3, grupo.Nombre);
+            builder.CloseElement();
+        };
+
+        private async Task OpenGruposDialog()
+        {
+            await DialogService.OpenAsync<RadzenGenericDialog>
+            ("",
+                new Dictionary<string, object>
+                {
+                    { "Heading", "Grupos" },
+                    { "ItemList", _grupoList.ToArray() },
+                    { "ListBodyContent", _especialidadesDialogContent }
+                });
         }
     }
 }

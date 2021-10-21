@@ -1,18 +1,16 @@
-﻿using MedicDate.API.DTOs.Actividad;
-using MedicDate.Client.Helpers;
+﻿using MedicDate.Client.Helpers;
 using MedicDate.Client.Services.IServices;
+using MedicDate.Shared.Models.Actividad;
 using Microsoft.AspNetCore.Components;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace MedicDate.Client.Pages.Actividad
 {
     public partial class ActividadList
     {
         [Inject]
-        public IBaseListComponentOperations BaseListComponentOps { get; set; }
+        public IBaseListComponentOperations BaseListComponentOps { get; set; } = default!;
 
-        private IEnumerable<ActividadResponseDto> _actividadList;
+        private IEnumerable<ActividadResponseDto>? _actividadList;
         private int _totalCount = 0;
         private readonly string[] _tableHeaders = { "Nombre" };
         private readonly string[] _propNames = { "Nombre" };

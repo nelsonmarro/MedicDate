@@ -1,10 +1,10 @@
 ﻿using MedicDate.Utility.Interfaces;
 
-namespace MedicDate.API.DTOs.Actividad
+namespace MedicDate.Shared.Models.Actividad
 {
     public class ActividadResponseDto : IId
     {
-        public string Id { get; set; }
-        public string Nombre { get; set; }
+        public string Id { get; set; } = string.Empty;
+        public string? Nombre { get; set; }
     }
 }

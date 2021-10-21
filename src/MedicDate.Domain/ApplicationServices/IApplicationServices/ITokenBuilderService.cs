@@ -7,7 +7,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace MedicDate.Bussines.ApplicationServices.IApplicationServices
 {
-    public interface ITokenService
+    public interface ITokenBuilderService
     {
         SigningCredentials GetSigningCredentials(string signInKey);
         Task<List<Claim>> GetClaims(ApplicationUser user);

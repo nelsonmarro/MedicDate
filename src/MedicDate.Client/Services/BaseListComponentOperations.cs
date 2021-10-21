@@ -1,9 +1,7 @@
-﻿using MedicDate.API.DTOs.Common;
-using MedicDate.Client.Data.HttpRepository.IHttpRepository;
+﻿using MedicDate.Client.Data.HttpRepository.IHttpRepository;
 using MedicDate.Client.Helpers;
 using MedicDate.Client.Services.IServices;
-using System;
-using System.Threading.Tasks;
+using MedicDate.Shared.Models.Common;
 
 namespace MedicDate.Client.Services
 {
@@ -22,8 +20,8 @@ namespace MedicDate.Client.Services
         public async Task<ResourceListComponentResult<T>> LoadItemListAsync<T>
         (
             string getUrl,
-            string filterQuery = null,
-            string filterData = null
+            string? filterQuery = null,
+            string? filterData = null
         ) where T : class
         {
             var filterRequestQuery = "";
@@ -42,8 +40,8 @@ namespace MedicDate.Client.Services
                 return new ResourceListComponentResult<T>
                 {
                     Succeded = true,
-                    ItemList = response.Response.DataResult,
-                    TotalCount = response.Response.TotalCount
+                    ItemList = response.Response?.DataResult ?? new List<T>(),
+                    TotalCount = response.Response?.TotalCount ?? 0
                 };
             }
 

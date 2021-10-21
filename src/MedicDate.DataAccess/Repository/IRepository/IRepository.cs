@@ -1,34 +1,30 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Threading.Tasks;
+﻿using System.Linq.Expressions;
 
 namespace MedicDate.DataAccess.Repository.IRepository
 {
     public interface IRepository<TEntity> where TEntity : class
     {
-        Task<TEntity> FindAsync(string id);
+        Task<TEntity?> FindAsync(string id);
 
         Task<List<TEntity>> GetAllAsync(
-            Expression<Func<TEntity, bool>> filter = null,
-            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
-            string includeProperties = null,
+            Expression<Func<TEntity, bool>>? filter = null,
+            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
+            string? includeProperties = null,
             bool isTracking = true
         );
 
         Task<List<TEntity>> GetAllWithPagingAsync(
-            Expression<Func<TEntity, bool>> filter = null,
-            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
-            string includeProperties = null,
+            Expression<Func<TEntity, bool>>? filter = null,
+            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
+            string? includeProperties = null,
             bool isTracking = true,
             int pageIndex = 0,
             int pageSize = 10
         );
 
-        Task<TEntity> FirstOrDefaultAsync(
-            Expression<Func<TEntity, bool>> filter = null,
-            string includeProperties = null,
+        Task<TEntity?> FirstOrDefaultAsync(
+            Expression<Func<TEntity, bool>>? filter = null,
+            string? includeProperties = null,
             bool isTracking = true
         );
 

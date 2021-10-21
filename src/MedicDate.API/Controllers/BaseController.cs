@@ -1,18 +1,14 @@
 ﻿using AutoMapper;
-using MedicDate.API.DTOs.Common;
+using MedicDate.DataAccess.Repository.IRepository;
+using MedicDate.Shared.Models.Common;
 using MedicDate.Utility.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Threading.Tasks;
-using MedicDate.DataAccess.Repository.IRepository;
 
 namespace MedicDate.API.Controllers
 {
     public class BaseController<TEntity> : ControllerBase
-        where TEntity : class, IId
+        where TEntity : class, IId, new()
     {
         private readonly IRepository<TEntity> _repository;
         private readonly IMapper _mapper;
@@ -29,8 +25,8 @@ namespace MedicDate.API.Controllers
                 int pageIndex = 0,
                 int pageSize = 10,
                 string includeProperties = "",
-                Expression<Func<TEntity, bool>> filter = null,
-                Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy =
+                Expression<Func<TEntity, bool>>? filter = null,
+                Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy =
                     null)
             where TResponse : class
         {
@@ -55,7 +51,7 @@ namespace MedicDate.API.Controllers
 
         protected async Task<ActionResult<List<TResponse>>> GetAllAsync<
             TResponse>(Func<IQueryable<TEntity>,
-            IOrderedQueryable<TEntity>> orderBy = null)
+            IOrderedQueryable<TEntity>>? orderBy = null)
         {
             var resp =
                 await _repository.GetAllAsync(isTracking: false,
@@ -83,14 +79,14 @@ namespace MedicDate.API.Controllers
                     await _repository.FirstOrDefaultAsync(x => x.Id == id,
                         includeProperties, false);
             else
-                responseEntity = await _repository.FindAsync(id);
+                responseEntity = (await _repository.FindAsync(id))!;
 
             return _mapper.Map<TResponse>(responseEntity);
         }
 
         protected async Task<ActionResult>
             AddResourceAsync<TRequest, TResponse>(TRequest entityRequest,
-                string routeResultName, string includeProperties = null)
+                string routeResultName, string? includeProperties = null)
             where TResponse : IId
         {
             var entityDb = _mapper.Map<TEntity>(entityRequest);
@@ -112,7 +108,7 @@ namespace MedicDate.API.Controllers
                 responseEntity = _mapper.Map<TResponse>(entityDb);
             }
 
-            return CreatedAtRoute(routeResultName, new {id = responseEntity.Id},
+            return CreatedAtRoute(routeResultName, new { id = responseEntity.Id },
                 responseEntity);
         }
 

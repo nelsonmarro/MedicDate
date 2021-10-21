@@ -1,8 +1,7 @@
-﻿using MedicDate.API.DTOs.Auth;
-using MedicDate.Client.Services.IServices;
+﻿using MedicDate.Client.Services.IServices;
+using MedicDate.Shared.Models.Auth;
 using Microsoft.AspNetCore.Components;
 using Radzen;
-using System.Threading.Tasks;
 
 namespace MedicDate.Client.Pages.Auth
 {
@@ -10,13 +9,13 @@ namespace MedicDate.Client.Pages.Auth
     {
         private LoginRequestDto _loginRequestDto = new();
 
-        [Inject] public NavigationManager NavigationManager { get; set; }
-        [Inject] public IAuthenticationService AuthenticationService { get; set; }
-        [Inject] public INotificationService NotificationService { get; set; }
-        [Inject] public DialogService DialogService { get; set; }
+        [Inject] public NavigationManager NavigationManager { get; set; } = default!;
+        [Inject] public IAuthenticationService AuthenticationService { get; set; } = default!;
+        [Inject] public INotificationService NotificationService { get; set; } = default!;
+        [Inject] public DialogService DialogService { get; set; } = default!;
 
         private bool _showAuthError;
-        public string Error { get; set; }
+        public string? Error { get; set; }
 
         public async Task ExecuteLogin()
         {
@@ -27,6 +26,10 @@ namespace MedicDate.Client.Pages.Auth
 
             NotificationService.CloseDialog(DialogService);
 
+            if (result is null)
+            {
+                return;
+            }
             if (!result.IsAuthSuccessful)
             {
                 Error = result.ErrorMessage;

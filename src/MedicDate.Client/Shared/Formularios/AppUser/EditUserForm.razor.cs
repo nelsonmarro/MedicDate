@@ -1,28 +1,25 @@
-﻿using MedicDate.API.DTOs.AppRole;
-using MedicDate.API.DTOs.AppUser;
-using MedicDate.Client.Data.HttpRepository.IHttpRepository;
+﻿using MedicDate.Client.Data.HttpRepository.IHttpRepository;
 using MedicDate.Client.Services.IServices;
+using MedicDate.Shared.Models.AppRole;
+using MedicDate.Shared.Models.AppUser;
 using Microsoft.AspNetCore.Components;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace MedicDate.Client.Shared.Formularios.AppUser
 {
     public partial class EditUserForm
     {
-        [Inject] public IHttpRepository HttpRepo { get; set; }
-        [Inject] public INotificationService NotificationService { get; set; }
+        [Inject] public IHttpRepository HttpRepo { get; set; } = default!;
+        [Inject] public INotificationService NotificationService { get; set; } = default!;
 
-        [Parameter] public AppUserRequestDto EditUserModel { get; set; }
+        [Parameter] public AppUserRequestDto EditUserModel { get; set; } = new();
         [Parameter] public EventCallback OnSubmit { get; set; }
 
-        private List<RoleResponseDto> _roleList;
-        private List<RoleResponseDto> _selectedRoles;
+        private List<RoleResponseDto>? _roleList;
+        private List<RoleResponseDto>? _selectedRoles;
         private bool _emailNeedConfirmation;
 
-        private readonly string[] _headers = {"Nombre Rol", "Descripción"};
-        private readonly string[] _propName = {"Nombre", "Descripcion"};
+        private readonly string[] _headers = { "Nombre Rol", "Descripción" };
+        private readonly string[] _propName = { "Nombre", "Descripcion" };
 
         protected override async Task OnInitializedAsync()
         {
@@ -40,16 +37,18 @@ namespace MedicDate.Client.Shared.Formularios.AppUser
             }
 
             _selectedRoles = EditUserModel.Roles;
-            _emailNeedConfirmation = !EditUserModel.EmailConfirmed;
+            _emailNeedConfirmation = EditUserModel.EmailConfirmed;
         }
 
         private async Task OnSubmitData()
         {
-            if (_selectedRoles.Count > 0)
+            if (_selectedRoles is not null)
             {
-                EditUserModel.Roles = _selectedRoles;
+                if (_selectedRoles.Count > 0)
+                {
+                    EditUserModel.Roles = _selectedRoles;
+                }
             }
-
             await OnSubmit.InvokeAsync();
         }
 

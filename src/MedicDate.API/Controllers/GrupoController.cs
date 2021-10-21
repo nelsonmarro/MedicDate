@@ -1,12 +1,9 @@
 ﻿using AutoMapper;
-using MedicDate.API.DTOs.Common;
-using MedicDate.API.DTOs.Grupo;
 using MedicDate.DataAccess.Entities;
-using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using MedicDate.DataAccess.Repository.IRepository;
+using MedicDate.Shared.Models.Common;
+using MedicDate.Shared.Models.Grupo;
+using Microsoft.AspNetCore.Mvc;
 
 namespace MedicDate.API.Controllers
 {

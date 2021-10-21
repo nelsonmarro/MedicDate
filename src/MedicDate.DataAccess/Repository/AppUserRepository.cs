@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
-using MedicDate.API.DTOs.AppUser;
 using MedicDate.DataAccess.Entities;
 using MedicDate.DataAccess.Helpers;
 using MedicDate.DataAccess.Repository.IRepository;
+using MedicDate.Shared.Models.AppUser;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using static System.Net.HttpStatusCode;

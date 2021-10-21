@@ -1,88 +1,92 @@
 ﻿@page "/usuario/emailChangedConfirm"
-@using MedicDate.API.DTOs.Auth
+@using MedicDate.Shared.Models.Auth
 @inject NavigationManager _navigationManager
 @inject IAuthenticationService _authService
 @inject IHttpRepository _httpRepo
 @inject INotificationService _notificationService
 
 <div class="container">
-	<h2 class="text-radzen-primary">Actualizar Email</h2>
+    <h2 class="text-radzen-primary">Actualizar Email</h2>
 
-	<p class="my-2">Ingrese su nuevo email una vez más.</p>
+    <p class="my-2">Ingrese su nuevo email una vez más.</p>
 
-	<RadzenCard>
+    <RadzenCard>
         <EditForm Model="_changeEmailDto" OnValidSubmit="OnSubmit">
-			<DataAnnotationsValidator />
-			<div class="mb-3">
-				<RadzenLabel Text="Ingrese el nuevo email" />
-				<div class="mt-1">
-                    <RadzenTextBox @bind-Value="_changeEmailDto.NewEmail" class="w-100"/>
-                    <ValidationMessage For="() => _changeEmailDto.NewEmail"/>
-				</div>
-			</div>
+            <DataAnnotationsValidator />
+            <div class="mb-3">
+                <RadzenLabel Text="Ingrese el nuevo email" />
+                <div class="mt-1">
+                    <RadzenTextBox @bind-Value="_changeEmailDto.NewEmail" class="w-100" />
+                    <ValidationMessage For="() => _changeEmailDto.NewEmail" />
+                </div>
+            </div>
 
-			<div class="mb-2">
-				<FormButtons SaveButtonText="Enviar" NavLinkRoute="/usuarioList" />
-			</div>
-		</EditForm>
-	</RadzenCard>
+            <div class="mb-2">
+                <FormButtons SaveButtonText="Enviar" NavLinkRoute="/usuarioList" />
+            </div>
+        </EditForm>
+    </RadzenCard>
 
-	@if (_isChangeEmailSuccess)
-	{
-		<div class="alert alert-success my-2">
-			Su email ha sido actualizado con éxito.
-		</div>
-		<NavLink href="/login">
-			<RadzenButton Text="inicia sesión" Click="IniciarSession" />
-		</NavLink>
-	}
+    @if (_isChangeEmailSuccess)
+    {
+        <div class="alert alert-success my-2">
+            Su email ha sido actualizado con éxito.
+        </div>
+        <NavLink href="/login">
+            <RadzenButton Text="inicia sesión" Click="IniciarSession" />
+        </NavLink>
+    }
 </div>
 @code {
 
-	[CascadingParameter]
-	public Task<AuthenticationState> AuthenticationState { get; set; }
+    [CascadingParameter]
+    public Task<AuthenticationState>? AuthenticationState { get; set; }
 
-	private AuthenticationState _authState;
+    private AuthenticationState? _authState;
 
-	private string _code;
-	private string _userId;
+    private string? _code;
+    private string? _userId;
 
     private readonly ChangeEmailDto _changeEmailDto = new();
-	private bool _isChangeEmailSuccess;
+    private bool _isChangeEmailSuccess;
 
-	protected override async Task OnInitializedAsync()
-	{
-		_authState = await AuthenticationState;
+    protected override async Task OnInitializedAsync()
+    {
+        _authState = await AuthenticationState!;
 
-		_navigationManager.TryGetQueryString("code", out _code);
-		_navigationManager.TryGetQueryString("userId", out _userId);
+        _navigationManager.TryGetQueryString("code", out _code);
+        _navigationManager.TryGetQueryString("userId", out _userId);
 
-		if (_code is null || _userId is null)
-		{
-			_notificationService.ShowError("Error!", "Error al cambiar el email");
-		}
-	}
+        if (_code is null || _userId is null)
+        {
+            _notificationService.ShowError("Error!", "Error al cambiar el email");
+        }
+    }
 
-	private async Task IniciarSession()
-	{
-		if (_authState.User.Identity.IsAuthenticated)
-		{
-			await _authService.Logout();
-		}
+    private async Task IniciarSession()
+    {
+        if (_authState!.User.Identity is not null)
+        {
+            if (_authState.User.Identity.IsAuthenticated)
+            {
+                await _authService.Logout();
+            }
 
-		_navigationManager.NavigateTo("/login");
-	}
+        }
 
-	private async Task OnSubmit()
-	{
-	    _changeEmailDto.Code = _code;
+        _navigationManager.NavigateTo("/login");
+    }
 
-	    var httpResp = await _httpRepo.Post($"api/Account/changeEmail/{_userId}", _changeEmailDto);
+    private async Task OnSubmit()
+    {
+        _changeEmailDto.Code = _code ?? "";
 
-		if (!httpResp.Error)
-		{
-			_isChangeEmailSuccess = true;
-		}
-	}
+        var httpResp = await _httpRepo.Post($"api/Account/changeEmail/{_userId}", _changeEmailDto);
+
+        if (!httpResp.Error)
+        {
+            _isChangeEmailSuccess = true;
+        }
+    }
 
 }

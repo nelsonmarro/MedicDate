@@ -1,12 +1,10 @@
 ﻿using Blazored.LocalStorage;
 using MedicDate.Client.Data.HttpRepository.IHttpRepository;
+using MedicDate.Client.Helpers;
 using MedicDate.Utility;
 using Microsoft.AspNetCore.Components.Authorization;
-using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Security.Claims;
-using System.Threading.Tasks;
-using MedicDate.Client.Helpers;
 
 namespace MedicDate.Client.Auth
 {

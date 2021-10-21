@@ -1,7 +1,8 @@
-﻿<RadzenButton ButtonType="ButtonType.Submit" ButtonStyle="ButtonStyle.Secondary" Text="@SaveButtonText" Icon="@SaveButtonIcon" class="mb-1 mb-md-0" IsBusy="IsBussy" BusyText="Salvando"/>
+﻿<RadzenButton ButtonType="ButtonType.Submit" ButtonStyle="ButtonStyle.Secondary" Text="@SaveButtonText"
+	Icon="@SaveButtonIcon" class="mb-1 mb-md-0" IsBusy="IsBussy" BusyText="Salvando" />
 
 <NavLink href="@NavLinkRoute">
-	<RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="close" Text="Cancelar"/>
+	<RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="close" Text="Cancelar" />
 </NavLink>
 
 @code {
@@ -22,5 +23,5 @@
 	public string NavlinkIcon { get; set; } = "close";
 
 	[Parameter]
-	public string NavLinkRoute { get; set; }
+	public string? NavLinkRoute { get; set; }
 }

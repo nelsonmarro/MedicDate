@@ -1,7 +1,6 @@
 using MedicDate.Utility.Enums;
-using System.Collections.Generic;
 
-namespace MedicDate.API.DTOs.Common
+namespace MedicDate.Shared.Models.Common
 {
     public static class SexoListDropDownDto
     {

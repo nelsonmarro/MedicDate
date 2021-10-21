@@ -1,74 +1,77 @@
 ﻿@page "/usuario/changeEmail/{userId}"
-@using MedicDate.API.DTOs.Auth
-@using MedicDate.API.DTOs.AppUser
+@using MedicDate.Shared.Models.Auth
+@using MedicDate.Shared.Models.AppUser
 @inject INotificationService _notificationService
 @inject NavigationManager _navigationManager
 @inject IHttpRepository _httpRepo
 
 <div class="container">
-	@if (_appUserRequest is null)
-	{
-		<h3>Cargando <i class="fas fa-spinner fa-spin"></i></h3>
-	}
-	else
-	{
-		<h2 class="text-radzen-primary">Actualizar Email. Usuario - @_appUserRequest.Nombre @_appUserRequest.Apellidos</h2>
+    @if (_appUserRequest is null)
+    {
+        <h3>Cargando <i class="fas fa-spinner fa-spin"></i></h3>
+    }
+    else
+    {
+        <h2 class="text-radzen-primary">Actualizar Email. Usuario - @_appUserRequest.Nombre @_appUserRequest.Apellidos</h2>
 
-		<RadzenCard>
+        <RadzenCard>
             <EditForm Model="_changeEmailDto" OnValidSubmit="OnSubmit">
-				<DataAnnotationsValidator />
+                <DataAnnotationsValidator />
 
-				<div class="mb-3">
-					<RadzenLabel Text="Email actual" />
-					<div class="mt-1">
-						<RadzenTextBox Value="@_appUserRequest.Email" class="w-100" ReadOnly="true" />
-					</div>
-				</div>
+                <div class="mb-3">
+                    <RadzenLabel Text="Email actual" />
+                    <div class="mt-1">
+                        <RadzenTextBox Value="@_appUserRequest.Email" class="w-100" ReadOnly="true" />
+                    </div>
+                </div>
 
-				<div class="mb-3">
-					<RadzenLabel Text="Ingrese el nuevo email" />
-					<div class="mt-1">
-                        <RadzenTextBox @bind-Value="_changeEmailDto.NewEmail" class="w-100"/>
-                        <ValidationMessage For="() => _changeEmailDto.NewEmail"/>
-					</div>
-				</div>
+                <div class="mb-3">
+                    <RadzenLabel Text="Ingrese el nuevo email" />
+                    <div class="mt-1">
+                        <RadzenTextBox @bind-Value="_changeEmailDto.NewEmail" class="w-100" />
+                        <ValidationMessage For="() => _changeEmailDto.NewEmail" />
+                    </div>
+                </div>
 
-				<div class="mb-2">
-					<FormButtons SaveButtonText="Enviar" NavLinkRoute="/usuarioList" />
-				</div>
-			</EditForm>
-		</RadzenCard>
+                <div class="mb-2">
+                    <FormButtons SaveButtonText="Enviar" NavLinkRoute="/usuarioList" />
+                </div>
+            </EditForm>
+        </RadzenCard>
 
-	}
+    }
 </div>
 
 @code {
 
-	[Parameter]
-	public string UserId { get; set; }
+    [Parameter]
+    public string? UserId { get; set; }
 
     private readonly ChangeEmailDto _changeEmailDto = new();
-    private AppUserResponseDto _appUserRequest;
+    private AppUserResponseDto? _appUserRequest;
 
-	protected override async Task OnInitializedAsync()
-	{
-	    var httpResp = await _httpRepo.Get<AppUserResponseDto>($"api/Account/{UserId}");
+    protected override async Task OnInitializedAsync()
+    {
+        var httpResp = await _httpRepo.Get<AppUserResponseDto>($"api/Account/{UserId}");
 
-		if (!httpResp.Error)
-		{
-			_appUserRequest = httpResp.Response;
-		    _changeEmailDto.CurrentEmail = _appUserRequest.Email;
-		}
-	}
+        if (!httpResp.Error)
+        {
+            if (httpResp.Response is not null)
+            {
+                _appUserRequest = httpResp.Response;
+                _changeEmailDto.CurrentEmail = _appUserRequest.Email;
+            }
+        }
+    }
 
-	private async Task OnSubmit()
-	{
-	    var httpResp = await _httpRepo.Post("api/Account/sendChangeEmailToken", _changeEmailDto);
+    private async Task OnSubmit()
+    {
+        var httpResp = await _httpRepo.Post("api/Account/sendChangeEmailToken", _changeEmailDto);
 
-		if (!httpResp.Error)
-		{
-			_navigationManager.NavigateTo("usuario/changeEmailConfirm");
-		}
-	}
+        if (!httpResp.Error)
+        {
+            _navigationManager.NavigateTo("usuario/changeEmailConfirm");
+        }
+    }
 
 }

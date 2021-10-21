@@ -6,7 +6,7 @@ namespace MedicDate.DataAccess.Helpers
     public static class GenericActionResultBuilder
     {
         public static GenericActionResult BuildResult(
-            HttpStatusCode statusCode, object responseBody = null)
+            HttpStatusCode statusCode, object? responseBody = null)
         {
             return responseBody switch
             {

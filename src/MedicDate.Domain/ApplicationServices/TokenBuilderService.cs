@@ -13,11 +13,11 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace MedicDate.Bussines.ApplicationServices
 {
-    public class TokenService : ITokenService
+    public class TokenBuilderService : ITokenBuilderService
     {
         private readonly UserManager<ApplicationUser> _userManager;
 
-        public TokenService(UserManager<ApplicationUser> userManager)
+        public TokenBuilderService(UserManager<ApplicationUser> userManager)
         {
             _userManager = userManager;
         }

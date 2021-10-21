@@ -1,6 +1,6 @@
 ﻿@page "/serverError"
 @using System.Text.Json
-@using MedicDate.API.DTOs.Errors
+@using MedicDate.Shared.Models.Errors
 @inject NavigationManager _navigationManager
 
 <h2>Error del Servidor!</h2>
@@ -32,9 +32,9 @@
 
 @code {
 
-    private string _rawError;
+    private string? _rawError;
 
-    private ApiExceptionDto _errorModel;
+    private ApiExceptionDto? _errorModel;
 
     protected override void OnInitialized()
     {

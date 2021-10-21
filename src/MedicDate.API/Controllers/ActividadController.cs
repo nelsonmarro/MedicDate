@@ -1,12 +1,9 @@
 ﻿using AutoMapper;
-using MedicDate.API.DTOs.Actividad;
-using MedicDate.API.DTOs.Common;
 using MedicDate.DataAccess.Entities;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using MedicDate.DataAccess.Repository.IRepository;
+using MedicDate.Shared.Models.Actividad;
+using MedicDate.Shared.Models.Common;
 
 namespace MedicDate.API.Controllers
 {
@@ -23,8 +20,7 @@ namespace MedicDate.API.Controllers
         }
 
         [HttpGet("listarConPaginacion")]
-        public async Task<ActionResult<PaginatedResourceListDto<ActividadResponseDto>>>
-            GetAllActividadesWithPagingAsync(
+        public async Task<ActionResult<PaginatedResourceListDto<ActividadResponseDto>>> GetAllActividadesWithPagingAsync(
                 int pageIndex = 0,
                 int pageSize = 10
             )

@@ -1,11 +1,10 @@
 ﻿using AutoMapper;
-using MedicDate.API.DTOs.Common;
-using MedicDate.API.DTOs.Medico;
+using MedicDate.Bussines.DomainServices.IDomainServices;
 using MedicDate.DataAccess.Entities;
-using Microsoft.AspNetCore.Mvc;
-using System.Linq;
-using System.Threading.Tasks;
 using MedicDate.DataAccess.Repository.IRepository;
+using MedicDate.Shared.Models.Common;
+using MedicDate.Shared.Models.Medico;
+using Microsoft.AspNetCore.Mvc;
 
 namespace MedicDate.API.Controllers
 {
@@ -27,12 +26,14 @@ namespace MedicDate.API.Controllers
         }
 
         [HttpGet("listarConPaginacion")]
-        public async Task<ActionResult<PaginatedResourceListDto<MedicoResponseDto>>> GetAllWithPagingAsync(
-            int pageIndex = 0,
-            int pageSize = 10,
-            [FromQuery] bool traerEspecialidades = false,
-            [FromQuery] string filtrarEspecialidadId = null
-        )
+        public async
+            Task<ActionResult<PaginatedResourceListDto<MedicoResponseDto>>>
+            GetAllWithPagingAsync(
+                int pageIndex = 0,
+                int pageSize = 10,
+                [FromQuery] bool traerEspecialidades = false,
+                [FromQuery] string? filtrarEspecialidadId = null
+            )
         {
             var includeProperties = traerEspecialidades
                 ? "MedicosEspecialidades.Especialidad"
@@ -59,8 +60,16 @@ namespace MedicDate.API.Controllers
             );
         }
 
+        [HttpGet("listar")]
+        public async Task<ActionResult<List<MedicoCitaResponseDto>>> GetAllMedicosAsync()
+        {
+            return await GetAllAsync<MedicoCitaResponseDto>
+                (x => x.OrderBy(p => p.Nombre));
+        }
+
         [HttpGet("{id}", Name = "GetMedico")]
-        public async Task<ActionResult<MedicoResponseDto>> GetMedicoByIdAsync(string id,
+        public async Task<ActionResult<MedicoResponseDto>> GetMedicoByIdAsync(
+            string id,
             [FromQuery] bool traerEspecialidades = false)
         {
             var includeProperties = traerEspecialidades
@@ -71,29 +80,39 @@ namespace MedicDate.API.Controllers
         }
 
         [HttpGet("obtenerParaEditar/{id}")]
-        public async Task<ActionResult<MedicoRequestDto>> GetPutMedicoAsync(string id)
+        public async Task<ActionResult<MedicoRequestDto>> GetPutMedicoAsync(
+            string id)
         {
-            return await GetByIdAsync<MedicoRequestDto>(id, "MedicosEspecialidades");
+            return await GetByIdAsync<MedicoRequestDto>(id,
+                "MedicosEspecialidades");
         }
 
         [HttpPost("crear")]
-        public async Task<ActionResult> PostAsync(MedicoRequestDto medicoRequestDto)
+        public async Task<ActionResult> PostAsync(
+            MedicoRequestDto medicoRequestDto,
+            [FromServices] IMedicoService medicoService)
         {
-            if (await _medicoRepo
-                .CheckCedulaExistsForCreateAsync(medicoRequestDto.Cedula))
-                return BadRequest("Ya existe otro doctor registrado con el número de cédula que ingresó");
+            if (await medicoService.ValidatCedulaForCreateAsync(medicoRequestDto
+                .Cedula))
+                return BadRequest(
+                    "Ya existe otro doctor registrado con el número de cédula que ingresó");
 
-            if (!await _medicoRepo
-                .CheckRelatedEntityIdsExistsAsync(medicoRequestDto.EspecialidadesId))
-                return BadRequest("No existe uno de los grupos asignados");
-
-            return await AddResourceAsync<MedicoRequestDto, MedicoResponseDto>(medicoRequestDto, "GetMedico");
+            return await AddResourceAsync<MedicoRequestDto, MedicoResponseDto>(
+                medicoRequestDto, "GetMedico");
         }
 
         [HttpPut("editar/{id}")]
-        public async Task<ActionResult> PutAsync(string id, MedicoRequestDto medicoRequestDto)
+        public async Task<ActionResult> PutAsync(string id,
+            MedicoRequestDto medicoRequestDto,
+            [FromServices] IMedicoService medicoService)
         {
-            var resp = await _medicoRepo.UpdateMedicoAsync(id, medicoRequestDto);
+            if (await medicoService
+                .ValidateCedulaForEditAsync(medicoRequestDto.Cedula, id))
+                return BadRequest(
+                    "Ya existe otro doctor registrado con el número de cédula que ingresó");
+
+            var resp =
+                await _medicoRepo.UpdateMedicoAsync(id, medicoRequestDto);
 
             return resp.Succeeded
                 ? resp.SuccessResult

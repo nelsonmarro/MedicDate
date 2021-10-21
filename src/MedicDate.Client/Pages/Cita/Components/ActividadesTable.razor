@@ -1,0 +1,53 @@
+﻿
+<RadzenDataGrid TItem="ActividadCitaResponseDto" Data="ActividadList"
+                FilterMode="FilterMode.Simple"
+                FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                EmptyText="No hay elementos que mostrar"
+                AllowColumnResize="true" PageSize="5" IsLoading="IsBussy">
+    <Columns>
+        <RadzenDataGridColumn TItem="ActividadCitaResponseDto"
+                              Property="Nombre" Title="Nombre" />
+
+        <RadzenDataGridColumn TItem="ActividadCitaResponseDto"
+                              Property="Detalles" Title="Detalles" />
+
+        <RadzenDataGridColumn TItem="ActividadCitaResponseDto" Property="ActividadTerminada"
+                              Title="Actividad Terminada" Filterable="false"
+                              Sortable="false">
+            <Template Context="actividad">
+                <RadzenCheckBox Value="actividad.ActividadTerminada"
+                                Disabled="true" />
+            </Template>
+        </RadzenDataGridColumn>
+
+        <RadzenDataGridColumn TItem="ActividadCitaResponseDto" Filterable="false"
+                              Sortable="false" Width="70px" TextAlign="TextAlign.Center">
+            <Template Context="actividad">
+                <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Secondary" />
+            </Template>
+        </RadzenDataGridColumn>
+
+        <RadzenDataGridColumn TItem="ActividadCitaResponseDto" Filterable="false"
+                              Sortable="false" Width="70px" TextAlign="TextAlign.Center">
+            <Template Context="actividad">
+                <RadzenButton Icon="delete" ButtonStyle="ButtonStyle.Danger"
+                              Click="@(() => RemoveActividadAsync(actividad))" />
+            </Template>
+        </RadzenDataGridColumn>
+    </Columns>
+</RadzenDataGrid>
+
+@code {
+    [Parameter]
+    public IEnumerable<ActividadCitaResponseDto> ActividadList { get; set; } = new List<ActividadCitaResponseDto>();
+
+    [Parameter]
+    public bool IsBussy { get; set; }
+    [Parameter]
+    public EventCallback<ActividadCitaResponseDto> OnActividadRemove { get; set; }
+
+    private async Task RemoveActividadAsync(ActividadCitaResponseDto actividad)
+    {
+        await OnActividadRemove.InvokeAsync(actividad);
+    }
+}
