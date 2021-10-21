@@ -6,12 +6,12 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using MedicDate.Bussines.ApplicationServices.IApplicationServices;
 using MedicDate.DataAccess.Entities;
-using MedicDate.DataAccess.Services.IServices;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 
-namespace MedicDate.DataAccess.Services
+namespace MedicDate.Bussines.ApplicationServices
 {
     public class TokenService : ITokenService
     {

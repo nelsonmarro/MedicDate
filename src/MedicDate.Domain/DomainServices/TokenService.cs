@@ -2,15 +2,15 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Threading.Tasks;
 using MedicDate.API.DTOs.Auth;
+using MedicDate.Bussines.ApplicationServices.IApplicationServices;
+using MedicDate.Bussines.DomainServices.IDomainServices;
 using MedicDate.DataAccess.Entities;
 using MedicDate.DataAccess.Helpers;
-using MedicDate.DataAccess.Repository.IRepository;
-using MedicDate.DataAccess.Services.IServices;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using static System.Net.HttpStatusCode;
 
-namespace MedicDate.DataAccess.Repository
+namespace MedicDate.Bussines.DomainServices
 {
     public class TokenRepository : ITokenRepository
     {

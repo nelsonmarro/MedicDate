@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using MedicDate.DataAccess.Entities;
 using Microsoft.IdentityModel.Tokens;
 
-namespace MedicDate.DataAccess.Services.IServices
+namespace MedicDate.Bussines.ApplicationServices.IApplicationServices
 {
     public interface ITokenService
     {

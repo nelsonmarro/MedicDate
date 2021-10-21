@@ -2,7 +2,7 @@
 using MedicDate.API.DTOs.Auth;
 using MedicDate.DataAccess.Helpers;
 
-namespace MedicDate.DataAccess.Repository.IRepository
+namespace MedicDate.Bussines.DomainServices.IDomainServices
 {
     public interface ITokenRepository
     {
