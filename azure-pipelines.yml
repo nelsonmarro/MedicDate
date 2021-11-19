@@ -1,3 +1,4 @@
+
 # ASP.NET Core
 # Build and test ASP.NET Core projects targeting .NET Core.
 # Add steps that run tests, create a NuGet package, deploy, and more:
@@ -11,17 +12,16 @@ pool:
 
 variables:
   buildConfiguration: 'Release'
-  proyecto: 'src/MedicDate.API/MedicDate.API.csproj'
+  proyecto: 'src/MedicDateAPI/MedicDate.API.csproj'
 
 steps:
 - task: UseDotNet@2
   displayName: 'Instalando ASP.NET Core 6'
   inputs:
     packageType: 'sdk'
-    version: '6.0.100'
+    version: '6.0.x'
 - script: dotnet build --configuration $(buildConfiguration)
   displayName: 'dotnet build $(buildConfiguration)'
-
 - task: DotNetCoreCLI@2
   displayName: 'Publishing App...'
   inputs:
