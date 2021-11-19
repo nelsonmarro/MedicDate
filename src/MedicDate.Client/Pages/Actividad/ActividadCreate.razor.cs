@@ -5,30 +5,30 @@ using Microsoft.AspNetCore.Components;
 
 namespace MedicDate.Client.Pages.Actividad
 {
-    public partial class ActividadCreate
+  public partial class ActividadCreate
+  {
+    [Inject] public IHttpRepository HttpRepo { get; set; } = default!;
+    [Inject] public NavigationManager NavigationManager { get; set; } = default!;
+    [Inject] public INotificationService NotificationService { get; set; } = default!;
+
+    private bool _isBussy;
+
+    private readonly ActividadRequestDto _actividadModel = new();
+
+    private async Task CreateActividad()
     {
-        [Inject] public IHttpRepository HttpRepo { get; set; } = default!;
-        [Inject] public NavigationManager NavigationManager { get; set; } = default!;
-        [Inject] public INotificationService NotificationService { get; set; } = default!;
+      _isBussy = true;
 
-        private bool _isBussy;
+      var httpResp = await HttpRepo.Post("api/Actividad/crear", _actividadModel);
 
-        private readonly ActividadRequestDto _actividadModel = new();
+      _isBussy = false;
 
-        private async Task CreateActividad()
-        {
-            _isBussy = true;
+      if (!httpResp.Error)
+      {
+        NotificationService.ShowSuccess("Operación Exitosa!", "Actividad creada con éxito");
 
-            var httpResp = await HttpRepo.Post("api/Actividad/crear", _actividadModel);
-
-            _isBussy = false;
-
-            if (!httpResp.Error)
-            {
-                NotificationService.ShowSuccess("Operación Exitosa!", "Actividad creada con éxito");
-
-                NavigationManager.NavigateTo("actividadList");
-            }
-        }
+        NavigationManager.NavigateTo("actividadList");
+      }
     }
+  }
 }

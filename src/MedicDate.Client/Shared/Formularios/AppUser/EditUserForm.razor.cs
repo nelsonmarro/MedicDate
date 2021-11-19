@@ -4,74 +4,62 @@ using MedicDate.Shared.Models.AppRole;
 using MedicDate.Shared.Models.AppUser;
 using Microsoft.AspNetCore.Components;
 
-namespace MedicDate.Client.Shared.Formularios.AppUser
+namespace MedicDate.Client.Shared.Formularios.AppUser;
+
+public partial class EditUserForm
 {
-    public partial class EditUserForm
-    {
-        [Inject] public IHttpRepository HttpRepo { get; set; } = default!;
-        [Inject] public INotificationService NotificationService { get; set; } = default!;
+  private readonly string[] _headers = {"Nombre Rol", "Descripción"};
+  private readonly string[] _propName = {"Nombre", "Descripcion"};
+  private bool _emailNeedConfirmation;
 
-        [Parameter] public AppUserRequestDto EditUserModel { get; set; } = new();
-        [Parameter] public EventCallback OnSubmit { get; set; }
+  private List<RoleResponseDto>? _roleList;
+  private List<RoleResponseDto>? _selectedRoles;
+  [Inject] public IHttpRepository HttpRepo { get; set; } = default!;
 
-        private List<RoleResponseDto>? _roleList;
-        private List<RoleResponseDto>? _selectedRoles;
-        private bool _emailNeedConfirmation;
+  [Inject]
+  public INotificationService NotificationService { get; set; } = default!;
 
-        private readonly string[] _headers = { "Nombre Rol", "Descripción" };
-        private readonly string[] _propName = { "Nombre", "Descripcion" };
+  [Parameter] public AppUserRequestDto EditUserModel { get; set; } = new();
+  [Parameter] public EventCallback OnSubmit { get; set; }
 
-        protected override async Task OnInitializedAsync()
-        {
-            var httpResp =
-                await HttpRepo.Get<List<RoleResponseDto>>("api/Usuario/roles");
+  protected override async Task OnInitializedAsync()
+  {
+    var httpResp =
+      await HttpRepo.Get<List<RoleResponseDto>>("api/Usuario/roles");
 
-            if (httpResp.Error)
-            {
-                NotificationService.ShowError("Error!",
-                    "Error al obtener los roles");
-            }
-            else
-            {
-                _roleList = httpResp.Response;
-            }
+    if (httpResp.Error)
+      NotificationService.ShowError("Error!",
+        "Error al obtener los roles");
+    else
+      _roleList = httpResp.Response;
+  }
 
-            _selectedRoles = EditUserModel.Roles;
-            _emailNeedConfirmation = EditUserModel.EmailConfirmed;
-        }
+  protected override void OnParametersSet()
+  {
+    _selectedRoles = EditUserModel.Roles;
+    _emailNeedConfirmation = EditUserModel.EmailConfirmed;
+  }
 
-        private async Task OnSubmitData()
-        {
-            if (_selectedRoles is not null)
-            {
-                if (_selectedRoles.Count > 0)
-                {
-                    EditUserModel.Roles = _selectedRoles;
-                }
-            }
-            await OnSubmit.InvokeAsync();
-        }
+  private async Task OnSubmitData()
+  {
+    if (_selectedRoles is not null)
+      if (_selectedRoles.Count > 0)
+        EditUserModel.Roles = _selectedRoles;
+    await OnSubmit.InvokeAsync();
+  }
 
-        private async Task SendConfirmationEmail()
-        {
-            var httpResp = await HttpRepo.Post(
-                "api/Account/sendConfirmationEmail", EditUserModel.Email);
+  private async Task SendConfirmationEmail()
+  {
+    var httpResp = await HttpRepo.Post(
+      "api/Account/sendConfirmationEmail", EditUserModel.Email);
 
-            if (httpResp is null)
-            {
-                return;
-            }
+    if (httpResp is null) return;
 
-            if (httpResp.Error)
-            {
-                NotificationService.ShowError("Error!",
-                    await httpResp.GetResponseBody());
-            }
-            else
-            {
-                NotificationService.ShowSuccess("Operación exitosa!",
-                    "Email de confirmación enviado correctamente");
-            }
-        }
-    }
+    if (httpResp.Error)
+      NotificationService.ShowError("Error!",
+        await httpResp.GetResponseBody());
+    else
+      NotificationService.ShowSuccess("Operación exitosa!",
+        "Email de confirmación enviado correctamente");
+  }
 }

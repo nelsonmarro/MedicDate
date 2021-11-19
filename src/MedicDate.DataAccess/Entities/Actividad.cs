@@ -1,18 +1,16 @@
-﻿using MedicDate.Utility.Interfaces;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using MedicDate.Utility.Interfaces;
 
-namespace MedicDate.DataAccess.Entities
+namespace MedicDate.DataAccess.Entities;
+
+public class Actividad : IId
 {
-    public class Actividad : IId
-    {
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        [Key]
-        public string Id { get; set; } = default!;
+  [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+  [Key]
+  public string Id { get; set; } = default!;
 
-        [StringLength(500)]
-        public string Nombre { get; set; } = default!;
+  [StringLength(500)] public string Nombre { get; set; } = default!;
 
-        public List<ActividadCita> ActividadesCitas { get; set; } = default!;
-    }
+  public List<ActividadCita> ActividadesCitas { get; set; } = default!;
 }

@@ -1,130 +1,213 @@
-﻿@using MedicDate.Shared.Models.Actividad
-@using MedicDate.Shared.Models.Cita
-@using MedicDate.Shared.Models.Medico
-@using MedicDate.Shared.Models.Paciente
-@inject DialogService _dialogService
+﻿@inject DialogService _dialogService
 @inject IHttpRepository _httpRepo
+@inject INotificationService NotificationService
 
-<EditForm Model="_citaRequest" OnValidSubmit="AddCita">
-    <DataAnnotationsValidator />
-    <div class="mb-3 row">
-        <div class="col-md-3">
-            <RadzenLabel Text="Fecha Inicio" />
-        </div>
-        <div class="col-md-7">
-            <RadzenDatePicker @bind-Value="_citaRequest.FechaInicio" Name="Fecha Inicio"
-                              ShowTime="true" class="w-100" />
-        </div>
-    </div>
-    <div class="mb-3 row">
-        <div class="col-md-3">
-            <RadzenLabel Text="Fecha Finalización" />
-        </div>
-        <div class="col-md-7">
-            <RadzenDatePicker @bind-Value="_citaRequest.FechaFin" Name="Fecha Finalización"
-                              ShowTime="true" class="w-100" />
-        </div>
-    </div>
-    <div class="mb-3 row">
-        <div class="col-md-3">
-            <RadzenLabel Text="Doctor o Especialista" />
-        </div>
-        <div class="col-md-7">
-            <RadzenDropDown TValue="string" Data="@_medicos"
-                            ValueProperty="Id" TextProperty="FullInfo"
-                            class="w-100" Placeholder="Seleccione"
-                            @bind-Value="_citaRequest.MedicoId" />
-        </div>
-    </div>
-    <div class="mb-3 row">
-        <div class="col-md-3">
-            <RadzenLabel Text="Paciente" />
-        </div>
-        <div class="col-md-7">
-            <RadzenDropDown TValue="string" Data="@_pacientes"
-                            ValueProperty="Id" TextProperty="FullInfo"
-                            class="w-100" Placeholder="Seleccione"
-                            @bind-Value="_citaRequest.PacienteId" />
-        </div>
-    </div>
-    <div class="mb-3 row">
-        <div class="col-md-3">
-            <RadzenLabel Text="Actividades" />
-        </div>
-        <div class="col-md-7">
-            @if (_actividades is not null)
+<EditForm Model="_citaRequest"
+          OnValidSubmit="AddCita"
+          class="mx-3">
+
+   @if (_errorList.Count > 0)
+   {
+         <div class="mb-2">
+            <ul class="text-danger">
+            @foreach (var error in _errorList)
             {
-                <RadzenDropDown AllowClear="true" class="w-100"
-                            Data="@_actividades" AllowVirtualization="true"
-                            Placeholder="Seleccione" Change="@SelectActividad"
-                            TextProperty="Nombre" ValueProperty="Id"
-                            Multiple="true" AllowFiltering="true"
-                            TValue="IEnumerable<string>" Value="_actividadesIds"
-                            FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" />
+                    <li>@error</li>
             }
-        </div>
-    </div>
-    <div class="mb-3 row">
-        <div class="col-md-3"></div>
-        <div class="col-md-7">
-            <RadzenButton ButtonType="@ButtonType.Submit" Text="Guardar"
-                          Icon="save" />
-        </div>
-    </div>
+            </ul>
+         </div>
+   }
+   <div class="mb-3 row">
+      <div class="col-md-4">
+         <RadzenLabel Text="Fecha Inicio" />
+      </div>
+      <div class="col-md-8">
+         <RadzenDatePicker @bind-Value="_citaRequest.FechaInicio" Name="Fecha Inicio"
+                           ShowTime="true" class="w-100"/>
+      </div>
+   </div>
+   <div class="mb-3 row">
+      <div class="col-md-4">
+         <RadzenLabel Text="Fecha Finalización" />
+      </div>
+      <div class="col-md-8">
+         <RadzenDatePicker @bind-Value="_citaRequest.FechaFin" Name="Fecha Finalización"
+                           ShowTime="true" class="w-100" />
+      </div>
+   </div>
+   <div class="mb-3 row">
+      <div class="col-md-4">
+         <RadzenLabel Text="Doctor o Especialista" />
+      </div>
+      <div class="col-md-8">
+         <RadzenDropDown TValue="string" Data="@_medicos"
+                         ValueProperty="Id" TextProperty="FullInfo"
+                         class="w-100" Placeholder="Seleccione"
+                         @bind-Value="_citaRequest.MedicoId" />
+      </div>
+   </div>
+   <div class="mb-3 row">
+      <div class="col-md-4">
+         <RadzenLabel Text="Paciente" />
+      </div>
+      <div class="col-md-8">
+         <RadzenDropDown TValue="string" Data="@_pacientes"
+                         ValueProperty="Id" TextProperty="FullInfo"
+                         class="w-100" Placeholder="Seleccione"
+                         @bind-Value="_citaRequest.PacienteId" />
+      </div>
+   </div>
+   <div class="mb-3 row">
+      <div class="col-md-4">
+         <RadzenLabel Text="Actividades" />
+      </div>
+      <div class="col-md-8">
+         @if (_actividades is not null)
+         {
+               <RadzenDropDown AllowClear="true" class="w-100"
+                         Data="@_actividades" AllowVirtualization="true"
+                         Placeholder="Seleccione" Change="@SelectActividad"
+                         TextProperty="Nombre" ValueProperty="Id"
+                         Multiple="true" AllowFiltering="true"
+                         TValue="IEnumerable<string>" Value="_actividadesIds"
+                         FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" />
+         }
+      </div>
+   </div>
+   <div class="mb-3 row">
+      <div class="col-md-4"></div>
+      <div class="col-md-8">
+         <div class="row">
+            <div class="col-6">
+               <RadzenButton ButtonType="@ButtonType.Submit"
+                             Text="Guardar"
+                             Style="width: 100%"
+                             Icon="save" />
+            </div>
+            <div class="col-6">
+               <RadzenButton Text="Cancelar"
+                             Icon="cancel"
+                             ButtonStyle="ButtonStyle.Danger"
+                             Style="width: 100%"
+                             Click="@(() => _dialogService.Close())" />
+            </div>
+         </div>
+      </div>
+   </div>
 </EditForm>
 
 @code {
 
-    [Parameter]
-    public DateTime StartDate { get; set; }
+   [Parameter]
+   public DateTime StartDate { get; set; }
 
-    [Parameter]
-    public DateTime EndDate { get; set; }
+   [Parameter]
+   public DateTime EndDate { get; set; }
 
-    private CitaRequestDto _citaRequest = new();
-    private IEnumerable<MedicoCitaResponseDto>? _medicos;
-    private IEnumerable<PacienteCitaResponseDto>? _pacientes;
-    private IEnumerable<ActividadResponseDto>? _actividades;
-    private IEnumerable<string>? _actividadesIds;
+   private CitaRequestDto _citaRequest = new();
+   private List<MedicoCitaResponseDto>? _medicos;
+   private List<PacienteCitaResponseDto>? _pacientes;
+   private List<ActividadResponseDto>? _actividades;
+   private IEnumerable<string>? _actividadesIds;
+   private List<string> _errorList = new();
 
-    protected override void OnParametersSet()
-    {
-        if (_citaRequest is not null)
-        {
-            _citaRequest.FechaInicio = StartDate;
-            _citaRequest.FechaFin = EndDate;
-        }
-    }
+   protected override void OnParametersSet()
+   {
+      if (_citaRequest is not null)
+      {
+         _citaRequest.FechaInicio = StartDate;
+         _citaRequest.FechaFin = EndDate;
+      }
+   }
 
-    protected override async Task OnInitializedAsync()
-    {
-        _actividades = await RequestResourceListAsync<ActividadResponseDto>("api/Actividad/listar");
-        _pacientes = await RequestResourceListAsync<PacienteCitaResponseDto>("api/Paciente/listar");
-        _medicos = await RequestResourceListAsync<MedicoCitaResponseDto>("api/Medico/listar");
-    }
+   protected override async Task OnInitializedAsync()
+   {
+      _actividades = await RequestResourceListAsync<ActividadResponseDto>("api/Actividad/listar");
+      _pacientes = await RequestResourceListAsync<PacienteCitaResponseDto>("api/Paciente/listar");
+      _medicos = await RequestResourceListAsync<MedicoCitaResponseDto>("api/Medico/listar");
+   }
 
-    private async Task<IEnumerable<T>?> RequestResourceListAsync<T>(string? reqUrl)
-    {
-        var httpResp = await _httpRepo.Get<IEnumerable<T>>(reqUrl ?? "");
+   private async Task<List<T>?> RequestResourceListAsync<T>(string? reqUrl)
+   {
+      var httpResp = await _httpRepo.Get<List<T>>(reqUrl ?? "");
+      return httpResp.Response;
+   }
 
-        return !httpResp.Error ? httpResp.Response : Enumerable.Empty<T>();
-    }
+   private bool ValidateDates()
+   {
+      _errorList.Clear();
 
-    private void AddCita()
-    {
-        _dialogService.Close(_citaRequest);
-    }
+      var timeInicio = TimeOnly.FromDateTime(_citaRequest.FechaInicio);
+      var timeFin = TimeOnly.FromDateTime(_citaRequest.FechaFin);
+      if (timeInicio.Hour < 7 || timeFin.Hour > 23)
+      {
+         _errorList.Add("Los tiempos de inicio y fin deben esta en el rango de 7AM - 23PM");
+         return false;
+      }
 
-    private void SelectActividad(object value)
-    {
-        _citaRequest.ActividadesCita.Clear();
+      if (_citaRequest.FechaInicio.IsTimeEquals(_citaRequest.FechaFin))
+      {
+         _errorList.Add("Los tiempos de inicio y fin de la cita no pueden ser iguales");
+         return false;
+      }
 
-        var actividadesIds = (IEnumerable<string>)value;
+      if (_citaRequest.FechaInicio > _citaRequest.FechaFin)
+      {
+         _errorList.Add("La fecha de inicio debe ser menor que la fecha de finalización");
 
-        _citaRequest.ActividadesCita.AddRange(actividadesIds
-            .Select(actId => new ActividadCitaRequestDto
-                {
-                    ActividadId = actId
-                }));
-    }
+         return false;
+      }
+
+      return true;
+   }
+
+   private bool ValidateCitaRequest()
+   {
+      var result = true;
+
+      if (_citaRequest.ActividadesCita is null
+         || _citaRequest.ActividadesCita.Count == 0)
+      {
+         _errorList.Add("Debe seleccionar al menos una Actividad");
+         result = false;
+      }
+
+      if (string.IsNullOrEmpty(_citaRequest.MedicoId))
+      {
+         _errorList.Add("Debe seleccionar un Doctor para la Cita");
+         result = false;
+      }
+
+      if (string.IsNullOrEmpty(_citaRequest.PacienteId))
+      {
+         _errorList.Add("Debe seleccionar un Paciente para la Cita");
+         result = false;
+      }
+
+      return result;
+   }
+
+   private void AddCita()
+   {
+      if (!ValidateDates())
+         return;
+
+      if (!ValidateCitaRequest())
+         return;
+
+      _dialogService.Close(_citaRequest);
+   }
+
+   private void SelectActividad(object value)
+   {
+      _citaRequest.ActividadesCita.Clear();
+
+      var actividadesIds = (IEnumerable<string>)value;
+
+      _citaRequest.ActividadesCita.AddRange(actividadesIds
+          .Select(actId => new ActividadCitaRequestDto
+             {
+                ActividadId = actId
+             }));
+   }
 }

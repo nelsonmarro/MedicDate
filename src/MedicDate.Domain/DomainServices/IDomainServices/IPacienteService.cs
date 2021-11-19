@@ -1,23 +1,25 @@
-﻿using System.Threading.Tasks;
-using MedicDate.DataAccess.Helpers;
+﻿using MedicDate.DataAccess.Helpers;
+using MedicDate.Shared.Models.Paciente;
 
-namespace MedicDate.Bussines.DomainServices.IDomainServices
+namespace MedicDate.Bussines.DomainServices.IDomainServices;
+
+public interface IPacienteService
 {
-    public interface IPacienteService
-    {
-        public Task<bool> ValidateNumHistoriaForCreateAsync(string numHistoria);
+   Task<bool> ValidateNumHistoriaForCreateAsync(string numHistoria);
 
-        public Task<bool> ValidatCedulaForCreateAsync(string numeroCedula);
+   Task<bool> ValidatCedulaForCreateAsync(string numeroCedula);
 
-        public Task<bool> ValidateCedulaForEditAsync(string numCedula,
-            string id);
+   Task<bool> ValidateCedulaForEditAsync(string numCedula,
+    string id);
 
-        public Task<bool> ValidateNumHistoriaForEditAsync(string numHistoria, string id);
+   Task<bool> ValidateNumHistoriaForEditAsync(string numHistoria,
+    string id);
 
-        public Task<OperationResult> ValidatePacienteForCreate(
-            string numHistoria, string numCedula);
+   Task<OperationResult> ValidatePacienteForCreate(
+    string numHistoria, string numCedula);
 
-        public Task<OperationResult> ValidatePacienteForEdit(string numHistoria
-            , string numCedula, string id);
-    }
+   Task<OperationResult> ValidatePacienteForEdit(string numHistoria
+    , string numCedula, string id);
+
+   Task<List<PacienteMonthReviewDto>> GetPacientesMonthRegisterationReview(int requestedYear);
 }

@@ -5,7 +5,7 @@
 @if (AllowCrudOps.AlowAdd)
 {
     <div class="mb-2 row">
-        <div class="col-12 text-right">
+        <div class="col-12 text-end">
             <NavLink Match="@NavLinkMatch.Prefix" href="@OpRoutes?.AddUrl">
                 <RadzenButton Text="Agregar" Icon="add" />
             </NavLink>
@@ -20,16 +20,23 @@
 else
 {
     <div class="my-3">
-        <RadzenDataGrid @ref="_dataGrid" Count="@TotalCount" Data="@_itemList"
-        LoadData="@(e => LoadData(e, (_dataGrid?.CurrentPage ?? 0), (_dataGrid?.PageSize) ?? 0))"
-        AllowFiltering="@AllowFilter" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
-        FilterMode="@FilterMode" AllowPaging="true" EmptyText="No hay datos que mostrar" AllowSorting="true"
-        PagerPosition="PagerPosition.TopAndBottom" TItem="TItem" AllowColumnResize="AllowColumnResize"
-        ColumnWidth="150px" AndOperatorText="Y" ApplyFilterText="Aplicar" ClearFilterText="Limpiar"
-        ContainsText="Contiene" DoesNotContainText="No contiene" EndsWithText="Termina con" EqualsText="Es igual"
-        FilterText="Filtrar" GreaterThanOrEqualsText="Mayor o igual" GreaterThanText="Mayor"
-        LessThanOrEqualsText="Menor o igual" LessThanText="Menor" NotEqualsText="Diferente" OrOperatorText="O"
-        StartsWithText="Empieza con" PageSizeOptions="new[] {10, 20, 50, 100}">
+        <RadzenDataGrid @ref="_dataGrid" Count="@TotalCount"
+                    Data="@_itemList"
+                    LoadData="@(e => LoadData(e, _dataGrid.CurrentPage, _dataGrid.PageSize))"
+                    AllowFiltering="@AllowFilter"
+                    FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                    FilterMode="@FilterMode" AllowPaging="true"
+                    EmptyText="No hay datos que mostrar" AllowSorting="true"
+                    PagerPosition="PagerPosition.TopAndBottom" TItem="TItem"
+                    AllowColumnResize="AllowColumnResize"
+                    ColumnWidth="150px" AndOperatorText="Y"
+                    ApplyFilterText="Aplicar" ClearFilterText="Limpiar"
+                    ContainsText="Contiene" DoesNotContainText="No contiene"
+                    EndsWithText="Termina con" EqualsText="Es igual"
+                    FilterText="Filtrar" GreaterThanOrEqualsText="Mayor o igual"
+                    GreaterThanText="Mayor" LessThanOrEqualsText="Menor o igual"
+                    LessThanText="Menor" NotEqualsText="Diferente" OrOperatorText="O"
+                    StartsWithText="Empieza con" PageSizeOptions="new[] {10, 20, 50, 100}">
             <Columns>
                 @if (PropNames.Length > 0 && Headers.Length > 0)
                 {
@@ -48,12 +55,12 @@ else
 
                 @if (AllowCrudOps.AllowEdit)
                 {
-                    <RadzenDataGridColumn TItem="TItem" Context="item" Filterable="false" Sortable="false"
-                TextAlign="@TextAlign.Center" Width="70px">
+                    <RadzenDataGridColumn TItem="TItem" Context="item"
+                                  Filterable="false" Sortable="false"
+                                  TextAlign="@TextAlign.Center" Width="70px">
                         <Template>
                             <NavLink Match="@NavLinkMatch.Prefix"
-                        href="@($"{OpRoutes?.EditUrl}/{item.GetType().GetProperties()[0].GetValue(item)}")">
-
+                             href="@($"{OpRoutes?.EditUrl}/{item.GetType().GetProperties()[0].GetValue(item)}")">
                                 <RadzenButton Icon="edit" ButtonStyle="@ButtonStyle.Secondary">
                                 </RadzenButton>
                             </NavLink>
@@ -63,10 +70,10 @@ else
                 @if (AllowCrudOps.AllowDelete)
                 {
                     <RadzenDataGridColumn TItem="TItem" Context="item" Filterable="false" Sortable="false"
-                TextAlign="@TextAlign.Center" Width="70px">
+                                  TextAlign="@TextAlign.Center" Width="70px">
                         <Template>
                             <RadzenButton Icon="delete" ButtonStyle="@ButtonStyle.Danger"
-                        Click="@(() => OpenDeleteWarningDialog(item.GetType().GetProperties()[0].GetValue(item)?.ToString()))" />
+                                  Click="@(() => OpenDeleteWarningDialog(item.GetType().GetProperties()[0].GetValue(item)?.ToString()))" />
                         </Template>
                     </RadzenDataGridColumn>
                 }

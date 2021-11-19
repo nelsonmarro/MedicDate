@@ -1,8 +1,7 @@
-﻿namespace MedicDate.Client.Interceptors.IInterceptors
+﻿namespace MedicDate.Client.Interceptors.IInterceptors;
+
+public interface IInterceptor
 {
-    public interface IInterceptor
-    {
-        public void RegisterEvent();
-        public void DisposeEvent();
-    }
+  public void RegisterEvent();
+  public void DisposeEvent();
 }

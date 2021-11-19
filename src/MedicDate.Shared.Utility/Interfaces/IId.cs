@@ -1,7 +1,6 @@
-﻿namespace MedicDate.Utility.Interfaces
+﻿namespace MedicDate.Utility.Interfaces;
+
+public interface IId
 {
-    public interface IId
-    {
-        public string Id { get; set; }
-    }
+  public string Id { get; set; }
 }

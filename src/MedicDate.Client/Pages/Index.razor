@@ -1,10 +1,104 @@
 ﻿@page "/"
 @using Microsoft.AspNetCore.Authorization
-@using System.Globalization
 @attribute [Authorize]
 
 <h1 class="text-center text-primary">Medic Date</h1>
 
-@code {
+@if (_citasCanceladas is null)
+{
+   <p>
+      Cargando
+      <i class="fas fa-spinner fa-spin"></i>
+   </p>
+}
+else
+{
+   <div class="row">
+      <div class="col-12">
+         <RadzenCard>
+            <h3 class="text-secondary">
+               Resúmen Mensual de Citas Registradas
+               <span class="text-primary">(@DateTime.Now.Year)</span>
+            </h3>
+            <div class="mt-3">
+               <ErrorBoundary>
+                  <RadzenChart>
+                     <RadzenColumnSeries Data="@_citasCompletadas" CategoryProperty="RegisterationDate"
+                     Title="@Sd.ESTADO_CITA_COMPLETADA" ValueProperty="TotalCitas" />
+                     <RadzenColumnSeries Data="@_citasCanceladas" CategoryProperty="RegisterationDate"
+                     Title="@Sd.ESTADO_CITA_CANCELADA" ValueProperty="TotalCitas" />
+                     <RadzenColumnSeries Data="@_citasNoAsistdas" CategoryProperty="RegisterationDate"
+                     Title="@Sd.ESTADO_CITA_NOASISTIOPACIENTE" ValueProperty="TotalCitas" />
 
+                     <RadzenCategoryAxis FormatString="{0:MMM}" Padding="20" />
+                     <RadzenColumnOptions Radius="3" />
+                     <RadzenValueAxis>
+                        <RadzenGridLines Visible="true" />
+                        <RadzenAxisTitle Text="Cantidad de citas" />
+                     </RadzenValueAxis>
+                  </RadzenChart>
+               </ErrorBoundary>
+            </div>
+         </RadzenCard>
+      </div>
+      <div class="col-12 my-3">
+         <ErrorBoundary>
+            <RadzenCard>
+               <h3 class="text-secondary mb-3">
+                  Resúmen Mensual de Pacientes Registrados
+               </h3>
+               <RadzenChart>
+                  <RadzenLineSeries Data="@_pacientesPreviousYear" CategoryProperty="RegistrationDate"
+                  Title=@($"{DateTime.Now.AddYears(-1).Year}") LineType="LineType.Solid"
+                  ValueProperty="TotalRegisteration">
+                     <RadzenMarkers MarkerType="MarkerType.Circle" />
+                  </RadzenLineSeries>
+
+                  <RadzenLineSeries Data="@_pacientesPresentYear" CategoryProperty="RegistrationDate"
+                  Title=@($"{DateTime.Now.Year}") LineType="LineType.Solid" ValueProperty="TotalRegisteration">
+                     <RadzenMarkers MarkerType="MarkerType.Circle" />
+                  </RadzenLineSeries>
+
+                  <RadzenCategoryAxis FormatString="{0:MMM}" />
+                  <RadzenValueAxis>
+                     <RadzenGridLines Visible="true" />
+                     <RadzenAxisTitle Text="Pacientes Registrados" />
+                  </RadzenValueAxis>
+               </RadzenChart>
+            </RadzenCard>
+         </ErrorBoundary>
+      </div>
+      <div class="col-md-7">
+         <RadzenCard>
+            <h3 class="text-secondary">
+               Resúmen Trimestral de Citas Registradas
+               <span class="text-primary">(@DateTime.Now.Year)</span>
+            </h3>
+            <ErrorBoundary>
+               <RadzenChart>
+                  <RadzenPieSeries Data="@_citasRegisteredQuarter" Title="Registradas" CategoryProperty="Quarter"
+                  ValueProperty="TotalCitas" />
+               </RadzenChart>
+            </ErrorBoundary>
+         </RadzenCard>
+      </div>
+      <div class="col-md-5">
+         <RadzenCard>
+            <h3 class="text-primary">
+               Accesos directos
+            </h3>
+            <div class="row row-cols-2 g-3">
+               <div class="col">
+                  <RadzenLink Path="calendarioCitas" Icon="date_range" Text="Calendario Citas" />
+               </div>
+               <div class="col">
+                  <RadzenLink Path="pacienteList" Icon="personal_injury" Text="Listado de Pacientes" />
+               </div>
+               <div class="col">
+                  <RadzenLink Path="medicoList" Icon="supervisor_account" Text="Listado de Doctores" />
+               </div>
+            </div>
+         </RadzenCard>
+      </div>
+   </div>
 }

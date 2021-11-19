@@ -2,58 +2,62 @@
 @using MedicDate.Shared.Models.Paciente
 
 <div class="row">
-    <div class="col-12 text-left">
-        <h2 class="text-primary">Pacientes</h2>
-    </div>
-    <div class="col-12 d-flex flex-column flex-md-row mt-3 mb-2 mb-md-0">
-        <div>
-            <span>Filtrar por grupo:</span>
-        </div>
-        <div class="pl-md-3">
+   <div class="col-12 text-left">
+      <h2 class="text-primary">Pacientes</h2>
+   </div>
+   <div class="col-12 d-flex flex-column flex-md-row mt-3 mb-2 mb-md-0">
+      <div class="me-md-3">
+         <span>Filtrar por grupo:</span>
+      </div>
+      <div> 
+         <ErrorBoundary>
             <RadzenDropDown AllowClear="true" TValue="string"
                             Style="width: 300px" Data="_grupoList"
                             AllowVirtualization="true" Placeholder="Seleccione"
                             Change="@FilterByGrupo" TextProperty="Nombre"
                             ValueProperty="Id" />
-        </div>
-    </div>
-    <div class="col-12">
-        <RadzenGenericGrid TItem="PacienteResponseDto" TotalCount="@_totalCount"
-                           ItemList="@_pacienteList" OpRoutes="@_opRoutes"
-                           OnDeleteData="@DeleteMedico" PropNames="_propNames"
-                           Headers="_headers">
+         </ErrorBoundary>
+      </div>
+   </div>
+   <div class="col-12">
+      <ErrorBoundary>
+         <RadzenGenericGrid TItem="PacienteResponseDto" TotalCount="@_totalCount"
+                            ItemList="@_pacienteList" OpRoutes="@_opRoutes"
+                            OnDeleteData="@DeleteMedico" PropNames="_propNames"
+                            Headers="_headers">
             <CustomGridCols>
-                <RadzenDataGridColumn TItem="PacienteResponseDto" Title="Fecha Nacimiento"
-                                      Property="FechaNacimiento">
-                    <Template Context="paciente">
-                        @paciente.FechaNacimiento.ToString("d")
-                    </Template>
-                </RadzenDataGridColumn>
+               <RadzenDataGridColumn TItem="PacienteResponseDto" Title="Fecha Nacimiento"
+                                     Property="FechaNacimiento">
+                  <Template Context="paciente">
+                     @paciente.FechaNacimiento.ToString("d")
+                  </Template>
+               </RadzenDataGridColumn>
 
-                <RadzenDataGridColumn TItem="PacienteResponseDto" Title="Grupos"
-                                      Filterable="false" Sortable="false">
-                    <Template Context="paciente">
-                        <div class="d-flex flex-row flex-wrap">
-                            @if (paciente.Grupos.Count > 2)
-                            {
-                                <RadzenButton Text="ver grupos" Size="@ButtonSize.Small"
-                                          Click="OpenGruposDialog" />
-                            }
-                            else
-                            {
-                                @foreach (var item in paciente.Grupos)
-                                {
-                                    <div>
-                                        <span class="text-primary" style="font-weight: 700;">
-                                            @(item.Nombre).&nbsp;&nbsp;
-                                        </span>
-                                    </div>
-                                }
-                            }
-                        </div>
-                    </Template>
-                </RadzenDataGridColumn>
+               <RadzenDataGridColumn TItem="PacienteResponseDto" Title="Grupos"
+                                     Filterable="false" Sortable="false">
+                  <Template Context="paciente">
+                     <div class="d-flex flex-row flex-wrap">
+                        @if (paciente.Grupos.Count > 2)
+                        {
+                           <RadzenButton Text="ver grupos" Size="@ButtonSize.Small"
+                                      Click="OpenGruposDialog" />
+                        }
+                        else
+                        {
+                           @foreach (var item in paciente.Grupos)
+                           {
+                              <div>
+                                 <span class="text-primary" style="font-weight: 700;">
+                                    @(item.Nombre).&nbsp;&nbsp;
+                                 </span>
+                              </div>
+                           }
+                        }
+                     </div>
+                  </Template>
+               </RadzenDataGridColumn>
             </CustomGridCols>
-        </RadzenGenericGrid>
-    </div>
+         </RadzenGenericGrid>
+      </ErrorBoundary>
+   </div>
 </div>

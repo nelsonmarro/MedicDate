@@ -5,29 +5,29 @@ using Microsoft.AspNetCore.Components;
 
 namespace MedicDate.Client.Pages.Grupo
 {
-    public partial class GrupoCreate
+  public partial class GrupoCreate
+  {
+    [Inject] public IHttpRepository HttpRepo { get; set; } = default!;
+    [Inject] public NavigationManager NavigationManager { get; set; } = default!;
+    [Inject] public INotificationService NotificationService { get; set; } = default!;
+
+    private bool _isBussy;
+
+    private readonly GrupoRequestDto _grupoModel = new();
+
+    private async Task CreateGrupo()
     {
-        [Inject] public IHttpRepository HttpRepo { get; set; } = default!;
-        [Inject] public NavigationManager NavigationManager { get; set; } = default!;
-        [Inject] public INotificationService NotificationService { get; set; } = default!;
+      _isBussy = true;
 
-        private bool _isBussy;
+      var httpResp = await HttpRepo.Post("api/Grupo/crear", _grupoModel);
 
-        private readonly GrupoRequestDto _grupoModel = new();
+      _isBussy = false;
 
-        private async Task CreateGrupo()
-        {
-            _isBussy = true;
-
-            var httpResp = await HttpRepo.Post("api/Grupo/crear", _grupoModel);
-
-            _isBussy = false;
-
-            if (!httpResp.Error)
-            {
-                NotificationService.ShowSuccess("Operación Exitosa!", "Grupo creado con éxito");
-                NavigationManager.NavigateTo("grupoList");
-            }
-        }
+      if (!httpResp.Error)
+      {
+        NotificationService.ShowSuccess("Operación Exitosa!", "Grupo creado con éxito");
+        NavigationManager.NavigateTo("grupoList");
+      }
     }
+  }
 }

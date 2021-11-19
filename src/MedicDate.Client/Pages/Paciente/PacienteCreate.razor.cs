@@ -3,32 +3,39 @@ using MedicDate.Client.Services.IServices;
 using MedicDate.Shared.Models.Paciente;
 using Microsoft.AspNetCore.Components;
 
-namespace MedicDate.Client.Pages.Paciente
+namespace MedicDate.Client.Pages.Paciente;
+
+public partial class PacienteCreate
 {
-    public partial class PacienteCreate
-    {
-        [Inject] public IHttpRepository HttpRepo { get; set; } = default!;
-        [Inject] public NavigationManager NavigationManager { get; set; } = default!;
-        [Inject] public INotificationService NotificationService { get; set; } = default!;
-        [Inject] public IDialogNotificationService DialogNotificationService { get; set; } = default!;
+   private readonly PacienteRequestDto _pacienteModel = new();
+   private bool _isBussy;
+   [Inject] public IHttpRepository HttpRepo { get; set; } = default!;
+   [Inject] public NavigationManager NavigationManager { get; set; } = default!;
 
-        private readonly PacienteRequestDto _pacienteModel = new();
-        private bool _isBussy;
+   [Inject]
+   public INotificationService NotificationService { get; set; } = default!;
 
-        private async Task CreatePaciente()
-        {
-            _isBussy = true;
+   [Inject]
+   public IDialogNotificationService DialogNotificationService { get; set; } =
+     default!;
 
-            var httpResp = await HttpRepo.Post("api/Paciente/crear", _pacienteModel);
+   private async Task CreatePaciente()
+   {
+      _pacienteModel.DateRegistered = DateTime.Now;
 
-            _isBussy = false;
+      _isBussy = true;
 
-            if (!httpResp.Error)
-            {
-                NotificationService.ShowSuccess("Operacion exitosa!", "Registro creado con éxito");
+      var httpResp = await HttpRepo.Post("api/Paciente/crear", _pacienteModel);
 
-                NavigationManager.NavigateTo("pacienteList"); ;
-            }
-        }
-    }
+      _isBussy = false;
+
+      if (!httpResp.Error)
+      {
+         NotificationService.ShowSuccess("Operacion exitosa!",
+           "Registro creado con éxito");
+
+         NavigationManager.NavigateTo("pacienteList");
+         ;
+      }
+   }
 }

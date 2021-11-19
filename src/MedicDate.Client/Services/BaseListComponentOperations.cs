@@ -5,69 +5,69 @@ using MedicDate.Shared.Models.Common;
 
 namespace MedicDate.Client.Services
 {
-    public class BaseListComponentOperations : IBaseListComponentOperations
-    {
-        private readonly IHttpRepository _httpRepo;
-        private readonly INotificationService _notificationService;
+   public class BaseListComponentOperations : IBaseListComponentOperations
+   {
+      private readonly IHttpRepository _httpRepo;
+      private readonly INotificationService _notificationService;
 
-        public BaseListComponentOperations(IHttpRepository httpRepo,
-            INotificationService notificationService)
-        {
-            _httpRepo = httpRepo;
-            _notificationService = notificationService;
-        }
+      public BaseListComponentOperations(IHttpRepository httpRepo,
+          INotificationService notificationService)
+      {
+         _httpRepo = httpRepo;
+         _notificationService = notificationService;
+      }
 
-        public async Task<ResourceListComponentResult<T>> LoadItemListAsync<T>
-        (
-            string getUrl,
-            string? filterQuery = null,
-            string? filterData = null
-        ) where T : class
-        {
-            var filterRequestQuery = "";
+      public async Task<ResourceListComponentResult<T>> LoadItemListAsync<T>
+      (
+          string getUrl,
+          string? filterQuery = null,
+          string? filterData = null
+      ) where T : class
+      {
+         var filterRequestQuery = "";
 
-            if (!string.IsNullOrEmpty(filterQuery)
-                && !string.IsNullOrEmpty(filterData)
-                && filterData != "0")
-            {
-                filterRequestQuery = filterQuery + filterData;
-            }
+         if (!string.IsNullOrEmpty(filterQuery)
+             && !string.IsNullOrEmpty(filterData)
+             && filterData != "0")
+         {
+            filterRequestQuery = filterQuery + filterData;
+         }
 
-            var response = await _httpRepo.Get<PaginatedResourceListDto<T>>(getUrl + filterRequestQuery);
+         var response = await _httpRepo.Get<PaginatedResourceListDto<T>>(getUrl + filterRequestQuery);
 
-            if (!response.Error)
-            {
-                return new ResourceListComponentResult<T>
-                {
-                    Succeded = true,
-                    ItemList = response.Response?.DataResult ?? new List<T>(),
-                    TotalCount = response.Response?.TotalCount ?? 0
-                };
-            }
-
+         if (!response.Error)
+         {
             return new ResourceListComponentResult<T>
             {
-                Succeded = false,
-                ItemList = Array.Empty<T>(),
+               Succeded = true,
+               ItemList = response.Response?.DataResult ?? new List<T>(),
+               TotalCount = response.Response?.TotalCount ?? 0
             };
-        }
+         }
 
-        public async Task<ResourceListComponentResult<T>> DeleteItem<T>(string idString, string deleteUrl, string getUrl) where T : class
-        {
-            var httpResp = await _httpRepo.Delete($"{deleteUrl}/{idString}");
+         return new ResourceListComponentResult<T>
+         {
+            Succeded = false,
+            ItemList = new List<T>(),
+         };
+      }
 
-            if (!httpResp.Error)
-            {
-                _notificationService.ShowSuccess("Operación Exitosa!", await httpResp.GetResponseBody());
+      public async Task<ResourceListComponentResult<T>> DeleteItem<T>(string idString, string deleteUrl, string getUrl) where T : class
+      {
+         var httpResp = await _httpRepo.Delete($"{deleteUrl}/{idString}");
 
-                return await LoadItemListAsync<T>(getUrl);
-            }
+         if (!httpResp.Error)
+         {
+            _notificationService.ShowSuccess("Operación Exitosa!", await httpResp.GetResponseBody());
 
-            return new ResourceListComponentResult<T>
-            {
-                Succeded = false,
-                ItemList = Array.Empty<T>(),
-            };
-        }
-    }
+            return await LoadItemListAsync<T>(getUrl);
+         }
+
+         return new ResourceListComponentResult<T>
+         {
+            Succeded = false,
+            ItemList = new List<T>()
+         };
+      }
+   }
 }

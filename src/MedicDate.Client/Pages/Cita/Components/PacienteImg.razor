@@ -1,0 +1,145 @@
+﻿@using MedicDate.Shared.Models.Archivo
+@using MedicDate.Shared.Models.Common
+@inject IHttpRepository HttpRepo
+@inject INotificationService NotifService
+@inject DialogService DialogService
+
+<InputFile multiple accept="image/*" OnChange="LoadImages"
+           class="mb-3 form-control"/>
+
+<DisplayPacienteImage Loading="_loading"
+                      Archivos="_selectedArchivos"
+                      OnArchivoDelete="DeleteArchivoAsync"
+                      OnArchivoUpdate="UpdateImageAsync"/>
+
+<div class="my-3 text-right">
+  <RadzenButton Text="Guardar"
+                ButtonStyle="ButtonStyle.Success"
+                Click="@SaveImagesAsync"
+                IsBusy="@_isSavingImages" BusyText="Guardando ..."/>
+</div>
+
+@code {
+
+  [Parameter]
+  public List<ArchivoCitaVm>? SavedArchivos { get; set; }
+
+  [Parameter]
+  public EventCallback<List<ArchivoCitaVm>> OnSaveImages { get; set; }
+
+  [Parameter]
+  public EventCallback OnImageDelete { get; set; }
+
+  [Parameter]
+  public EventCallback OnImageUpdate { get; set; }
+
+  private bool _loading;
+  private bool _isSavingImages;
+  private List<ArchivoCitaVm> _selectedArchivos = new();
+
+  protected override void OnParametersSet()
+  {
+    if (SavedArchivos is not null)
+    {
+      _selectedArchivos = new List<ArchivoCitaVm>(SavedArchivos);
+    }
+  }
+
+  private async Task LoadImages(InputFileChangeEventArgs e)
+  {
+    var maxAllowedSize = 1024 * 1024 * 10;
+    _loading = true;
+
+    foreach (var file in e.GetMultipleFiles())
+    {
+      var imageBytes = new byte[file.Size];
+      var imageExtension = file.Name.Split(".")[1];
+      var fileMimeType = file.ContentType;
+
+      await file.OpenReadStream(maxAllowedSize).ReadAsync(imageBytes);
+
+      var imageBase64 = Convert.ToBase64String(imageBytes);
+
+      _selectedArchivos?.Add(new ArchivoCitaVm
+      {
+        ImageInfo = new Base64ImgDto
+        {ImgBase64 = imageBase64, MimeType = fileMimeType},
+        Descripcion = "",
+        Extension = imageExtension
+      });
+    }
+
+    _loading = false;
+  }
+
+  private async void DeleteArchivoAsync(ArchivoCitaVm archivoCitaVm)
+  {
+    if (!string.IsNullOrEmpty(archivoCitaVm.RutaArchivo)
+        && string.IsNullOrEmpty(archivoCitaVm.ImageInfo.ImgBase64))
+    {
+      var archivoToDelete = new DeleteArchivoRequestDto
+      {
+        RutaCreated = archivoCitaVm.RutaArchivo
+      };
+
+      var httpResp = await HttpRepo.Post($"api/Archivo/delete/{archivoCitaVm.Id}",
+        archivoToDelete);
+
+      if (!httpResp.Error)
+      {
+        await OnImageDelete.InvokeAsync();
+      }
+    }
+
+    _selectedArchivos?.Remove(archivoCitaVm);
+    NotifService.ShowSuccess("Operación Exitosa", "Imagen Borrada");
+  }
+
+  private async Task SaveImagesAsync()
+  {
+    _isSavingImages = true;
+    var _newSelectedArchivos = _selectedArchivos.ToList();
+
+    if (SavedArchivos is not null)
+    {
+      _newSelectedArchivos?.RemoveRange(0, SavedArchivos.Count);
+    }
+
+    await OnSaveImages.InvokeAsync(_newSelectedArchivos);
+    _isSavingImages = false;
+  }
+
+  private async Task UpdateImageAsync(UpdateArchivoRequestDto updateArchivoRequestDto)
+  {
+    if (!string.IsNullOrEmpty(updateArchivoRequestDto.Id))
+    {
+      NotifService.ShowLoadingDialog(DialogService);
+
+      var httpResp = await HttpRepo.Put($"api/Archivo/edit/{updateArchivoRequestDto.Id}",
+        updateArchivoRequestDto);
+
+      if (!httpResp.Error)
+      {
+        NotifService.ShowSuccess("Operación Exitosa", await httpResp.GetResponseBody());
+      }
+
+      await OnImageUpdate.InvokeAsync();
+      NotifService.CloseDialog(DialogService);
+    }
+    else
+    {
+      var archivoToEdit = _selectedArchivos
+        .FirstOrDefault(x => x.Id == updateArchivoRequestDto.Id);
+      if (archivoToEdit is not null)
+      {
+        archivoToEdit.Descripcion = updateArchivoRequestDto.Description;
+        if (!string.IsNullOrEmpty(updateArchivoRequestDto.ImageBase64))
+        {
+          archivoToEdit.ImageInfo.ImgBase64 = updateArchivoRequestDto.ImageBase64;
+          archivoToEdit.ImageInfo.MimeType = updateArchivoRequestDto.ContentType;
+        }
+      }
+    }
+  }
+
+}

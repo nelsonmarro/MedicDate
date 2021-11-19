@@ -1,52 +1,59 @@
 ﻿@page "/calendarioCitas"
-@using MedicDate.Shared.Models.Cita
+@using System.Globalization
 
-<RadzenScheduler TItem="CitaCalendarDto" Data="_citasCalendar"
-                 StartProperty="FechaInicio" EndProperty="FechaFin"
-                 TextProperty="InfoCita" SlotSelect="@OnSlotSelect"
-                 LoadData="@((args) => LoadCitas(args))" AppointmentRender="OnCitaRender"
-                 class="w-100" Style="height:82vh" @ref="@_scheduler">
-    <Template Context="data">
-        @if (data.InfoCita is not null)
-        {
-            <div class="w-100 h-100 cita-card"
-             @oncontextmenu=@(args => ShowContextMenuWithContent(args, data))
-             @oncontextmenu:preventDefault=true>
-                @foreach (var item in data.InfoCita.Split("."))
-                {
-                    <span>@item</span>
-                    <br />
-                }
-            </div>
-        }
-    </Template>
-    <ChildContent>
-        <RadzenDayView />
-        <RadzenWeekView />
-        <RadzenMonthView />
-    </ChildContent>
-</RadzenScheduler>
+<SchedulerFilter OnFilterSelected="FilterCitasByMedicoOrPaciente" OnDatesFilterSelected="FiltarCitasByDates" />
+
+<ErrorBoundary>
+   <RadzenScheduler TItem="CitaCalendarDto"
+                    Data="_citasCalendar" StartProperty="FechaInicio"
+                    EndProperty="FechaFin"
+                    TextProperty="InfoCita"
+                    SlotSelect="@OnSlotSelect"
+                    LoadData="@(LoadCitas)" AppointmentRender="OnCitaRender"
+                    class="w-100 mt-3" @ref="@_scheduler" Culture="CultureInfo.CurrentCulture"
+                    TodayText="Hoy" Style="height: 80vh;">
+      <Template Context="data">
+         <div class="w-100 h-100 cita-card"
+              @oncontextmenu="@(args => ShowContextMenuWithContent(args, data))"
+              @oncontextmenu:preventDefault="true">
+            @foreach (var item in data.InfoCita.Split("."))
+            {
+               <span>@item</span>
+               <br />
+            }
+            <RadzenButton Icon="settings" Click="@(args => ShowContextMenuWithContent(args, data))" />
+         </div>
+      </Template>
+      <ChildContent>
+         <RadzenMonthView MoreText="Ver más" Text="Mes" />
+         <RadzenWeekView TimeFormat="HH:mm" Text="Semana" />
+         <RadzenDayView TimeFormat="HH:mm" Text="Día"
+         StartTime="@(new TimeOnly(7,00).ToTimeSpan())"/>
+      </ChildContent>
+   </RadzenScheduler>
+</ErrorBoundary>
 
 @code {
-    private RenderFragment<CitaCalendarDto> DisplayCitaEstadosMenu => cita => __builder =>
-        {
-        <RadzenMenu Click="@((args) => OnMenuItemClick(args, cita))">
-            <RadzenMenuItem Path=@($"citaEditar/{cita.Id}") Text="Editar Cita"
-                    Icon="edit" />
-            <RadzenMenuItem Text="Estados" Icon="pending_actions">
-                @foreach (var estado in Sd.ListadoEstadosCita)
-                    {
-                        if (estado == cita.Estado)
-                        {
-                        <RadzenMenuItem Text="@estado" Value="@estado"
-                        Visible="false" />
-                        }
-                        else
-                        {
-                        <RadzenMenuItem Text="@estado" Value="@estado" />
-                        }
-                    }
-            </RadzenMenuItem>
-        </RadzenMenu>
-        };
+
+   private RenderFragment<CitaCalendarDto> DisplayCitaEstadosMenu => cita => __builder =>
+      {
+      <RadzenMenu Click="@(args => OnMenuItemClick(args, cita))">
+         <RadzenMenuItem Path=@($"citaEditar/{cita.Id}") Text="Editar Cita" Icon="edit" />
+         <RadzenMenuItem Text="Eliminar Cita" Icon="delete" Value="cita.Id" />
+         <RadzenMenuItem Text="Estados" Icon="pending_actions">
+            @foreach (var estado in Sd.ListadoEstadosCita)
+               {
+                  if (estado == cita.Estado)
+                  {
+                  <RadzenMenuItem Text="@estado" Value="@estado" Visible="false" />
+                  }
+                  else
+                  {
+                  <RadzenMenuItem Text="@estado" Value="@estado" />
+                  }
+               }
+         </RadzenMenuItem>
+      </RadzenMenu>
+      };
+
 }

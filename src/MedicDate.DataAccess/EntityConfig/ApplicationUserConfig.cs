@@ -6,11 +6,11 @@ namespace MedicDate.DataAccess.EntityConfig;
 
 public class ApplicationUserConfig : IEntityTypeConfiguration<ApplicationUser>
 {
-    public void Configure(EntityTypeBuilder<ApplicationUser> builder)
-    {
-        builder.HasMany(e => e.UserRoles)
-                .WithOne(e => e.User)
-                .HasForeignKey(ur => ur.UserId)
-                .IsRequired();
-    }
+  public void Configure(EntityTypeBuilder<ApplicationUser> builder)
+  {
+    builder.HasMany(e => e.UserRoles)
+      .WithOne(e => e.User)
+      .HasForeignKey(ur => ur.UserId)
+      .IsRequired();
+  }
 }

@@ -2,6 +2,8 @@
 
 <h2 class="text-primary mb-2">Editar Grupo</h2>
 
-<CascadingValue Value="_isBussy">
-	<GrupoForm GrupoModel="@_grupoModel" OnSubmit="@CreateGrupo" />
-</CascadingValue>
+<ErrorBoundary>
+   <CascadingValue Value="_isBussy">
+      <GrupoForm GrupoModel="@_grupoModel" OnSubmit="@CreateGrupo" />
+   </CascadingValue>
+</ErrorBoundary>

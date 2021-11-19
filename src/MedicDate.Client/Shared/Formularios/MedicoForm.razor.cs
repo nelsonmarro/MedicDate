@@ -4,46 +4,47 @@ using MedicDate.Shared.Models.Especialidad;
 using MedicDate.Shared.Models.Medico;
 using Microsoft.AspNetCore.Components;
 
-namespace MedicDate.Client.Shared.Formularios
+namespace MedicDate.Client.Shared.Formularios;
+
+public partial class MedicoForm
 {
-    public partial class MedicoForm
-    {
-        [Inject] public IHttpRepository HttpRepo { get; set; } = default!;
-        [Inject] public INotificationService NotificationService { get; set; } = default!;
+  private List<EspecialidadResponseDto>? _especialidades;
+  private IEnumerable<string>? _especialidadesIds;
+  [Inject] public IHttpRepository HttpRepo { get; set; } = default!;
 
-        [Parameter] public MedicoRequestDto MedicoRequestDto { get; set; } = new();
+  [Inject]
+  public INotificationService NotificationService { get; set; } = default!;
 
-        [Parameter] public EventCallback OnSubmit { get; set; }
+  [Parameter] public MedicoRequestDto MedicoRequestDto { get; set; } = new();
 
-        private List<EspecialidadResponseDto>? _especialidades;
-        private IEnumerable<string>? _especialidadesIds;
+  [Parameter] public EventCallback OnSubmit { get; set; }
 
-        protected override async Task OnInitializedAsync()
-        {
-            var httpResponse = await HttpRepo.Get<List<EspecialidadResponseDto>>("api/Especialidad/listar");
+  protected override async Task OnInitializedAsync()
+  {
+    var httpResponse =
+      await HttpRepo.Get<List<EspecialidadResponseDto>>(
+        "api/Especialidad/listar");
 
-            if (httpResponse.Error)
-            {
-                NotificationService.ShowError("Error!", await httpResponse.GetResponseBody());
-            }
-            else
-            {
-                _especialidades = httpResponse.Response;
-            }
-        }
+    if (httpResponse.Error)
+      NotificationService.ShowError("Error!",
+        await httpResponse.GetResponseBody());
+    else
+      _especialidades = httpResponse.Response;
+  }
 
-        protected override void OnParametersSet()
-        {
-            if (MedicoRequestDto.EspecialidadesId.Count > 0) _especialidadesIds = MedicoRequestDto.EspecialidadesId;
-        }
+  protected override void OnParametersSet()
+  {
+    if (MedicoRequestDto.EspecialidadesId.Count > 0)
+      _especialidadesIds = MedicoRequestDto.EspecialidadesId;
+  }
 
-        private void SelectEspecialidad(object value)
-        {
-            MedicoRequestDto.EspecialidadesId.Clear();
+  private void SelectEspecialidad(object value)
+  {
+    MedicoRequestDto.EspecialidadesId.Clear();
 
-            var especialidades = (IEnumerable<string>)value;
+    var especialidades = (IEnumerable<string>) value;
 
-            if (especialidades is not null) MedicoRequestDto.EspecialidadesId.AddRange(especialidades);
-        }
-    }
+    if (especialidades is not null)
+      MedicoRequestDto.EspecialidadesId.AddRange(especialidades);
+  }
 }

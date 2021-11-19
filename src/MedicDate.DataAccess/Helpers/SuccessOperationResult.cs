@@ -1,7 +1,5 @@
-﻿namespace MedicDate.DataAccess.Helpers
-{
-    public class SuccessOperationResult
-    {
+﻿namespace MedicDate.DataAccess.Helpers;
 
-    }
+public class SuccessOperationResult
+{
 }

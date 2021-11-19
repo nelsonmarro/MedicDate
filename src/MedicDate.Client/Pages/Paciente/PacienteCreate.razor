@@ -2,6 +2,8 @@
 
 <h2 class="text-primary mb-2">Registrar Paciente</h2>
 
-<CascadingValue Value="_isBussy">
-	<PacienteForm PacienteRequestDto="_pacienteModel" OnSubmit="CreatePaciente" />
-</CascadingValue>
+<ErrorBoundary>
+    <CascadingValue Value="_isBussy">
+        <PacienteForm PacienteRequestDto="_pacienteModel" OnSubmit="CreatePaciente" />
+    </CascadingValue>
+</ErrorBoundary>

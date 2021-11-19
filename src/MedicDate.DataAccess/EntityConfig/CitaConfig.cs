@@ -6,8 +6,7 @@ namespace MedicDate.DataAccess.EntityConfig;
 
 public class CitaConfig : IEntityTypeConfiguration<Cita>
 {
-    public void Configure(EntityTypeBuilder<Cita> builder)
-    {
-
-    }
+  public void Configure(EntityTypeBuilder<Cita> builder)
+  {
+  }
 }

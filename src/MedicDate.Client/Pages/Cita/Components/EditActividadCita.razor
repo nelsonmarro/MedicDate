@@ -1,0 +1,54 @@
+﻿@inject DialogService DialogService
+
+<EditForm Model="ActividadCita" OnValidSubmit="ReturnActividadToUpdate">
+    <DataAnnotationsValidator />
+    <div class="mb-3">
+        <RadzenCheckBox @bind-Value="ActividadCita.ActividadTerminada"
+                        Name="ActividadTerminada" />
+        <RadzenLabel Text="Actividad Terminada" Component="ActividadTerminada"
+                     Style="margin-left: 5px;" />
+    </div>
+    <div class="mb-3">
+        <RadzenLabel Text="Detalles" />
+        <div>
+            <RadzenTextArea Placeholder="Describa lo realizado en esta actividad"
+                            @bind-Value="ActividadCita.Detalles" MaxLength="1000"
+                            class="w-100" />
+        </div>
+    </div>
+    <div class="mb-3">
+        <RadzenButton ButtonType="ButtonType.Submit" Text="Guardar"
+                      Icon="save" />
+        <RadzenButton Text="Cancelar" Icon="cancel"
+                      ButtonStyle="ButtonStyle.Secondary"
+                      Click="CloseDialog" />
+    </div>
+</EditForm>
+
+@code {
+    [Parameter]
+    [EditorRequired]
+    public ActividadCitaResponseDto ActividadCita { get; set; } = new();
+
+    private ActividadCitaResponseDto _baseActividadCita = new();
+
+    protected override void OnInitialized()
+    {
+        _baseActividadCita.ActividadTerminada = ActividadCita.ActividadTerminada;
+        _baseActividadCita.Detalles = ActividadCita.Detalles;
+    }
+
+    private void ReturnActividadToUpdate()
+    {
+        var actividadToUpdate = ActividadCita;
+        DialogService.Close(actividadToUpdate);
+    }
+
+    private void CloseDialog()
+    {
+        ActividadCita.Detalles = _baseActividadCita.Detalles;
+        ActividadCita.ActividadTerminada = _baseActividadCita.ActividadTerminada;
+
+        DialogService.Close();
+    }
+}

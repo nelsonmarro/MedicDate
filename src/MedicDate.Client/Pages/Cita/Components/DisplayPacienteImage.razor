@@ -1,0 +1,38 @@
+﻿@using MedicDate.Shared.Models.Archivo
+@if (Loading)
+{
+    <RadzenProgressBar Value="100" ShowValue="false"
+                   Mode="ProgressBarMode.Indeterminate" />
+}
+else
+{
+    if (Archivos is null)
+    {
+        <p>No hay imagenes que mostrar</p>
+    }
+    else
+    {
+        <div class="row row-cols-1 row-cols-md-3 g-3">
+            @foreach (var img in Archivos)
+            {
+                <PacienteImgCard Archivo="img"
+                     OnDeleteArchivo="OnArchivoDelete"
+                     OnArchivoUpdate="OnArchivoUpdate"/>
+            }
+        </div>
+    }
+}
+
+@code {
+    [Parameter]
+    public bool Loading { get; set; }
+
+    [Parameter]
+    public List<ArchivoCitaVm>? Archivos { get; set; }
+
+    [Parameter]
+    public EventCallback<ArchivoCitaVm> OnArchivoDelete { get; set; }
+
+    [Parameter]
+    public EventCallback<UpdateArchivoRequestDto> OnArchivoUpdate { get; set; }
+}

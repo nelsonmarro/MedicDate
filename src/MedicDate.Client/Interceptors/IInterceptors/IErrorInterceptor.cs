@@ -1,10 +1,9 @@
-﻿using System.Threading.Tasks;
-using Toolbelt.Blazor;
+﻿using Toolbelt.Blazor;
 
-namespace MedicDate.Client.Interceptors.IInterceptors
+namespace MedicDate.Client.Interceptors.IInterceptors;
+
+public interface IErrorInterceptor : IInterceptor
 {
-    public interface IErrorInterceptor : IInterceptor
-    {
-        public Task InterceptResponseErrorAsync(object sender, HttpClientInterceptorEventArgs e);
-    }
+  public Task InterceptResponseErrorAsync(object sender,
+    HttpClientInterceptorEventArgs e);
 }

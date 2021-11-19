@@ -1,8 +1,7 @@
-﻿namespace MedicDate.Utility.Enums
+﻿namespace MedicDate.Utility.Enums;
+
+public enum TipoSexo
 {
-    public enum TipoSexo
-    {
-        Masculino,
-        Femenino
-    }
+  Masculino,
+  Femenino
 }

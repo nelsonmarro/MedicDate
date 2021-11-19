@@ -1,113 +1,90 @@
+using System.Linq.Dynamic.Core;
 using MedicDate.Client.Helpers;
 using MedicDate.Shared.Models.Common;
 using Microsoft.AspNetCore.Components;
 using Radzen;
 using Radzen.Blazor;
-using System.Linq.Dynamic.Core;
 
-namespace MedicDate.Client.Components
+namespace MedicDate.Client.Components;
+
+public partial class RadzenGenericGrid<TItem>
 {
-    public partial class RadzenGenericGrid<TItem>
-    {
-        [Inject] public DialogService? DialogService { get; set; }
+   private bool _callLoadData;
 
-        [Parameter] public IEnumerable<TItem>? ItemList { get; set; }
-        [Parameter] public int TotalCount { get; set; }
+   private RadzenDataGrid<TItem> _dataGrid = default!;
+   private List<TItem>? _itemList;
 
-        [Parameter]
-        public string[] Headers { get; set; } = Array.Empty<string>();
+   [Inject] public DialogService DialogService { get; set; } = default!;
 
-        [Parameter]
-        public string[] PropNames { get; set; } = Array.Empty<string>();
+   [Parameter] public List<TItem>? ItemList { get; set; }
+   [Parameter] public int TotalCount { get; set; }
 
-        [Parameter] public RenderFragment? CustomGridCols { get; set; }
+   [Parameter] public string[] Headers { get; set; } = Array.Empty<string>();
 
-        [Parameter] public bool AllowFilter { get; set; } = true;
-        [Parameter] public bool AllowColumnResize { get; set; } = true;
+   [Parameter] public string[] PropNames { get; set; } = Array.Empty<string>();
 
-        [Parameter]
-        public FilterMode FilterMode { get; set; } = FilterMode.Simple;
+   [Parameter] public RenderFragment? CustomGridCols { get; set; }
+   [Parameter] public bool AllowFilter { get; set; } = true;
+   [Parameter] public bool AllowColumnResize { get; set; } = true;
 
-        [Parameter] public AllowCrudOps AllowCrudOps { get; set; } = new();
+   [Parameter] public FilterMode FilterMode { get; set; } = FilterMode.Simple;
 
-        [Parameter] public OpRoutes? OpRoutes { get; set; }
+   [Parameter] public AllowCrudOps AllowCrudOps { get; set; } = new();
+   [Parameter] public OpRoutes? OpRoutes { get; set; }
+   [Parameter] public EventCallback<string> OnDeleteData { get; set; }
 
-        [Parameter] public EventCallback<string> OnDeleteData { get; set; }
+   protected override void OnAfterRender(bool firstRender)
+   {
+      _callLoadData = !firstRender;
+   }
 
-        private RadzenDataGrid<TItem>? _dataGrid;
-        private IEnumerable<TItem>? _itemList;
-        private bool _callLoadData;
+   protected override void OnParametersSet()
+   {
+      if (ItemList is not null) _itemList = ItemList;
+   }
 
-        protected override void OnAfterRender(bool firstRender)
-        {
-            _callLoadData = !firstRender;
-        }
+   private async Task LoadData(LoadDataArgs? args = null, int pageIndex = 0
+     , int pageSize = 10)
+   {
+      if (!_callLoadData) return;
 
-        protected override void OnParametersSet()
-        {
-            if (ItemList is not null)
-            {
-                _itemList = ItemList;
-            }
-        }
+      var url = "";
 
-        private async Task LoadData(LoadDataArgs? args = null, int pageIndex = 0
-            , int pageSize = 10)
-        {
-            if (!_callLoadData)
-            {
-                return;
-            }
+      if (OpRoutes is not null)
+         url = OpRoutes.GetUrl.Contains("?")
+           ? $"{OpRoutes.GetUrl}&pageIndex={pageIndex}&pageSize={pageSize}"
+           : $"{OpRoutes.GetUrl}?pageIndex={pageIndex}&pageSize={pageSize}";
 
-            string url = "";
+      var response =
+        await _httpRepository.Get<PaginatedResourceListDto<TItem>>(url);
 
-            if (OpRoutes is not null)
-            {
-                url = OpRoutes.GetUrl.Contains("?")
-                    ? $"{OpRoutes.GetUrl}&pageIndex={pageIndex}&pageSize={pageSize}"
-                    : $"{OpRoutes.GetUrl}?pageIndex={pageIndex}&pageSize={pageSize}";
-            }
+      if (!response.Error)
+         if (response.Response is not null)
+         {
+            _itemList = response.Response.DataResult;
+            TotalCount = response.Response.TotalCount;
+         }
 
-            var response =
-                await _httpRepository.Get<PaginatedResourceListDto<TItem>>(url);
+      if (args is not null)
+      {
+         var query = _itemList?.AsQueryable();
+         if (!string.IsNullOrEmpty(args.Filter)) query = query.Where(args.Filter);
 
-            if (!response.Error)
-            {
-                if (response.Response is not null)
-                {
-                    _itemList = response.Response.DataResult;
-                    TotalCount = response.Response.TotalCount;
-                }
-            }
+         if (!string.IsNullOrEmpty(args.OrderBy))
+            query = query.OrderBy(args.OrderBy);
 
-            if (args is not null)
-            {
-                var query = _itemList?.AsQueryable();
-                if (!string.IsNullOrEmpty(args.Filter))
-                {
-                    query = query.Where(args.Filter);
-                }
+         _itemList = query?.ToList();
+      }
+   }
 
-                if (!string.IsNullOrEmpty(args.OrderBy))
-                {
-                    query = query.OrderBy(args.OrderBy);
-                }
+   private async Task OpenDeleteWarningDialog(string? resourceId)
+   {
+      var result = await DialogService.OpenAsync<DeleteConfirmation>(
+        "Borrar Registro",
+        new Dictionary<string, object>(),
+        new DialogOptions { Width = "465px", Height = "280px" });
 
-                _itemList = query?.ToList();
-            }
-        }
-
-        private async Task OpenDeleteWarningDialog(string? resourceId)
-        {
-            await DialogService!.OpenAsync<DeleteConfirmation>("Borrar Registro"
-                , new Dictionary<string, object?>
-                {
-                    {
-                        "Id"
-                        , resourceId
-                    }
-                    , {"OnDelete", OnDeleteData}
-                }, new DialogOptions { Width = "465px", Height = "280px" });
-        }
-    }
+      if (result is true && !string.IsNullOrEmpty(resourceId))
+         await OnDeleteData.InvokeAsync(resourceId);
+   }
 }

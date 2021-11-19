@@ -1,12 +1,11 @@
-﻿using System.Threading.Tasks;
-using MedicDate.DataAccess.Entities;
+﻿using MedicDate.DataAccess.Entities;
 using MedicDate.DataAccess.Helpers;
 using MedicDate.Shared.Models.Grupo;
 
-namespace MedicDate.DataAccess.Repository.IRepository
+namespace MedicDate.DataAccess.Repository.IRepository;
+
+public interface IGrupoRepository : IRepository<Grupo>
 {
-    public interface IGrupoRepository : IRepository<Grupo>
-    {
-        public Task<OperationResult> UpdateGrupoAsync(string id, GrupoRequestDto grupoRequestDto);
-    }
+  public Task<OperationResult> UpdateGrupoAsync(string id,
+    GrupoRequestDto grupoRequestDto);
 }

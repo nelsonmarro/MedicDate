@@ -14,31 +14,35 @@
     {
         <h2 class="text-radzen-primary">Actualizar Email. Usuario - @_appUserRequest.Nombre @_appUserRequest.Apellidos</h2>
 
-        <RadzenCard>
-            <EditForm Model="_changeEmailDto" OnValidSubmit="OnSubmit">
-                <DataAnnotationsValidator />
+        <ErrorBoundary>
+            <RadzenCard>
+                <EditForm Model="_changeEmailDto" OnValidSubmit="OnSubmit">
+                    <DataAnnotationsValidator />
 
-                <div class="mb-3">
-                    <RadzenLabel Text="Email actual" />
-                    <div class="mt-1">
-                        <RadzenTextBox Value="@_appUserRequest.Email" class="w-100" ReadOnly="true" />
+                    <div class="mb-3">
+                        <RadzenLabel Text="Email actual" />
+                        <div class="mt-1">
+                            <RadzenTextBox Value="@_appUserRequest.Email" class="w-100"
+                                       ReadOnly="true" />
+                        </div>
                     </div>
-                </div>
 
-                <div class="mb-3">
-                    <RadzenLabel Text="Ingrese el nuevo email" />
-                    <div class="mt-1">
-                        <RadzenTextBox @bind-Value="_changeEmailDto.NewEmail" class="w-100" />
-                        <ValidationMessage For="() => _changeEmailDto.NewEmail" />
+                    <div class="mb-3">
+                        <RadzenLabel Text="Ingrese el nuevo email" />
+                        <div class="mt-1">
+                            <RadzenTextBox @bind-Value="_changeEmailDto.NewEmail"
+                                       class="w-100" />
+                            <ValidationMessage For="() => _changeEmailDto.NewEmail" />
+                        </div>
                     </div>
-                </div>
 
-                <div class="mb-2">
-                    <FormButtons SaveButtonText="Enviar" NavLinkRoute="/usuarioList" />
-                </div>
-            </EditForm>
-        </RadzenCard>
-
+                    <div class="mb-2">
+                        <FormButtons SaveButtonText="Enviar"
+                                 NavLinkRoute="/usuarioList" />
+                    </div>
+                </EditForm>
+            </RadzenCard>
+        </ErrorBoundary>
     }
 </div>
 

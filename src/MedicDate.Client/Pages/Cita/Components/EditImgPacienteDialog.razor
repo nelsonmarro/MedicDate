@@ -1,0 +1,81 @@
+﻿@using MedicDate.Shared.Models.Archivo
+@inject DialogService DialogService
+
+@if (ArchivoUpdate is not null)
+{
+    <div class="mb-3 row">
+        <div class="col-12 mb-2">
+            <label class="mb-2 d-block">
+                Subir Imagen
+            </label>
+            <InputFile OnChange="LoadImage" class="form-control" />
+        </div>
+        <div class="col-12">
+            @if (_imageUrl is not null)
+            {
+                <img src="@_imageUrl" alt="Imagen Paciente"
+             class="img-fluid" style="width:360px; height:200px;" />
+            }
+        </div>
+    </div>
+    <div class="mb-3">
+        <RadzenLabel Text="Descripción" />
+        <div>
+            <RadzenTextArea MaxLength="1000"
+                        @bind-Value="ArchivoUpdate.Description"
+                        class="w-100" />
+        </div>
+    </div>
+    <div class="d-flex flex-md-row flex-column">
+        <div class="me-3">
+            <RadzenButton Text="Guardar" Icon="save"
+                      ButtonType="ButtonType.Submit"
+                      Click="UpdateImage" />
+        </div>
+        <div>
+            <RadzenButton Text="Cancelar" Icon="cancel"
+                      ButtonType="ButtonType.Submit"
+                      ButtonStyle="ButtonStyle.Danger"
+                      Click="CloseDialog" />
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public UpdateArchivoRequestDto? ArchivoUpdate { get; set; }
+
+    private string? _imageUrl;
+
+    private async Task LoadImage(InputFileChangeEventArgs e)
+    {
+        var maxAllowedSize = 1024 * 1024 * 10;
+        var file = e.File;
+
+        var imageBytes = new byte[file.Size];
+        var imageExtension = file.Name.Split(".")[1];
+        var fileMimeType = file.ContentType;
+
+        await file.OpenReadStream(maxAllowedSize).ReadAsync(imageBytes);
+
+        var imageBase64 = Convert.ToBase64String(imageBytes);
+        _imageUrl = $"data:{fileMimeType};base64,{imageBase64}";
+
+        if (ArchivoUpdate is not null)
+        {
+            ArchivoUpdate.ContentType = fileMimeType;
+            ArchivoUpdate.ExtensionImage = imageExtension;
+            ArchivoUpdate.ImageBase64 = imageBase64;
+        }
+    }
+
+    private void UpdateImage()
+    {
+        DialogService.Close(ArchivoUpdate);
+    }
+
+    private void CloseDialog()
+    {
+        DialogService.Close();
+    }
+}

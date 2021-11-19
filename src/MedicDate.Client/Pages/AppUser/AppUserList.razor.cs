@@ -5,117 +5,129 @@ using MedicDate.Shared.Models.AppRole;
 using MedicDate.Shared.Models.AppUser;
 using Microsoft.AspNetCore.Components;
 
-namespace MedicDate.Client.Pages.AppUser
+namespace MedicDate.Client.Pages.AppUser;
+
+public partial class AppUserList
 {
-    public partial class AppUserList
-    {
-        [Inject]
-        public IBaseListComponentOperations BaseListComponentOps { get; set; } = default!;
+   private static readonly string GetUrl =
+     "api/Usuario/listarConPaginacion?traerRoles=true";
 
-        [Inject]
-        public INotificationService NotificationService { get; set; } = default!;
+   private readonly string[] _headers =
+     {"Nombre", "Apellidos", "Email", "Teléfono"};
 
-        [Inject]
-        public IHttpRepository HttpRepo { get; set; } = default!;
+   private readonly OpRoutes _opRoutes = new()
+   { AddUrl = "usuarioCrear", EditUrl = "usuarioEditar", GetUrl = GetUrl };
 
-        private IEnumerable<AppUserResponseDto>? _userList;
-        private int _totalCount = 0;
-        private static string GetUrl = "api/Usuario/listarConPaginacion?traerRoles=true";
-        private List<RoleResponseDto> _roleList = new();
+   private readonly string[] _propNames =
+     {"Nombre", "Apellidos", "Email", "PhoneNumber"};
 
-        private readonly string[] _propNames = { "Nombre", "Apellidos", "Email", "PhoneNumber" };
-        private readonly string[] _headers = { "Nombre", "Apellidos", "Email", "Teléfono" };
+   private List<RoleResponseDto> _roleList = new();
+   private int _totalCount;
 
-        private readonly OpRoutes _opRoutes = new()
-        { AddUrl = "usuarioCrear", EditUrl = "usuarioEditar", GetUrl = GetUrl };
+   private List<AppUserResponseDto>? _userList;
 
-        protected override async Task OnInitializedAsync()
-        {
-            var result = await BaseListComponentOps.LoadItemListAsync<AppUserResponseDto>(GetUrl);
+   [Inject]
+   public IBaseListComponentOperations BaseListComponentOps { get; set; } =
+     default!;
 
-            if (result.Succeded)
-            {
-                _userList = result.ItemList;
-                _totalCount = result.TotalCount;
-            }
+   [Inject]
+   public INotificationService NotificationService { get; set; } = default!;
 
-            var httpResponse = await HttpRepo.Get<List<RoleResponseDto>>("api/Usuario/roles");
+   [Inject] public IHttpRepository HttpRepo { get; set; } = default!;
 
-            if (!httpResponse.Error)
-            {
-                if (httpResponse.Response is not null)
-                {
-                    _roleList = httpResponse.Response;
-                }
-            }
-        }
+   protected override async Task OnInitializedAsync()
+   {
+      var result =
+        await BaseListComponentOps.LoadItemListAsync<AppUserResponseDto>(GetUrl);
 
-        private async Task LockUser(string userId)
-        {
-            var httpResp = await HttpRepo.Post("api/Account/lock", userId);
+      if (result.Succeded)
+      {
+         _userList = result.ItemList;
+         _totalCount = result.TotalCount;
+      }
 
-            if (!httpResp.Error)
-            {
-                NotificationService.ShowSuccess("Operación exitosa!",
-                    await httpResp.GetResponseBody());
+      var httpResponse =
+        await HttpRepo.Get<List<RoleResponseDto>>("api/Usuario/roles");
 
-                var result = await BaseListComponentOps.LoadItemListAsync<AppUserResponseDto>(GetUrl);
+      if (!httpResponse.Error)
+         if (httpResponse.Response is not null)
+            _roleList = httpResponse.Response;
+   }
 
-                if (result.Succeded)
-                {
-                    _userList = result.ItemList;
-                    _totalCount = result.TotalCount;
-                }
-            }
-        }
+   private async Task LockUser(string userId)
+   {
+      var httpResp = await HttpRepo.Post("api/Account/lock", userId);
 
-        private async Task UnlockUser(string userId)
-        {
-            var httpResp = await HttpRepo.Post("api/Account/unlock", userId);
+      if (!httpResp.Error)
+      {
+         NotificationService.ShowSuccess("Operación exitosa!",
+           await httpResp.GetResponseBody());
 
-            if (!httpResp.Error)
-            {
-                NotificationService.ShowSuccess("Operación exitosa!", await httpResp.GetResponseBody());
+         var result =
+           await BaseListComponentOps
+             .LoadItemListAsync<AppUserResponseDto>(GetUrl);
 
-                var result = await BaseListComponentOps.LoadItemListAsync<AppUserResponseDto>(GetUrl);
+         if (result.Succeded)
+         {
+            _userList = result.ItemList;
+            _totalCount = result.TotalCount;
+         }
+      }
+   }
 
-                if (result.Succeded)
-                {
-                    _userList = result.ItemList;
-                    _totalCount = result.TotalCount;
-                }
-            }
-        }
+   private async Task UnlockUser(string userId)
+   {
+      var httpResp = await HttpRepo.Post("api/Account/unlock", userId);
 
-        private async Task DeleteUser(string id)
-        {
-            var result = await BaseListComponentOps.DeleteItem<AppUserResponseDto>(id, "api/Usuario/eliminar", GetUrl);
+      if (!httpResp.Error)
+      {
+         NotificationService.ShowSuccess("Operación exitosa!",
+           await httpResp.GetResponseBody());
 
-            if (result.Succeded)
-            {
-                _userList = result.ItemList;
-                _totalCount = result.TotalCount;
-            }
-        }
+         var result =
+           await BaseListComponentOps
+             .LoadItemListAsync<AppUserResponseDto>(GetUrl);
 
-        private async Task FilterByRole(object value)
-        {
-            try
-            {
-                var rolId = value is string ? value.ToString() : null;
+         if (result.Succeded)
+         {
+            _userList = result.ItemList;
+            _totalCount = result.TotalCount;
+         }
+      }
+   }
 
-                var result = await BaseListComponentOps.LoadItemListAsync<AppUserResponseDto>(GetUrl, "&filterRolId=", rolId);
+   private async Task DeleteUser(string id)
+   {
+      var result =
+        await BaseListComponentOps.DeleteItem<AppUserResponseDto>(id,
+          "api/Usuario/eliminar", GetUrl);
 
-                if (result.Succeded)
-                {
-                    _userList = result.ItemList;
-                    _totalCount = result.TotalCount;
-                }
-            }
-            catch (Exception)
-            {
-                NotificationService.ShowError("Error!", "Error al obtener el Id del rol");
-            }
-        }
-    }
+      if (result.Succeded)
+      {
+         _userList = result.ItemList;
+         _totalCount = result.TotalCount;
+      }
+   }
+
+   private async Task FilterByRole(object value)
+   {
+      try
+      {
+         var rolId = value is string ? value.ToString() : null;
+
+         var result =
+           await BaseListComponentOps.LoadItemListAsync<AppUserResponseDto>(GetUrl,
+             "&filterRolId=", rolId);
+
+         if (result.Succeded)
+         {
+            _userList = result.ItemList;
+            _totalCount = result.TotalCount;
+         }
+      }
+      catch (Exception)
+      {
+         NotificationService.ShowError("Error!", "Error al obtener el Id del rol");
+      }
+   }
 }

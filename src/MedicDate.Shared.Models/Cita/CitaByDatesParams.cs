@@ -1,8 +1,7 @@
-﻿namespace MedicDate.Shared.Models.Cita
+﻿namespace MedicDate.Shared.Models.Cita;
+
+public class CitaByDatesParams
 {
-    public class CitaByDatesParams
-    {
-        public DateTime StartDate { get; set; }
-        public DateTime EndDate { get; set; }
-    }
+  public DateTime StartDate { get; set; }
+  public DateTime EndDate { get; set; }
 }

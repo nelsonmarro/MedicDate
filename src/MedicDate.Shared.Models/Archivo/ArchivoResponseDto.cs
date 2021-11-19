@@ -1,9 +1,8 @@
-﻿namespace MedicDate.Shared.Models.Archivo
+﻿namespace MedicDate.Shared.Models.Archivo;
+
+public class ArchivoResponseDto
 {
-    public class ArchivoResponseDto
-    {
-        public string? Id { get; set; }
-        public string? RutaArchivo { get; set; }
-        public string? Descripcion { get; set; }
-    }
+  public string Id { get; set; } = string.Empty;
+  public string RutaArchivo { get; set; } = string.Empty;
+  public string Descripcion { get; set; } = string.Empty;
 }

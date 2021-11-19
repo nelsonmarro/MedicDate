@@ -9,92 +9,98 @@ using MedicDate.Shared.Models.Common;
 using MedicDate.Utility;
 using static System.Net.HttpStatusCode;
 
-namespace MedicDate.Bussines.DomainServices
+namespace MedicDate.Bussines.DomainServices;
+
+public class ArchivoService : IArchivoService
 {
-    public class ArchivoService : IArchivoService
+  private readonly IArchivoRepository _archivoRepo;
+  private readonly IFileUpload _fileUpload;
+  private readonly IMapper _mapper;
+
+  public ArchivoService(IFileUpload fileUpload,
+    IArchivoRepository archivoRepo, IMapper mapper)
+  {
+    _fileUpload = fileUpload;
+    _archivoRepo = archivoRepo;
+    _mapper = mapper;
+  }
+
+  public async Task<OperationResult> AddArchivosListAsync(
+    List<CreateArchivoRequestDto> archivosReq)
+  {
+    var filesForAzStorage = archivosReq.Select(x =>
+      new CreateFileForAzStorageDto
+      {
+        Container = Sd.AZ_STORAGE_CONTAINER_PACIENTE,
+        Content = Convert.FromBase64String(x.ImageBase64 ?? ""),
+        ContentType = x.ContentType,
+        Extension = x.ExtensionImage
+      }).ToList();
+
+    var resultRouteList =
+      await _fileUpload.SaveFileListAsync(filesForAzStorage);
+    var archivosToSave = archivosReq.Select(x => new ArchivoDbSaveDto
     {
-        private readonly IFileUpload _fileUpload;
-        private readonly IArchivoRepository _archivoRepo;
-        private readonly IMapper _mapper;
+      CitaId = x.CitaId ?? "",
+      Descripcion = x.Descripcion
+    }).ToList();
 
-        public ArchivoService(IFileUpload fileUpload,
-            IArchivoRepository archivoRepo, IMapper mapper)
-        {
-            _fileUpload = fileUpload;
-            _archivoRepo = archivoRepo;
-            _mapper = mapper;
-        }
+    for (var i = 0; i < resultRouteList.Count; i++)
+      archivosToSave[i].RutaArchivo = resultRouteList[i];
 
-        public async Task<OperationResult> AddArchivosListAsync(
-            List<CreateArchivoRequestDto> archivosReq)
-        {
-            var filesForAzStorage = archivosReq.Select(x =>
-                new CreateFileForAzStorageDto
-                {
-                    Container = Sd.AZ_STORAGE_CONTAINER_PACIENTE,
-                    Content = Convert.FromBase64String(x.ImageBase64 ?? ""),
-                    ContentType = x.ContentType,
-                    Extension = x.ExtensionImage
-                }).ToList();
+    var archivosDb = _mapper.Map<List<Archivo>>(archivosToSave);
+    await _archivoRepo.AddRangeAsync(archivosDb);
+    await _archivoRepo.SaveAsync();
 
-            var resultRouteList =
-                await _fileUpload.SaveFileListAsync(filesForAzStorage);
-            var archivosToSave = archivosReq.Select(x => new ArchivoDbSaveDto
-            {
-                CitaId = x.CitaId ?? "",
-                Descripcion = x.Descripcion
-            }).ToList();
+    return OperationResult.Success(Created);
+  }
 
-            for (var i = 0; i < resultRouteList.Count; i++)
-            {
-                archivosToSave[i].RutaArchivo = resultRouteList[i];
-            }
+  public async Task<List<ArchivoResponseDto>> GetAllArchivosByCitaIdAsync(
+    string citaId)
+  {
+    var archivosDb =
+      await _archivoRepo.GetAllAsync(filter: x => x.CitaId == citaId);
+    return _mapper.Map<List<ArchivoResponseDto>>(archivosDb);
+  }
 
-            var archivosDb = _mapper.Map<List<Archivo>>(archivosToSave);
-            await _archivoRepo.AddRangeAsync(archivosDb);
-            await _archivoRepo.SaveAsync();
+  public async Task<OperationResult> RemoveArchivoAsync
+    (string archivoId, DeleteArchivoRequestDto deleteArchivoRequest)
+  {
+    await _fileUpload.DeleteFileAsync(deleteArchivoRequest.RutaCreated,
+      Sd.AZ_STORAGE_CONTAINER_PACIENTE);
 
-            return OperationResult.Success(Created);
-        }
+    await _archivoRepo.RemoveAsync(archivoId);
+    await _archivoRepo.SaveAsync();
 
-        public async Task<OperationResult> RemoveArchivoAsync
-        (string archivoId, DeleteArchivoRequestDto deleteArchivoRequest)
-        {
-            await _fileUpload.DeleteFileAsync(deleteArchivoRequest.RutaCreated, 
-                Sd.AZ_STORAGE_CONTAINER_PACIENTE);
+    return OperationResult.Success(OK);
+  }
 
-            await _archivoRepo.RemoveAsync(archivoId);
+  public async Task<OperationResult> UpdateArchivoAsync(string archivoId,
+    UpdateArchivoRequestDto? archivoRequestDto)
+  {
+    if (archivoRequestDto is null) return OperationResult.Error(NotFound);
 
-            return OperationResult.Success(OK);
-        }
+    var archivoUpdateDb = new ArchivoDbUpdateDto
+    {
+      Descripcion = archivoRequestDto.Description
+    };
 
-        public async Task<OperationResult> UpdateArchivoAsync(string archivoId,
-            UpdateArchivoRequestDto? archivoRequestDto)
-        {
-            if (archivoRequestDto is null)
-            {
-                return OperationResult.Success(NotFound);
-            }
+    if (!string.IsNullOrEmpty(archivoRequestDto.ImageBase64))
+    {
+      var updateFileFromAzStorage = new UpdateFileForAzStorageDto
+      {
+        Container = Sd.AZ_STORAGE_CONTAINER_PACIENTE,
+        Content = Convert.FromBase64String(archivoRequestDto.ImageBase64),
+        ContentType = archivoRequestDto.ContentType,
+        CreatedRoute = archivoRequestDto.CreatedRoute,
+        Extension = archivoRequestDto.ExtensionImage
+      };
 
-            var updateFileFromAzStorage = new UpdateFileForAzStorageDto
-            {
-                Container = Sd.AZ_STORAGE_CONTAINER_PACIENTE,
-                Content =
-                    Convert.FromBase64String(archivoRequestDto.ImageBase64),
-                ContentType = archivoRequestDto.ContentType,
-                CreatedRoute = archivoRequestDto.CreatedRoute,
-                Extension = archivoRequestDto.ExtensionImage
-            };
-
-            var archivoUpdateDb = new ArchivoDbUpdateDto
-            {
-                Descripcion = archivoRequestDto.Description,
-                RutaArchivo =
-                    await _fileUpload.UpdateFileAsync(updateFileFromAzStorage)
-            };
-
-            return await _archivoRepo.UpdateArchivoAsync(archivoId,
-                archivoUpdateDb);
-        }
+      archivoUpdateDb.RutaArchivo = await _fileUpload
+        .UpdateFileAsync(updateFileFromAzStorage);
     }
+
+    return await _archivoRepo.UpdateArchivoAsync(archivoId,
+      archivoUpdateDb);
+  }
 }

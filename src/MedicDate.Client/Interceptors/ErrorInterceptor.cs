@@ -1,80 +1,76 @@
 ﻿using MedicDate.Client.Interceptors.IInterceptors;
 using MedicDate.Client.Services.IServices;
 using Microsoft.AspNetCore.Components;
-using System.Threading.Tasks;
 using Toolbelt.Blazor;
 
-namespace MedicDate.Client.Interceptors
+namespace MedicDate.Client.Interceptors;
+
+public class ErrorInterceptor : IErrorInterceptor
 {
-    public class ErrorInterceptor : IErrorInterceptor
-    {
-        private readonly INotificationService _notificationService;
-        private readonly NavigationManager _navigationManager;
-        private readonly HttpClientInterceptor _interceptor;
+   private readonly HttpClientInterceptor _interceptor;
+   private readonly NavigationManager _navigationManager;
+   private readonly IDialogNotificationService _notificationService;
 
-        public ErrorInterceptor(
-            INotificationService notificationService,
-            NavigationManager navigationManager,
-            HttpClientInterceptor interceptor
-        )
-        {
-            _notificationService = notificationService;
-            _navigationManager = navigationManager;
-            _interceptor = interceptor;
-        }
+   public ErrorInterceptor(
+     IDialogNotificationService notificationService,
+     NavigationManager navigationManager,
+     HttpClientInterceptor interceptor
+   )
+   {
+      _notificationService = notificationService;
+      _navigationManager = navigationManager;
+      _interceptor = interceptor;
+   }
 
-        public void RegisterEvent()
-        {
-            _interceptor.AfterSendAsync += InterceptResponseErrorAsync;
-        }
+   public void RegisterEvent()
+   {
+      _interceptor.AfterSendAsync += InterceptResponseErrorAsync;
+   }
 
-        public async Task InterceptResponseErrorAsync(object sender, HttpClientInterceptorEventArgs e)
-        {
-            if (!e.Response.IsSuccessStatusCode)
-            {
-                var errorStatus = (int)e.Response.StatusCode;
-                var strResp = await e.Response.Content.ReadAsStringAsync();
+   public async Task InterceptResponseErrorAsync(object sender,
+     HttpClientInterceptorEventArgs e)
+   {
+      if (!e.Response.IsSuccessStatusCode)
+      {
+         var errorStatus = (int) e.Response.StatusCode;
+         var strResp = await e.Response.Content.ReadAsStringAsync();
 
-                switch (errorStatus)
-                {
-                    case 400:
-                        if (!strResp.Contains("[") && !strResp.Contains("{"))
-                            _notificationService.ShowError("Error!", strResp);
-                        return;
+         switch (errorStatus)
+         {
+            case 400:
+               if (!strResp.Contains("[") && !strResp.Contains("{"))
+                  await _notificationService.ShowError("Error!", strResp);
+               return;
 
-                    case 401:
+            case 401:
+               await _notificationService.ShowError("Error!",
+                  "Debe iniciar sesión para acceder a este recurso");
+               return;
 
+            case 404:
+               await _notificationService.ShowError("Error!", strResp);
+               _navigationManager.NavigateTo("notFound");
+               return;
 
-                        _notificationService.ShowError("Error!", "Debe iniciar sesión para acceder a este recurso");
-                        return;
+            case 403:
+               await _notificationService.ShowError("Error!",
+                  "No esta autorizado para acceder a este recurso");
+               return;
 
-                    case 404:
+            case 500:
+               _navigationManager.NavigateTo($"serverError?rawError={strResp}");
+               return;
 
-                        _notificationService.ShowError("Error!", strResp);
-                        _navigationManager.NavigateTo("notFound");
+            default:
+               await _notificationService.ShowError("Error!",
+                   "Ocurrió un error inesperado");
+               return;
+         }
+      }
+   }
 
-                        return;
-
-                    case 403:
-
-                        _notificationService.ShowError("Error!", "No esta autorizado para acceder a este recurso");
-                        return;
-
-                    case 500:
-
-                        _navigationManager.NavigateTo($"serverError?rawError={strResp}");
-                        return;
-
-                    default:
-                        _notificationService.ShowError("Error!", "Ocurrió un error inesperado");
-                        return;
-                }
-            }
-        }
-
-        public void DisposeEvent()
-        {
-            _interceptor.AfterSendAsync -= InterceptResponseErrorAsync;
-        }
-    }
+   public void DisposeEvent()
+   {
+      _interceptor.AfterSendAsync -= InterceptResponseErrorAsync;
+   }
 }

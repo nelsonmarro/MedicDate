@@ -8,7 +8,9 @@
 }
 else
 {
-    <CascadingValue Value="_isBussy">
-        <PacienteForm PacienteRequestDto="_pacienteModel" OnSubmit="EditPaciente"/>
-    </CascadingValue>
+    <ErrorBoundary>
+        <CascadingValue Value="_isBussy">
+            <PacienteForm PacienteRequestDto="_pacienteModel" OnSubmit="EditPaciente" />
+        </CascadingValue>
+    </ErrorBoundary>
 }

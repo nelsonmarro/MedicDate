@@ -1,13 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿namespace MedicDate.Bussines.DomainServices.IDomainServices;
 
-namespace MedicDate.Bussines.DomainServices.IDomainServices
+public interface IMedicoService
 {
-    public interface IMedicoService
-    {
-        public Task<bool> ValidatCedulaForCreateAsync(string numeroCedula);
+  public Task<bool> ValidatCedulaForCreateAsync(string numeroCedula);
 
-        public Task<bool> ValidateCedulaForEditAsync(string numCedula,
-            string id);
-    }
+  public Task<bool> ValidateCedulaForEditAsync(string numCedula,
+    string id);
 }

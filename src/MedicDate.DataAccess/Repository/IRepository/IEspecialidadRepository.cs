@@ -1,12 +1,11 @@
-﻿using System.Threading.Tasks;
-using MedicDate.DataAccess.Entities;
+﻿using MedicDate.DataAccess.Entities;
 using MedicDate.DataAccess.Helpers;
 using MedicDate.Shared.Models.Especialidad;
 
-namespace MedicDate.DataAccess.Repository.IRepository
+namespace MedicDate.DataAccess.Repository.IRepository;
+
+public interface IEspecialidadRepository : IRepository<Especialidad>
 {
-    public interface IEspecialidadRepository : IRepository<Especialidad>
-    {
-        public Task<OperationResult> UpdateEspecialidadAsync(string id, EspecialidadRequestDto especialidadDto);
-    }
+  public Task<OperationResult> UpdateEspecialidadAsync(string id,
+    EspecialidadRequestDto especialidadDto);
 }

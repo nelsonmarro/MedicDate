@@ -1,34 +1,32 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
-  <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <BlazorWebAssemblyLoadAllGlobalizationData>true</BlazorWebAssemblyLoadAllGlobalizationData>
-  </PropertyGroup>
-  <ItemGroup>
-    <PackageReference Include="Blazored.LocalStorage" Version="4.1.5" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="6.0.0-rc.2.21480.10" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" Version="6.0.0-rc.2.21480.10" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="6.0.0-rc.2.21480.10" PrivateAssets="all" />
-    <PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="2.2.0" />
-    <PackageReference Include="Microsoft.Extensions.Http" Version="6.0.0-rc.2.21480.5" />
-    <PackageReference Include="Radzen.Blazor" Version="3.11.8" />
-    <PackageReference Include="System.Linq.Dynamic.Core" Version="1.2.13" />
-    <PackageReference Include="System.Net.Http.Json" Version="6.0.0-rc.2.21480.5" />
-    <PackageReference Include="Toolbelt.Blazor.HttpClientInterceptor" Version="10.0.0" />
-  </ItemGroup>
-  <ItemGroup>
-    <Watch Include="**\*.js" />
-    <Watch Include="**\*.css" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Remove="compilerconfig.json" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="compilerconfig.json" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\MedicDate.Shared.Models\MedicDate.Shared.Models.csproj" />
-    <ProjectReference Include="..\MedicDate.Shared.Utility\MedicDate.Shared.Utility.csproj" />
-  </ItemGroup>
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<Content Remove="bundleconfig.json" />
+	</ItemGroup>
+	<ItemGroup>
+		<None Remove="App.razor~RF160248f.TMP" />
+	</ItemGroup>
+	<ItemGroup>
+		<None Include="bundleconfig.json" />
+	</ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Blazored.LocalStorage" Version="4.1.5" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="6.0.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" Version="6.0.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="6.0.0" PrivateAssets="all" />
+		<PackageReference Include="Microsoft.Extensions.Http" Version="6.0.0" />
+		<PackageReference Include="Radzen.Blazor" Version="3.12.2" />
+		<PackageReference Include="System.Net.Http.Json" Version="6.0.0" />
+		<PackageReference Include="Toolbelt.Blazor.HttpClientInterceptor" Version="10.0.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\MedicDate.Shared.Models\MedicDate.Shared.Models.csproj" />
+		<ProjectReference Include="..\MedicDate.Shared.Utility\MedicDate.Shared.Utility.csproj" />
+	</ItemGroup>
 </Project>

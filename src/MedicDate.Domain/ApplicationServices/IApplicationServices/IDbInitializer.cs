@@ -1,7 +1,6 @@
-namespace MedicDate.Bussines.ApplicationServices.IApplicationServices
+namespace MedicDate.Bussines.ApplicationServices.IApplicationServices;
+
+public interface IDbInitializer
 {
-    public interface IDbInitializer
-    {
-        public void Initialize();
-    }
+  public void Initialize();
 }

@@ -1,8 +1,7 @@
-﻿namespace MedicDate.Client.Interceptors.IInterceptors
+﻿namespace MedicDate.Client.Interceptors.IInterceptors;
+
+public interface IHttpInterceptorProvider
 {
-    public interface IHttpInterceptorProvider
-    {
-        public IErrorInterceptor ErrorInterceptor { get; }
-        public IAuthTokenInterceptor AuthTokenInterceptor { get; }
-    }
+  public IErrorInterceptor ErrorInterceptor { get; }
+  public IAuthTokenInterceptor AuthTokenInterceptor { get; }
 }

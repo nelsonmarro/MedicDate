@@ -2,10 +2,10 @@
 using MedicDate.DataAccess.Helpers;
 using MedicDate.Shared.Models.Actividad;
 
-namespace MedicDate.DataAccess.Repository.IRepository
+namespace MedicDate.DataAccess.Repository.IRepository;
+
+public interface IActividadRepository : IRepository<Actividad>
 {
-    public interface IActividadRepository : IRepository<Actividad>
-    {
-        Task<OperationResult> UpdateActividadAsync(string actId, ActividadRequestDto actRequestDto);
-    }
+  Task<OperationResult> UpdateActividadAsync(string actId,
+    ActividadRequestDto actRequestDto);
 }

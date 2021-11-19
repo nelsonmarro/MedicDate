@@ -1,7 +1,6 @@
-﻿namespace MedicDate.Utility.Interfaces
+﻿namespace MedicDate.Utility.Interfaces;
+
+public interface ICedula
 {
-    public interface ICedula
-    {
-        public string Cedula { get; set; }
-    }
+  public string Cedula { get; set; }
 }

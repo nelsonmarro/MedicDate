@@ -1,29 +1,29 @@
-using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using System.Text;
+using Microsoft.AspNetCore.Mvc;
 
-namespace MedicDate.DataAccess.Helpers
+namespace MedicDate.DataAccess.Helpers;
+
+public class GenericActionResult : ActionResult
 {
-    public class GenericActionResult : ActionResult
+  public GenericActionResult(HttpStatusCode httpStatusCode,
+    string? responseBody)
+  {
+    HttpStatusCode = httpStatusCode;
+    ResponseBody = responseBody;
+  }
+
+  public HttpStatusCode HttpStatusCode { get; init; }
+  public string? ResponseBody { get; init; }
+
+  public override async Task ExecuteResultAsync(ActionContext context)
+  {
+    context.HttpContext.Response.StatusCode = (int) HttpStatusCode;
+    if (!string.IsNullOrEmpty(ResponseBody))
     {
-        public HttpStatusCode HttpStatusCode { get; init; }
-        public string? ResponseBody { get; init; }
-
-        public GenericActionResult(HttpStatusCode httpStatusCode, string? responseBody)
-        {
-            HttpStatusCode = httpStatusCode;
-            ResponseBody = responseBody;
-        }
-
-        public async override Task ExecuteResultAsync(ActionContext context)
-        {
-            context.HttpContext.Response.StatusCode = (int)HttpStatusCode;
-            if (!string.IsNullOrEmpty(ResponseBody))
-            {
-                var responseBodyBytes = Encoding.UTF8.GetBytes(ResponseBody);
-                await using var ms = new MemoryStream(responseBodyBytes);
-                await ms.CopyToAsync(context.HttpContext.Response.Body);
-            }
-        }
+      var responseBodyBytes = Encoding.UTF8.GetBytes(ResponseBody);
+      await using var ms = new MemoryStream(responseBodyBytes);
+      await ms.CopyToAsync(context.HttpContext.Response.Body);
     }
+  }
 }

@@ -1,7 +1,6 @@
-﻿namespace MedicDate.Bussines.ApplicationServices.IApplicationServices
+﻿namespace MedicDate.Bussines.ApplicationServices.IApplicationServices;
+
+public interface ISuccessResultBuilder<T>
 {
-    public interface ISuccessResultBuilder<T>
-    {
-        T BuildSuccessResult(T successObj);
-    }
+  T BuildSuccessResult(T successObj);
 }

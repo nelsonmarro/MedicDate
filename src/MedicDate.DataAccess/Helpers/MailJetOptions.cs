@@ -1,8 +1,7 @@
-﻿namespace MedicDate.DataAccess.Helpers
+﻿namespace MedicDate.DataAccess.Helpers;
+
+public class MailJetOptions
 {
-    public class MailJetOptions
-    {
-        public string? ApiKey { get; set; }
-        public string? SecretKey { get; set; }
-    }
+  public string? ApiKey { get; set; }
+  public string? SecretKey { get; set; }
 }

@@ -1,53 +1,68 @@
-﻿
+﻿@inject DialogService DialogService
+
 <RadzenDataGrid TItem="ActividadCitaResponseDto" Data="ActividadList"
                 FilterMode="FilterMode.Simple"
                 FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
                 EmptyText="No hay elementos que mostrar"
-                AllowColumnResize="true" PageSize="5" IsLoading="IsBussy">
-    <Columns>
-        <RadzenDataGridColumn TItem="ActividadCitaResponseDto"
-                              Property="Nombre" Title="Nombre" />
+                AllowColumnResize="true" PageSize="5"
+                IsLoading="IsBussy" @ref="DataGridRef">
+   <Columns>
+      <RadzenDataGridColumn TItem="ActividadCitaResponseDto"
+                            Property="Nombre" Title="Nombre" />
 
-        <RadzenDataGridColumn TItem="ActividadCitaResponseDto"
-                              Property="Detalles" Title="Detalles" />
+      <RadzenDataGridColumn TItem="ActividadCitaResponseDto"
+                            Property="Detalles" Title="Detalles" />
 
-        <RadzenDataGridColumn TItem="ActividadCitaResponseDto" Property="ActividadTerminada"
-                              Title="Actividad Terminada" Filterable="false"
-                              Sortable="false">
-            <Template Context="actividad">
-                <RadzenCheckBox Value="actividad.ActividadTerminada"
-                                Disabled="true" />
-            </Template>
-        </RadzenDataGridColumn>
+      <RadzenDataGridColumn TItem="ActividadCitaResponseDto" Property="ActividadTerminada"
+                            Title="Actividad Terminada" Filterable="false"
+                            Sortable="false">
+         <Template Context="actividad">
+            <RadzenCheckBox Value="actividad.ActividadTerminada"
+                            Disabled="true" />
+         </Template>
+      </RadzenDataGridColumn>
 
-        <RadzenDataGridColumn TItem="ActividadCitaResponseDto" Filterable="false"
-                              Sortable="false" Width="70px" TextAlign="TextAlign.Center">
-            <Template Context="actividad">
-                <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Secondary" />
-            </Template>
-        </RadzenDataGridColumn>
+      <RadzenDataGridColumn TItem="ActividadCitaResponseDto" Filterable="false"
+                            Sortable="false" Width="70px" TextAlign="TextAlign.Center">
+         <Template Context="actividad">
+            <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Secondary"
+                          Click=@(() => OpenEditActividadDialogAsync(actividad)) />
+         </Template>
+      </RadzenDataGridColumn>
 
-        <RadzenDataGridColumn TItem="ActividadCitaResponseDto" Filterable="false"
-                              Sortable="false" Width="70px" TextAlign="TextAlign.Center">
-            <Template Context="actividad">
-                <RadzenButton Icon="delete" ButtonStyle="ButtonStyle.Danger"
-                              Click="@(() => RemoveActividadAsync(actividad))" />
-            </Template>
-        </RadzenDataGridColumn>
-    </Columns>
+      <RadzenDataGridColumn TItem="ActividadCitaResponseDto" Filterable="false"
+                            Sortable="false" Width="70px" TextAlign="TextAlign.Center">
+         <Template Context="actividad">
+            <RadzenButton Icon="delete" ButtonStyle="ButtonStyle.Danger"
+                          Click="@(() => RemoveActividadAsync(actividad))" />
+         </Template>
+      </RadzenDataGridColumn>
+   </Columns>
 </RadzenDataGrid>
 
 @code {
-    [Parameter]
-    public IEnumerable<ActividadCitaResponseDto> ActividadList { get; set; } = new List<ActividadCitaResponseDto>();
+   [Parameter]
+   public List<ActividadCitaResponseDto> ActividadList { get; set; }
+     = new List<ActividadCitaResponseDto>();
 
-    [Parameter]
-    public bool IsBussy { get; set; }
-    [Parameter]
-    public EventCallback<ActividadCitaResponseDto> OnActividadRemove { get; set; }
+   [Parameter]
+   public bool IsBussy { get; set; }
 
-    private async Task RemoveActividadAsync(ActividadCitaResponseDto actividad)
-    {
-        await OnActividadRemove.InvokeAsync(actividad);
-    }
+   [Parameter]
+   public EventCallback<ActividadCitaResponseDto> OnActividadRemove { get; set; }
+
+   public RadzenDataGrid<ActividadCitaResponseDto>? DataGridRef { get; set; }
+
+   private async Task RemoveActividadAsync(ActividadCitaResponseDto actividad)
+   {
+      await OnActividadRemove.InvokeAsync(actividad);
+   }
+
+   private async Task OpenEditActividadDialogAsync(ActividadCitaResponseDto actividadCita)
+   {
+      var actividadToUpdate = await DialogService.OpenAsync<EditActividadCita>($"Editar Actividad - {actividadCita.Nombre}", new Dictionary<string, object>
+        {
+            {"ActividadCita", actividadCita}
+        }, new DialogOptions { ShowClose = false });
+   }
 }

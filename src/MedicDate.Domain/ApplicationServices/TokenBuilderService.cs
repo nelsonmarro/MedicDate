@@ -1,98 +1,96 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
+﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
 using MedicDate.Bussines.ApplicationServices.IApplicationServices;
 using MedicDate.DataAccess.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 
-namespace MedicDate.Bussines.ApplicationServices
+namespace MedicDate.Bussines.ApplicationServices;
+
+public class TokenBuilderService : ITokenBuilderService
 {
-    public class TokenBuilderService : ITokenBuilderService
+   private readonly UserManager<ApplicationUser> _userManager;
+
+   public TokenBuilderService(UserManager<ApplicationUser> userManager)
+   {
+      _userManager = userManager;
+   }
+
+   public SigningCredentials GetSigningCredentials(string signInKey)
+   {
+      var key = Encoding.UTF8.GetBytes(signInKey);
+      var secret = new SymmetricSecurityKey(key);
+
+      return new SigningCredentials(secret, SecurityAlgorithms.HmacSha256);
+   }
+
+   public async Task<List<Claim>> GetClaims(ApplicationUser user)
+   {
+      var claims = new List<Claim>
     {
-        private readonly UserManager<ApplicationUser> _userManager;
+      new(ClaimTypes.Email, user.Email),
+      new(ClaimTypes.Name, user.Nombre),
+    };
 
-        public TokenBuilderService(UserManager<ApplicationUser> userManager)
-        {
-            _userManager = userManager;
-        }
+      var roles = await _userManager.GetRolesAsync(user);
 
-        public SigningCredentials GetSigningCredentials(string signInKey)
-        {
-            var key = Encoding.UTF8.GetBytes(signInKey);
-            var secret = new SymmetricSecurityKey(key);
+      claims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role)));
 
-            return new SigningCredentials(secret, SecurityAlgorithms.HmacSha256);
-        }
+      return claims;
+   }
 
-        public async Task<List<Claim>> GetClaims(ApplicationUser user)
-        {
-            var claims = new List<Claim>
-            {
-                new(ClaimTypes.Name, user.Email)
-            };
+   public JwtSecurityToken GenerateTokenOptions(
+     SigningCredentials signingCredentials, List<Claim> claims,
+     string validAudience, string validIssuer, string expiryInMinutes)
+   {
+      var tokenOptions = new JwtSecurityToken(
+        validIssuer,
+        validAudience,
+        claims,
+        expires: DateTime.Now.AddMinutes(Convert.ToDouble(expiryInMinutes)),
+        signingCredentials: signingCredentials);
 
-            var roles = await _userManager.GetRolesAsync(user);
+      return tokenOptions;
+   }
 
-            claims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role)));
+   public string GenerateRefreshToken()
+   {
+      var randomNumber = new byte[32];
+      using var rng = RandomNumberGenerator.Create();
+      rng.GetBytes(randomNumber);
+      return Convert.ToBase64String(randomNumber);
+   }
 
-            return claims;
-        }
+   public ClaimsPrincipal GetPrincipalFromExpiredToken(string token,
+     string singInKey,
+     string validAudience, string validIssuer)
+   {
+      var tokenValidationParameters = new TokenValidationParameters
+      {
+         ValidateAudience = true,
+         ValidateIssuer = true,
+         ValidateIssuerSigningKey = true,
+         IssuerSigningKey = new SymmetricSecurityKey(
+          Encoding.UTF8.GetBytes(singInKey)),
+         ValidateLifetime = false,
+         ValidIssuer = validIssuer,
+         ValidAudience = validAudience
+      };
 
-        public JwtSecurityToken GenerateTokenOptions(SigningCredentials signingCredentials, List<Claim> claims,
-            string validAudience, string validIssuer, string expiryInMinutes)
-        {
-            var tokenOptions = new JwtSecurityToken(
-                validIssuer,
-                validAudience,
-                claims,
-                expires: DateTime.Now.AddMinutes(Convert.ToDouble(expiryInMinutes)),
-                signingCredentials: signingCredentials);
+      var tokenHandler = new JwtSecurityTokenHandler();
 
-            return tokenOptions;
-        }
+      var principal = tokenHandler.ValidateToken(token, tokenValidationParameters,
+        out var securityToken);
 
-        public string GenerateRefreshToken()
-        {
-            var randomNumber = new byte[32];
-            using var rng = RandomNumberGenerator.Create();
-            rng.GetBytes(randomNumber);
-            return Convert.ToBase64String(randomNumber);
-        }
+      var jwtSecurityToken = securityToken as JwtSecurityToken;
 
-        public ClaimsPrincipal GetPrincipalFromExpiredToken(string token, string singInKey,
-            string validAudience, string validIssuer)
-        {
-            var tokenValidationParameters = new TokenValidationParameters
-            {
-                ValidateAudience = true,
-                ValidateIssuer = true,
-                ValidateIssuerSigningKey = true,
-                IssuerSigningKey = new SymmetricSecurityKey(
-                    Encoding.UTF8.GetBytes(singInKey)),
-                ValidateLifetime = false,
-                ValidIssuer = validIssuer,
-                ValidAudience = validAudience
-            };
+      if (jwtSecurityToken == null || !jwtSecurityToken.Header.Alg.Equals(
+            SecurityAlgorithms.HmacSha256,
+            StringComparison.InvariantCultureIgnoreCase))
+         throw new SecurityTokenException("Invalid token");
 
-            var tokenHandler = new JwtSecurityTokenHandler();
-
-            var principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out var securityToken);
-
-            var jwtSecurityToken = securityToken as JwtSecurityToken;
-
-            if (jwtSecurityToken == null || !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256,
-                StringComparison.InvariantCultureIgnoreCase))
-            {
-                throw new SecurityTokenException("Invalid token");
-            }
-
-            return principal;
-        }
-    }
+      return principal;
+   }
 }

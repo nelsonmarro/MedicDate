@@ -1,7 +1,6 @@
-namespace MedicDate.Shared.Models.Common
+namespace MedicDate.Shared.Models.Common;
+
+public class SexoDropDownItemDto
 {
-    public class SexoDropDownItemDto
-    {
-        public string Sexo { get; set; } = string.Empty;
-    }
+  public string Sexo { get; set; } = string.Empty;
 }

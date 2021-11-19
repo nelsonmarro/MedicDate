@@ -8,11 +8,11 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="10.1.1" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="6.0.0-rc.2.21480.5" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="6.0.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\MedicDate.Domain\MedicDate.Domain.csproj" />
+    <ProjectReference Include="..\..\src\MedicDate.DataAccess\MedicDate.DataAccess.csproj" />
   </ItemGroup>
 
 </Project>

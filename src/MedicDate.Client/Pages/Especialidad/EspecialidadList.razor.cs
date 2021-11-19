@@ -3,42 +3,51 @@ using MedicDate.Client.Services.IServices;
 using MedicDate.Shared.Models.Especialidad;
 using Microsoft.AspNetCore.Components;
 
-namespace MedicDate.Client.Pages.Especialidad
+namespace MedicDate.Client.Pages.Especialidad;
+
+public partial class EspecialidadList
 {
-    public partial class EspecialidadList
-    {
-        [Inject]
-        public IBaseListComponentOperations BaseListComponentOps { get; set; } = default!;
+   private const string GetUrl = "api/Especialidad/listarConPaginacion";
 
-        private IEnumerable<EspecialidadResponseDto>? _especialidadList;
-        private int _totalCount = 0;
-        private readonly string[] _tableHeaders = { "Nombre" };
-        private readonly string[] _propNames = { "NombreEspecialidad" };
-        private const string GetUrl = "api/Especialidad/listarConPaginacion";
+   private readonly OpRoutes _opRoutes = new()
+   {
+      AddUrl = "especialidadCrear", EditUrl = "especialidadEditar",
+      GetUrl = GetUrl
+   };
 
-        private readonly OpRoutes _opRoutes = new()
-        { AddUrl = "especialidadCrear", EditUrl = "especialidadEditar", GetUrl = GetUrl };
+   private readonly string[] _propNames = { "NombreEspecialidad" };
+   private readonly string[] _tableHeaders = { "Nombre" };
 
-        protected override async Task OnInitializedAsync()
-        {
-            var result = await BaseListComponentOps.LoadItemListAsync<EspecialidadResponseDto>(GetUrl);
+   private List<EspecialidadResponseDto>? _especialidadList;
+   private int _totalCount;
 
-            if (result.Succeded)
-            {
-                _especialidadList = result.ItemList;
-                _totalCount = result.TotalCount;
-            }
-        }
+   [Inject]
+   public IBaseListComponentOperations BaseListComponentOps { get; set; } =
+     default!;
 
-        private async Task DeleteEspecialidad(string id)
-        {
-            var result = await BaseListComponentOps.DeleteItem<EspecialidadResponseDto>(id, "api/Especialidad/eliminar", GetUrl);
+   protected override async Task OnInitializedAsync()
+   {
+      var result =
+        await BaseListComponentOps
+          .LoadItemListAsync<EspecialidadResponseDto>(GetUrl);
 
-            if (result.Succeded)
-            {
-                _especialidadList = result.ItemList;
-                _totalCount = result.TotalCount;
-            }
-        }
-    }
+      if (result.Succeded)
+      {
+         _especialidadList = result.ItemList;
+         _totalCount = result.TotalCount;
+      }
+   }
+
+   private async Task DeleteEspecialidad(string id)
+   {
+      var result =
+        await BaseListComponentOps.DeleteItem<EspecialidadResponseDto>(id,
+          "api/Especialidad/eliminar", GetUrl);
+
+      if (result.Succeded)
+      {
+         _especialidadList = result.ItemList;
+         _totalCount = result.TotalCount;
+      }
+   }
 }

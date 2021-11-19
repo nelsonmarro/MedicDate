@@ -18,8 +18,13 @@
     [CascadingParameter]
     public Task<AuthenticationState>? AuthenticationState { get; set; }
 
-    private string? _code;
-    private string? _userId;
+    [SupplyParameterFromQuery]
+    [Parameter]
+    public string? Code { get; set; }
+    [SupplyParameterFromQuery]
+    [Parameter]
+    public string? UserId { get; set; }
+
     private readonly ConfirmEmailDto _confirmEmailDto = new();
     private AuthenticationState? _authState;
 
@@ -27,17 +32,15 @@
     {
         _authState = await AuthenticationState!;
 
-        _navigationManager.TryGetQueryString("code", out _code);
-        _navigationManager.TryGetQueryString("userId", out _userId);
-
-        if (_userId is null || _code is null)
+        if (UserId is null || Code is null)
         {
-            _notificationService.ShowError("Error!", "Error al recibir los datos para la confirmación de la cuenta");
+            _notificationService
+            .ShowError("Error!", "Error al recibir los datos para la confirmación de la cuenta");
         }
         else
         {
-            _confirmEmailDto.Code = _code;
-            _confirmEmailDto.UserId = _userId;
+            _confirmEmailDto.Code = Code;
+            _confirmEmailDto.UserId = UserId;
 
             var httpResp = await _httpRepo.Post("api/Account/confirmEmail", _confirmEmailDto);
         }
