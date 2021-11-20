@@ -24,10 +24,10 @@
          </div>
       </Template>
       <ChildContent>
-         <RadzenMonthView MoreText="Ver más" Text="Mes" />
-         <RadzenWeekView TimeFormat="HH:mm" Text="Semana" />
          <RadzenDayView TimeFormat="HH:mm" Text="Día"
-         StartTime="@(new TimeOnly(7,00).ToTimeSpan())"/>
+                        StartTime="@(new TimeOnly(7,00).ToTimeSpan())" />
+         <RadzenWeekView TimeFormat="HH:mm" Text="Semana" />
+         <RadzenMonthView MoreText="Ver más" Text="Mes" />
       </ChildContent>
    </RadzenScheduler>
 </ErrorBoundary>
@@ -35,24 +35,24 @@
 @code {
 
    private RenderFragment<CitaCalendarDto> DisplayCitaEstadosMenu => cita => __builder =>
-      {
-      <RadzenMenu Click="@(args => OnMenuItemClick(args, cita))">
-         <RadzenMenuItem Path=@($"citaEditar/{cita.Id}") Text="Editar Cita" Icon="edit" />
-         <RadzenMenuItem Text="Eliminar Cita" Icon="delete" Value="cita.Id" />
-         <RadzenMenuItem Text="Estados" Icon="pending_actions">
-            @foreach (var estado in Sd.ListadoEstadosCita)
-               {
-                  if (estado == cita.Estado)
+         {
+         <RadzenMenu Click="@(args => OnMenuItemClick(args, cita))">
+            <RadzenMenuItem Path=@($"citaEditar/{cita.Id}") Text="Editar Cita" Icon="edit" />
+            <RadzenMenuItem Text="Eliminar Cita" Icon="delete" Value="cita.Id" />
+            <RadzenMenuItem Text="Estados" Icon="pending_actions">
+               @foreach (var estado in Sd.ListadoEstadosCita)
                   {
-                  <RadzenMenuItem Text="@estado" Value="@estado" Visible="false" />
+                     if (estado == cita.Estado)
+                     {
+                     <RadzenMenuItem Text="@estado" Value="@estado" Visible="false" />
+                     }
+                     else
+                     {
+                     <RadzenMenuItem Text="@estado" Value="@estado" />
+                     }
                   }
-                  else
-                  {
-                  <RadzenMenuItem Text="@estado" Value="@estado" />
-                  }
-               }
-         </RadzenMenuItem>
-      </RadzenMenu>
-      };
+            </RadzenMenuItem>
+         </RadzenMenu>
+         };
 
 }
