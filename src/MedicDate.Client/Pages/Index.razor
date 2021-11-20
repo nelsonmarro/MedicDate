@@ -24,11 +24,11 @@ else
                <ErrorBoundary>
                   <RadzenChart>
                      <RadzenColumnSeries Data="@_citasCompletadas" CategoryProperty="RegisterationDate"
-                     Title="@Sd.ESTADO_CITA_COMPLETADA" ValueProperty="TotalCitas" />
+                                      Title="@Sd.ESTADO_CITA_COMPLETADA" ValueProperty="TotalCitas" />
                      <RadzenColumnSeries Data="@_citasCanceladas" CategoryProperty="RegisterationDate"
-                     Title="@Sd.ESTADO_CITA_CANCELADA" ValueProperty="TotalCitas" />
+                                      Title="@Sd.ESTADO_CITA_CANCELADA" ValueProperty="TotalCitas" />
                      <RadzenColumnSeries Data="@_citasNoAsistdas" CategoryProperty="RegisterationDate"
-                     Title="@Sd.ESTADO_CITA_NOASISTIOPACIENTE" ValueProperty="TotalCitas" />
+                                      Title="@Sd.ESTADO_CITA_NOASISTIOPACIENTE" ValueProperty="TotalCitas" />
 
                      <RadzenCategoryAxis FormatString="{0:MMM}" Padding="20" />
                      <RadzenColumnOptions Radius="3" />
@@ -49,13 +49,15 @@ else
                </h3>
                <RadzenChart>
                   <RadzenLineSeries Data="@_pacientesPreviousYear" CategoryProperty="RegistrationDate"
-                  Title=@($"{DateTime.Now.AddYears(-1).Year}") LineType="LineType.Solid"
-                  ValueProperty="TotalRegisteration">
+                                 Title=@($"{DateTime.Now.AddYears(-1).Year}") LineType="LineType.Solid"
+                                 ValueProperty="TotalRegisteration">
                      <RadzenMarkers MarkerType="MarkerType.Circle" />
                   </RadzenLineSeries>
 
-                  <RadzenLineSeries Data="@_pacientesPresentYear" CategoryProperty="RegistrationDate"
-                  Title=@($"{DateTime.Now.Year}") LineType="LineType.Solid" ValueProperty="TotalRegisteration">
+                  <RadzenLineSeries Data="@_pacientesPresentYear"
+                                 CategoryProperty="RegistrationDate"
+                                 Title=@($"{DateTime.Now.Year}")
+                                 LineType="LineType.Solid" ValueProperty="TotalRegisteration">
                      <RadzenMarkers MarkerType="MarkerType.Circle" />
                   </RadzenLineSeries>
 
@@ -76,8 +78,10 @@ else
             </h3>
             <ErrorBoundary>
                <RadzenChart>
-                  <RadzenPieSeries Data="@_citasRegisteredQuarter" Title="Registradas" CategoryProperty="Quarter"
-                  ValueProperty="TotalCitas" />
+                  <RadzenPieSeries Data="@_citasRegisteredQuarter"
+                                Title="Registradas"
+                                CategoryProperty="Quarter"
+                                ValueProperty="TotalCitas" />
                </RadzenChart>
             </ErrorBoundary>
          </RadzenCard>
@@ -89,13 +93,19 @@ else
             </h3>
             <div class="row row-cols-2 g-3">
                <div class="col">
-                  <RadzenLink Path="calendarioCitas" Icon="date_range" Text="Calendario Citas" />
+                  <RadzenLink Icon="date_range"
+                           Text="Calendario Citas"
+                           Path=@($"/calendarioCitas?StartDate={new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1)}&EndDate={new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1).AddMonths(1)}") />
                </div>
                <div class="col">
-                  <RadzenLink Path="pacienteList" Icon="personal_injury" Text="Listado de Pacientes" />
+                  <RadzenLink Path="pacienteList"
+                           Icon="personal_injury"
+                           Text="Listado de Pacientes" />
                </div>
                <div class="col">
-                  <RadzenLink Path="medicoList" Icon="supervisor_account" Text="Listado de Doctores" />
+                  <RadzenLink Path="medicoList"
+                           Icon="supervisor_account"
+                           Text="Listado de Doctores" />
                </div>
             </div>
          </RadzenCard>
