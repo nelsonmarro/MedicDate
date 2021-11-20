@@ -14,7 +14,7 @@ namespace MedicDate.Client.Pages.Cita.CalendarioCitas;
 
 public partial class CalendarioCitas
 {
-   private List<CitaCalendarDto>? _citasCalendar = new();
+   private List<CitaCalendarDto>? _citasCalendar;
 
    private RadzenScheduler<CitaCalendarDto> _scheduler = default!;
 
@@ -83,7 +83,11 @@ public partial class CalendarioCitas
 
       if (!httpResp.Error)
       {
-         _citasCalendar = httpResp.Response;
+         if (httpResp.Response is not null)
+         {
+            _citasCalendar = httpResp.Response;
+            Console.WriteLine(_citasCalendar?.Count);
+         }
 
          if (!string.IsNullOrEmpty(_startDate) && !string.IsNullOrEmpty(_endDate))
          {
@@ -223,31 +227,34 @@ public partial class CalendarioCitas
    private void OnCitaRender(
      SchedulerAppointmentRenderEventArgs<CitaCalendarDto> e)
    {
-      switch (e.Data.Estado)
+      if (e.Data is not null)
       {
-         case Sd.ESTADO_CITA_ANULADA:
-            e.Attributes["style"] = "background: #ee6c4d";
-            break;
+         switch (e.Data.Estado)
+         {
+            case Sd.ESTADO_CITA_ANULADA:
+               e.Attributes["style"] = "background: #ee6c4d";
+               break;
 
-         case Sd.ESTADO_CITA_CONFIRMADA:
-            e.Attributes["style"] = "background: #8236CB";
-            break;
+            case Sd.ESTADO_CITA_CONFIRMADA:
+               e.Attributes["style"] = "background: #8236CB";
+               break;
 
-         case Sd.ESTADO_CITA_CANCELADA:
-            e.Attributes["style"] = "background: #d62828";
-            break;
+            case Sd.ESTADO_CITA_CANCELADA:
+               e.Attributes["style"] = "background: #d62828";
+               break;
 
-         case Sd.ESTADO_CITA_NOASISTIOPACIENTE:
-            e.Attributes["style"] = "background: #f77f00";
-            break;
+            case Sd.ESTADO_CITA_NOASISTIOPACIENTE:
+               e.Attributes["style"] = "background: #f77f00";
+               break;
 
-         case Sd.ESTADO_CITA_PORCONFIRMAR:
-            e.Attributes["style"] = "background: #3ba5fc";
-            break;
+            case Sd.ESTADO_CITA_PORCONFIRMAR:
+               e.Attributes["style"] = "background: #3ba5fc";
+               break;
 
-         case Sd.ESTADO_CITA_COMPLETADA:
-            e.Attributes["style"] = "background: #3E7C17";
-            break;
+            case Sd.ESTADO_CITA_COMPLETADA:
+               e.Attributes["style"] = "background: #3E7C17";
+               break;
+         }
       }
    }
 

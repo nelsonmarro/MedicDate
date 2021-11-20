@@ -6,7 +6,6 @@ using MedicDate.API.Middlewares;
 using MedicDate.Bussines.ApplicationServices.IApplicationServices;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.OpenApi.Models;
-using Microsoft.Extensions.Configuration;
 
 namespace MedicDate.API;
 
@@ -95,6 +94,7 @@ public class Startup
       {
          c.SwaggerEndpoint("/swagger/v1/swagger.json"
          , "MedicDate_API v1");
+         c.RoutePrefix = string.Empty;
       });
 
       app.UseHttpsRedirection();

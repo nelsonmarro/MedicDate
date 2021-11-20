@@ -9,8 +9,10 @@
                     EndProperty="FechaFin"
                     TextProperty="InfoCita"
                     SlotSelect="@OnSlotSelect"
+                    AppointmentRender="@OnCitaRender"
                     LoadData="@(LoadCitas)"
-                    class="w-100 mt-3" @ref="@_scheduler" Culture="CultureInfo.CurrentCulture"
+                    class="w-100 mt-3" @ref="@_scheduler"
+                    Culture="CultureInfo.CurrentCulture"
                     TodayText="Hoy" Style="height: 80vh;">
       <Template Context="data">
          <div class="w-100 h-100 cita-card"
@@ -27,7 +29,7 @@
          <RadzenMonthView MoreText="Ver más" Text="Mes" />
          <RadzenWeekView TimeFormat="HH:mm" Text="Semana" />
          <RadzenDayView TimeFormat="HH:mm" Text="Día"
-         StartTime="@(new TimeOnly(7,00).ToTimeSpan())"/>
+                        StartTime="@(new TimeOnly(7,00).ToTimeSpan())" />
       </ChildContent>
    </RadzenScheduler>
 </ErrorBoundary>
@@ -35,24 +37,24 @@
 @code {
 
    private RenderFragment<CitaCalendarDto> DisplayCitaEstadosMenu => cita => __builder =>
-      {
-      <RadzenMenu Click="@(args => OnMenuItemClick(args, cita))">
-         <RadzenMenuItem Path=@($"citaEditar/{cita.Id}") Text="Editar Cita" Icon="edit" />
-         <RadzenMenuItem Text="Eliminar Cita" Icon="delete" Value="cita.Id" />
-         <RadzenMenuItem Text="Estados" Icon="pending_actions">
-            @foreach (var estado in Sd.ListadoEstadosCita)
-               {
-                  if (estado == cita.Estado)
+         {
+         <RadzenMenu Click="@(args => OnMenuItemClick(args, cita))">
+            <RadzenMenuItem Path=@($"citaEditar/{cita.Id}") Text="Editar Cita" Icon="edit" />
+            <RadzenMenuItem Text="Eliminar Cita" Icon="delete" Value="cita.Id" />
+            <RadzenMenuItem Text="Estados" Icon="pending_actions">
+               @foreach (var estado in Sd.ListadoEstadosCita)
                   {
-                  <RadzenMenuItem Text="@estado" Value="@estado" Visible="false" />
+                     if (estado == cita.Estado)
+                     {
+                     <RadzenMenuItem Text="@estado" Value="@estado" Visible="false" />
+                     }
+                     else
+                     {
+                     <RadzenMenuItem Text="@estado" Value="@estado" />
+                     }
                   }
-                  else
-                  {
-                  <RadzenMenuItem Text="@estado" Value="@estado" />
-                  }
-               }
-         </RadzenMenuItem>
-      </RadzenMenu>
-      };
+            </RadzenMenuItem>
+         </RadzenMenu>
+         };
 
 }

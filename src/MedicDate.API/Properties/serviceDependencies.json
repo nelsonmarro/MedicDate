@@ -1,16 +1,19 @@
 {
   "dependencies": {
-    "storage1": {
-      "type": "storage",
-      "connectionId": "ConnectionStrings:AzureStorage"
+    "apis1": {
+      "type": "apis"
+    },
+    "appInsights1": {
+      "type": "appInsights",
+      "connectionId": "APPINSIGHTS_CONNECTIONSTRING"
     },
     "mssql1": {
       "type": "mssql",
       "connectionId": "ConnectionStrings:DefaultConnection"
     },
-    "appInsights1": {
-      "type": "appInsights",
-      "connectionId": "APPINSIGHTS_CONNECTIONSTRING"
+    "storage1": {
+      "type": "storage",
+      "connectionId": "ConnectionStrings:AzureStorage"
     }
   }
 }
