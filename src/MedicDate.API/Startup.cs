@@ -6,6 +6,7 @@ using MedicDate.API.Middlewares;
 using MedicDate.Bussines.ApplicationServices.IApplicationServices;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.OpenApi.Models;
+using Microsoft.Extensions.Configuration;
 
 namespace MedicDate.API;
 
@@ -66,6 +67,7 @@ public class Startup
         }
         });
       });
+      services.AddApplicationInsightsTelemetry(Configuration["APPINSIGHTS_CONNECTIONSTRING"]);
    }
 
    // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
