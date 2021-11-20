@@ -86,7 +86,7 @@ public partial class CalendarioCitas
          if (httpResp.Response is not null)
          {
             _citasCalendar = httpResp.Response;
-            Console.WriteLine(_citasCalendar?.Count);
+            Console.WriteLine(_citasCalendar?.Count + "ss");
          }
 
          if (!string.IsNullOrEmpty(_startDate) && !string.IsNullOrEmpty(_endDate))
