@@ -5,6 +5,12 @@
       "suggestion": "true",
       "type": "identityapp",
       "connectionId": ""
+    },
+    "secrets1": {
+      "ignored": "true",
+      "suggestion": "true",
+      "type": "secrets",
+      "connectionId": ""
     }
   }
 }

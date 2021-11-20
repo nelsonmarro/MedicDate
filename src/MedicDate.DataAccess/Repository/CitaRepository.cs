@@ -24,6 +24,11 @@ public class CitaRepository : Repository<Cita>, ICitaRepository
 
    public async Task<bool> CheckIfCitaHoursAreValidAsync(CitaRequestDto citaReq)
    {
+      if (await _context.Cita.CountAsync() == 0)
+      {
+         return true;
+      }
+
       return await _context.Cita
          .AsNoTracking()
          .AnyAsync(c =>

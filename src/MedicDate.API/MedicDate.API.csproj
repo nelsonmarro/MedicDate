@@ -4,7 +4,6 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <ApplicationInsightsResourceId>/subscriptions/9c0160be-57df-410c-9564-71c38069fb93/resourceGroups/MedicDateAPIResourceGroup/providers/microsoft.insights/components/MedicDateAPI</ApplicationInsightsResourceId>
-    <UserSecretsId>2a116430-b99e-4108-a533-30803d257c85</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
