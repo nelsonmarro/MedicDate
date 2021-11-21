@@ -1,5 +1,4 @@
 using System.Globalization;
-using AutoMapper;
 using MedicDate.API.Extensions;
 using MedicDate.API.Helpers;
 using MedicDate.API.Middlewares;
@@ -66,12 +65,11 @@ public class Startup
         }
         });
       });
-      services.AddApplicationInsightsTelemetry(Configuration["APPINSIGHTS_CONNECTIONSTRING"]);
    }
 
    // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
    public void Configure(IApplicationBuilder app, IWebHostEnvironment env,
-     IDbInitializer dbInitializer, IMapper mapper)
+     IDbInitializer dbInitializer)
    {
       var supportedCultures = new[]
       {

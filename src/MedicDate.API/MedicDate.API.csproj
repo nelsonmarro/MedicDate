@@ -3,7 +3,6 @@
     <TargetFramework>net6.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <ApplicationInsightsResourceId>/subscriptions/9c0160be-57df-410c-9564-71c38069fb93/resourceGroups/MedicDateAPIResourceGroup/providers/microsoft.insights/components/MedicDateAPI</ApplicationInsightsResourceId>
   </PropertyGroup>
 
   <ItemGroup>

@@ -15,7 +15,6 @@ namespace MedicDate.Client.Pages.Cita.CalendarioCitas;
 public partial class CalendarioCitas
 {
    private List<CitaCalendarDto>? _citasCalendar;
-
    private RadzenScheduler<CitaCalendarDto> _scheduler = default!;
 
    [Inject] public IHttpRepository HttpRepo { get; set; } = default!;
@@ -61,8 +60,8 @@ public partial class CalendarioCitas
 
    private async Task LoadCitas(SchedulerLoadDataEventArgs? e = null)
    {
-      DateTime start = DateTime.Now;
-      DateTime end = DateTime.Now;
+      var start = DateTime.Now;
+      var end = DateTime.Now;
 
       if (!string.IsNullOrEmpty(_startDate) && !string.IsNullOrEmpty(_endDate))
       {
@@ -86,7 +85,6 @@ public partial class CalendarioCitas
          if (httpResp.Response is not null)
          {
             _citasCalendar = httpResp.Response;
-            Console.WriteLine(_citasCalendar?.Count + "ss");
          }
 
          if (!string.IsNullOrEmpty(_startDate) && !string.IsNullOrEmpty(_endDate))

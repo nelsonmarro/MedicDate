@@ -35,26 +35,24 @@
 </ErrorBoundary>
 
 @code {
-
    private RenderFragment<CitaCalendarDto> DisplayCitaEstadosMenu => cita => __builder =>
-         {
-         <RadzenMenu Click="@(args => OnMenuItemClick(args, cita))">
-            <RadzenMenuItem Path=@($"citaEditar/{cita.Id}") Text="Editar Cita" Icon="edit" />
-            <RadzenMenuItem Text="Eliminar Cita" Icon="delete" Value="cita.Id" />
-            <RadzenMenuItem Text="Estados" Icon="pending_actions">
-               @foreach (var estado in Sd.ListadoEstadosCita)
+      {
+      <RadzenMenu Click="@(args => OnMenuItemClick(args, cita))">
+         <RadzenMenuItem Path=@($"citaEditar/{cita.Id}") Text="Editar Cita" Icon="edit" />
+         <RadzenMenuItem Text="Eliminar Cita" Icon="delete" Value="cita.Id" />
+         <RadzenMenuItem Text="Estados" Icon="pending_actions">
+            @foreach (var estado in Sd.ListadoEstadosCita)
+               {
+                  if (estado == cita.Estado)
                   {
-                     if (estado == cita.Estado)
-                     {
-                     <RadzenMenuItem Text="@estado" Value="@estado" Visible="false" />
-                     }
-                     else
-                     {
-                     <RadzenMenuItem Text="@estado" Value="@estado" />
-                     }
+                  <RadzenMenuItem Text="@estado" Value="@estado" Visible="false" />
                   }
-            </RadzenMenuItem>
-         </RadzenMenu>
-         };
-
+                  else
+                  {
+                  <RadzenMenuItem Text="@estado" Value="@estado" />
+                  }
+               }
+         </RadzenMenuItem>
+      </RadzenMenu>
+      };
 }
