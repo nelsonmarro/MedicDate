@@ -45,19 +45,6 @@ public partial class CalendarioCitas
    private string _endDate = "";
    private bool _refreshForFilter = false;
 
-   protected override async Task OnParametersSetAsync()
-   {
-      _startDate = StartDate ?? "";
-      _endDate = EndDate ?? "";
-
-      if (_refreshForFilter)
-      {
-         await LoadCitas();
-      }
-
-      _refreshForFilter = false;
-   }
-
    private async Task LoadCitas(SchedulerLoadDataEventArgs? e = null)
    {
       var start = DateTime.Now;
@@ -82,10 +69,7 @@ public partial class CalendarioCitas
 
       if (!httpResp.Error)
       {
-         if (httpResp.Response is not null)
-         {
-            _citasCalendar = httpResp.Response;
-         }
+         _citasCalendar = httpResp.Response;
 
          if (!string.IsNullOrEmpty(_startDate) && !string.IsNullOrEmpty(_endDate))
          {
