@@ -60,34 +60,32 @@ public partial class CalendarioCitas
 
    private async Task LoadCitas(SchedulerLoadDataEventArgs? e = null)
    {
-      var start = DateTime.Now;
-      var end = DateTime.Now;
-
       if (!string.IsNullOrEmpty(_startDate) && !string.IsNullOrEmpty(_endDate))
       {
          var parsedStartDate = DateTime.Parse(_startDate);
          var parsedEndDate = DateTime.Parse(_endDate);
 
-         start = parsedStartDate;
-         end = parsedEndDate;
+         var httpResp = await HttpRepo.Get<List<CitaCalendarDto>>($"api/Cita/listarPorFechas?startDate={parsedStartDate}&endDate={parsedEndDate}&medicoId={_medicoId}&pacienteId={_pacienteId}");
+
+         if (!httpResp.Error)
+         {
+            _citasCalendar = httpResp.Response;
+
+            if (!string.IsNullOrEmpty(_startDate) && !string.IsNullOrEmpty(_endDate))
+            {
+               _startDate = "";
+               _endDate = "";
+               _scheduler.CurrentDate = parsedStartDate;
+            }
+         }
       }
       else if (e is not null)
       {
-         start = e.Start;
-         end = e.End;
-      }
+         var httpResp = await HttpRepo.Get<List<CitaCalendarDto>>($"api/Cita/listarPorFechas?startDate={e.Start}&endDate={e.End}&medicoId={_medicoId}&pacienteId={_pacienteId}");
 
-      var httpResp = await HttpRepo.Get<List<CitaCalendarDto>>
-         ($"api/Cita/listarPorFechas?startDate={start}&endDate={end}&medicoId={_medicoId}&pacienteId={_pacienteId}");
-
-      if (!httpResp.Error)
-      {
-         _citasCalendar = httpResp.Response;
-
-         if (!string.IsNullOrEmpty(_startDate) && !string.IsNullOrEmpty(_endDate))
+         if (!httpResp.Error)
          {
-            _startDate = "";
-            _endDate = "";
+            _citasCalendar = httpResp.Response;
          }
       }
    }
