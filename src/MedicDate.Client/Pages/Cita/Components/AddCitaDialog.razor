@@ -195,6 +195,7 @@
       if (!ValidateCitaRequest())
          return;
 
+         Console.WriteLine(_citaRequest.FechaInicio);
       _dialogService.Close(_citaRequest);
    }
 

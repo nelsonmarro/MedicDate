@@ -31,10 +31,12 @@ public class Startup
          opts.ValueProviderFactories[2] = new CustomValueProviderFactory();
       });
 
-      services.AddCors(opt => opt.AddPolicy("MedicDate",
+      services.AddCors(opt => opt.AddDefaultPolicy(
         builder =>
         {
-           builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
+           builder.AllowAnyOrigin()
+           .AllowAnyMethod()
+           .AllowAnyHeader();
         }));
 
       services.AddIdentityServices(Configuration);
@@ -99,8 +101,8 @@ public class Startup
 
       dbInitializer.Initialize();
 
-      app.UseCors("MedicDate");
       app.UseRouting();
+      app.UseCors();
 
       app.UseAuthentication();
       app.UseAuthorization();

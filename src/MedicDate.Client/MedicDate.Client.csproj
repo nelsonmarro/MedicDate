@@ -1,6 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
 	<PropertyGroup>
 		<TargetFramework>net6.0</TargetFramework>
+		<EmccTotalMemory>16777216</EmccTotalMemory>
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<BlazorCacheBootResources>false</BlazorCacheBootResources>

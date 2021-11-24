@@ -153,6 +153,15 @@ public partial class CalendarioCitas
    {
       if (args.Value is null) return;
 
+      if (args.Value.ToString() == cita.Estado)
+         return;
+
+      if (args.Value.ToString() == "close")
+      {
+         ContextMenuService.Close();
+         return;
+      }
+
       if (args.Text == "Eliminar Cita")
       {
          await DeleteCitaAsync(args.Value.ToString() ?? "");

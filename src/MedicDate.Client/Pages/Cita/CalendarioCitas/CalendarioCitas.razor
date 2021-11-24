@@ -16,7 +16,8 @@
                     TodayText="Hoy" Style="height: 80vh;">
       <Template Context="data">
          <div class="w-100 h-100 cita-card"
-              @oncontextmenu="@(args => ShowContextMenuWithContent(args, data))"
+              @onclick="@(args => ShowContextMenuWithContent(args, data))"
+              @oncontextmenu=@((args) => ContextMenuService.Dispose())
               @oncontextmenu:preventDefault="true">
             @foreach (var item in data.InfoCita.Split("."))
             {
@@ -38,6 +39,7 @@
    private RenderFragment<CitaCalendarDto> DisplayCitaEstadosMenu => cita => __builder =>
       {
       <RadzenMenu Click="@(args => OnMenuItemClick(args, cita))">
+         <RadzenMenuItem Text="Cerrar" Icon="cancel" Value=@("close") />
          <RadzenMenuItem Path=@($"citaEditar/{cita.Id}") Text="Editar Cita" Icon="edit" />
          <RadzenMenuItem Text="Eliminar Cita" Icon="delete" Value="cita.Id" />
          <RadzenMenuItem Text="Estados" Icon="pending_actions">
@@ -45,7 +47,7 @@
                {
                   if (estado == cita.Estado)
                   {
-                  <RadzenMenuItem Text="@estado" Value="@estado" Visible="false" />
+                  <RadzenMenuItem Text="@estado" Value="@estado" class="estado-checked" />
                   }
                   else
                   {
