@@ -5,3 +5,15 @@
   }
   return false;
 }
+
+function changeBodyContainerHeight() {
+   const conteIndex = document.getElementById('conte-index');
+   const parentConte = conteIndex.parentElement;
+   parentConte.style.height = "100%";
+}
+
+function changeBodyContainerHeightToMaxVh() {
+   const conteIndex = document.getElementById('conte-index');
+   const parentConte = conteIndex.parentElement;
+   parentConte.style.height = "100vh";
+}

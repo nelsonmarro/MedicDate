@@ -9,38 +9,31 @@
       <div class="me-md-3">
          <span>Filtrar por grupo:</span>
       </div>
-      <div> 
+      <div>
          <ErrorBoundary>
-            <RadzenDropDown AllowClear="true" TValue="string"
-                            Style="width: 300px" Data="_grupoList"
-                            AllowVirtualization="true" Placeholder="Seleccione"
-                            Change="@FilterByGrupo" TextProperty="Nombre"
+            <RadzenDropDown AllowClear="true" TValue="string" Style="width: 300px" Data="_grupoList"
+                            AllowVirtualization="true" Placeholder="Seleccione" Change="@FilterByGrupo" TextProperty="Nombre"
                             ValueProperty="Id" />
          </ErrorBoundary>
       </div>
    </div>
    <div class="col-12">
       <ErrorBoundary>
-         <RadzenGenericGrid TItem="PacienteResponseDto" TotalCount="@_totalCount"
-                            ItemList="@_pacienteList" OpRoutes="@_opRoutes"
-                            OnDeleteData="@DeleteMedico" PropNames="_propNames"
-                            Headers="_headers">
+         <RadzenGenericGrid TItem="PacienteResponseDto" TotalCount="@_totalCount" ItemList="@_pacienteList"
+                            OpRoutes="@_opRoutes" OnDeleteData="@DeleteMedico" PropNames="_propNames" Headers="_headers">
             <CustomGridCols>
-               <RadzenDataGridColumn TItem="PacienteResponseDto" Title="Fecha Nacimiento"
-                                     Property="FechaNacimiento">
+               <RadzenDataGridColumn TItem="PacienteResponseDto" Title="Fecha Nacimiento" Property="FechaNacimiento">
                   <Template Context="paciente">
                      @paciente.FechaNacimiento.ToString("d")
                   </Template>
                </RadzenDataGridColumn>
 
-               <RadzenDataGridColumn TItem="PacienteResponseDto" Title="Grupos"
-                                     Filterable="false" Sortable="false">
+               <RadzenDataGridColumn TItem="PacienteResponseDto" Title="Grupos" Filterable="false" Sortable="false">
                   <Template Context="paciente">
                      <div class="d-flex flex-row flex-wrap">
                         @if (paciente.Grupos.Count > 2)
                         {
-                           <RadzenButton Text="ver grupos" Size="@ButtonSize.Small"
-                                      Click="OpenGruposDialog" />
+                           <RadzenButton Text="ver grupos" Size="@ButtonSize.Small" Click="OpenGruposDialog" />
                         }
                         else
                         {

@@ -2,81 +2,81 @@
 @using MedicDate.Shared.Models.AppUser
 
 <div class="row">
-    <div class="col-12 text-start">
-        <h2 class="text-primary">Usuarios del Sistema</h2>
-    </div>
-    <div class="col-12 d-flex flex-column flex-md-row mt-3 mb-2 mb-md-0">
-        <div class="me-md-3">
-            <span>Filtrar por rol:</span>
-        </div>
-        <div>
-            <ErrorBoundary>
-                <RadzenDropDown TValue="string" Style="width: 300px"
-                                Data="@_roleList" Placeholder="Seleccione"
-                                Change="@FilterByRole" TextProperty="Nombre"
-                                ValueProperty="Id" AllowClear="true" />
-            </ErrorBoundary>
-        </div>
-    </div>
-    <div class="col-12">
-        <ErrorBoundary>
-            <RadzenGenericGrid TItem="AppUserResponseDto" TotalCount="@_totalCount"
-                               ItemList="@_userList" OpRoutes="@_opRoutes"
-                               OnDeleteData="@DeleteUser" PropNames="_propNames"
-                               Headers="_headers">
-                <CustomGridCols>
-                    <RadzenDataGridColumn TItem="AppUserResponseDto"
-                                          Title="Roles" Filterable="false"
-                                          Sortable="false">
-                        <Template Context="user">
-                            <div class="d-flex flex-row flex-wrap">
-                                @foreach (var item in user.Roles)
-                                {
-                                    <div>
-                                        <span class="text-primary" style="font-weight: 700;">
-                                            @(item.Nombre).&nbsp;&nbsp;
-                                        </span>
-                                    </div>
-                                }
+   <div class="col-12 text-start">
+      <h2 class="text-primary">Usuarios del Sistema</h2>
+   </div>
+   <div class="col-12 d-flex flex-column flex-md-row mt-3 mb-2 mb-md-0">
+      <div class="me-md-3">
+         <span>Filtrar por rol:</span>
+      </div>
+      <div>
+         <ErrorBoundary>
+            <RadzenDropDown TValue="string" Style="width: 300px"
+                            Data="@_roleList" Placeholder="Seleccione"
+                            Change="@FilterByRole" TextProperty="Nombre"
+                            ValueProperty="Id" AllowClear="true" />
+         </ErrorBoundary>
+      </div>
+   </div>
+   <div class="col-12">
+      <ErrorBoundary>
+         <RadzenGenericGrid TItem="AppUserResponseDto" TotalCount="@_totalCount"
+                            ItemList="@_userList" OpRoutes="@_opRoutes"
+                            OnDeleteData="@DeleteUser" PropNames="_propNames"
+                            Headers="_headers">
+            <CustomGridCols>
+               <RadzenDataGridColumn TItem="AppUserResponseDto"
+                                     Title="Roles" Filterable="false"
+                                     Sortable="false">
+                  <Template Context="user">
+                     <div class="d-flex flex-row flex-wrap">
+                        @foreach (var item in user.Roles)
+                        {
+                           <div>
+                              <span class="text-primary" style="font-weight: 700;">
+                                 @(item.Nombre).&nbsp;&nbsp;
+                              </span>
+                           </div>
+                        }
 
-                            </div>
-                        </Template>
-                    </RadzenDataGridColumn>
-                    <RadzenDataGridColumn TItem="AppUserResponseDto"
-                                          Property="EmailConfirmed"
-                                          Title="Estado" Filterable="false"
-                                          Sortable="false">
-                        <Template Context="user">
-                            @if (user.EmailConfirmed)
-                            {
-                                <span class="text-success">Activa</span>
-                            }
-                            else
-                            {
-                                <span class="text-danger">Por confirmar</span>
-                            }
-                        </Template>
-                    </RadzenDataGridColumn>
-                    <RadzenDataGridColumn TItem="AppUserResponseDto" Filterable="false"
-                                          Sortable="false" TextAlign="@TextAlign.Center"
-                                          Width="70px">
-                        <Template Context="user">
-                            @if (user.LockoutEnd > DateTime.UtcNow)
-                            {
-                                <RadzenButton Icon="lock" ButtonStyle="@ButtonStyle.Danger"
-                                          Click="@(() => UnlockUser(user.Id))">
-                                </RadzenButton>
-                            }
-                            else
-                            {
-                                <RadzenButton Icon="lock_open" ButtonStyle="@ButtonStyle.Success"
-                                          Click="@(() => LockUser(user.Id))">
-                                </RadzenButton>
-                            }
-                        </Template>
-                    </RadzenDataGridColumn>
-                </CustomGridCols>
-            </RadzenGenericGrid>
-        </ErrorBoundary>
-    </div>
+                     </div>
+                  </Template>
+               </RadzenDataGridColumn>
+               <RadzenDataGridColumn TItem="AppUserResponseDto"
+                                     Property="EmailConfirmed"
+                                     Title="Estado" Filterable="false"
+                                     Sortable="false">
+                  <Template Context="user">
+                     @if (user.EmailConfirmed)
+                     {
+                        <span class="text-success">Activa</span>
+                     }
+                     else
+                     {
+                        <span class="text-danger">Por confirmar</span>
+                     }
+                  </Template>
+               </RadzenDataGridColumn>
+               <RadzenDataGridColumn TItem="AppUserResponseDto" Filterable="false"
+                                     Sortable="false" TextAlign="@TextAlign.Center"
+                                     Width="70px">
+                  <Template Context="user">
+                     @if (user.LockoutEnd > DateTime.Now)
+                     {
+                        <RadzenButton Icon="lock" ButtonStyle="@ButtonStyle.Danger"
+                                   Click="@(() => UnlockUser(user.Id))">
+                        </RadzenButton>
+                     }
+                     else
+                     {
+                        <RadzenButton Icon="lock_open" ButtonStyle="@ButtonStyle.Success"
+                                   Click="@(() => LockUser(user.Id))">
+                        </RadzenButton>
+                     }
+                  </Template>
+               </RadzenDataGridColumn>
+            </CustomGridCols>
+         </RadzenGenericGrid>
+      </ErrorBoundary>
+   </div>
 </div>

@@ -2,16 +2,16 @@
 @using MedicDate.Shared.Models.Especialidad
 
 <div class="row">
-    <div class="col-12 text-left">
-        <h2 class="text-primary">Especialidades</h2>
-    </div>
-    <div class="col-12">
-        <ErrorBoundary>
-            <RadzenGenericGrid TItem="EspecialidadResponseDto"
-                               TotalCount="@_totalCount" Headers="@_tableHeaders"
-                               ItemList="@_especialidadList" OpRoutes="@_opRoutes"
-                               PropNames="@_propNames"
-                               OnDeleteData="@DeleteEspecialidad" />
-        </ErrorBoundary>
-    </div>
+   <div class="col-12 text-left">
+      <h2 class="text-primary">Especialidades</h2>
+   </div>
+   <div class="col-12">
+      <ErrorBoundary>
+         <RadzenGenericGrid TItem="EspecialidadResponseDto"
+                            TotalCount="@_totalCount" Headers="@_tableHeaders"
+                            ItemList="@_especialidadList" OpRoutes="@_opRoutes"
+                            PropNames="@_propNames"
+                            OnDeleteData="@DeleteEspecialidad" />
+      </ErrorBoundary>
+   </div>
 </div>

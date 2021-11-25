@@ -24,9 +24,6 @@ builder.Services.AddScoped(sp => new HttpClient
 
 ConfigureServices(builder.Services);
 
-//CultureInfo.DefaultThreadCurrentCulture = new CultureInfo("es-ES");
-//CultureInfo.DefaultThreadCurrentUICulture = new CultureInfo("es-ES");
-
 await builder.Build().RunAsync();
 
 static void ConfigureServices(IServiceCollection services)

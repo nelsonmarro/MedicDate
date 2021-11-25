@@ -7,29 +7,26 @@ using MedicDate.Shared.Models.Cita;
 using MedicDate.Utility;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
+using Microsoft.JSInterop;
 using Radzen;
 using Radzen.Blazor;
 
 namespace MedicDate.Client.Pages.Cita.CalendarioCitas;
 
-public partial class CalendarioCitas
+public partial class CalendarioCitas : IDisposable
 {
    private List<CitaCalendarDto>? _citasCalendar;
    private RadzenScheduler<CitaCalendarDto> _scheduler = default!;
 
    [Inject] public IHttpRepository HttpRepo { get; set; } = default!;
-
    [Inject]
    public INotificationService NotificationService { get; set; } = default!;
-
    [Inject] public DialogService DialogService { get; set; } = default!;
-
    [Inject] public TooltipService TooltipService { get; set; } = default!;
-
    [Inject]
    public ContextMenuService ContextMenuService { get; set; } = default!;
-
    [Inject] public NavigationManager NavigationManager { get; set; } = default!;
+   [Inject] public IJSRuntime jsRuntime { get; set; } = default!;
 
    [Parameter]
    [SupplyParameterFromQuery]
@@ -44,6 +41,15 @@ public partial class CalendarioCitas
    private string _startDate = "";
    private string _endDate = "";
    private bool _refreshForFilter = false;
+
+   protected override void OnAfterRender(bool firstRender)
+   {
+      if (firstRender)
+      {
+         var jsInProcess = (IJSInProcessRuntime) jsRuntime;
+         jsInProcess.InvokeVoid("changeBodyContainerHeight");
+      }
+   }
 
    protected override async Task OnParametersSetAsync()
    {
@@ -301,5 +307,11 @@ public partial class CalendarioCitas
       var newUri = NavigationManager.GetUriWithQueryParameters(queryStrings);
       NavigationManager.NavigateTo(newUri);
       _refreshForFilter = true;
+   }
+
+   public void Dispose()
+   {
+      var jsInProcess = (IJSInProcessRuntime) jsRuntime;
+      jsInProcess.InvokeVoid("changeBodyContainerHeightToMaxVh");
    }
 }

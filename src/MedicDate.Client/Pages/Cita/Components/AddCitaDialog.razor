@@ -8,22 +8,24 @@
 
    @if (_errorList.Count > 0)
    {
-         <div class="mb-2">
-            <ul class="text-danger">
+      <div class="mb-2">
+         <ul class="text-danger">
             @foreach (var error in _errorList)
             {
-                    <li>@error</li>
+               <li>@error</li>
             }
-            </ul>
-         </div>
+         </ul>
+      </div>
    }
    <div class="mb-3 row">
       <div class="col-md-4">
          <RadzenLabel Text="Fecha Inicio" />
       </div>
       <div class="col-md-8">
-         <RadzenDatePicker @bind-Value="_citaRequest.FechaInicio" Name="Fecha Inicio"
-                           ShowTime="true" class="w-100"/>
+         <RadzenDatePicker @bind-Value="_citaRequest.FechaInicio"
+                           Name="Fecha Inicio"
+                           ShowTime="true" class="w-100"
+                           DateFormat="g" />
       </div>
    </div>
    <div class="mb-3 row">
@@ -31,8 +33,10 @@
          <RadzenLabel Text="Fecha Finalización" />
       </div>
       <div class="col-md-8">
-         <RadzenDatePicker @bind-Value="_citaRequest.FechaFin" Name="Fecha Finalización"
-                           ShowTime="true" class="w-100" />
+         <RadzenDatePicker @bind-Value="_citaRequest.FechaFin"
+                           Name="Fecha Finalización"
+                           ShowTime="true" class="w-100"
+                           DateFormat="g" />
       </div>
    </div>
    <div class="mb-3 row">
@@ -64,7 +68,7 @@
       <div class="col-md-8">
          @if (_actividades is not null)
          {
-               <RadzenDropDown AllowClear="true" class="w-100"
+            <RadzenDropDown AllowClear="true" class="w-100"
                          Data="@_actividades" AllowVirtualization="true"
                          Placeholder="Seleccione" Change="@SelectActividad"
                          TextProperty="Nombre" ValueProperty="Id"
@@ -145,7 +149,7 @@
          return false;
       }
 
-      if (_citaRequest.FechaInicio.IsTimeEquals(_citaRequest.FechaFin))
+      if (_citaRequest.FechaInicio.CompareTo(_citaRequest.FechaFin) == 0)
       {
          _errorList.Add("Los tiempos de inicio y fin de la cita no pueden ser iguales");
          return false;
@@ -195,7 +199,7 @@
       if (!ValidateCitaRequest())
          return;
 
-         Console.WriteLine(_citaRequest.FechaInicio);
+      Console.WriteLine(_citaRequest.FechaInicio);
       _dialogService.Close(_citaRequest);
    }
 

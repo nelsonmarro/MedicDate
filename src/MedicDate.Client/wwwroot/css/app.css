@@ -1,7 +1,6 @@
 ﻿html,
 body {
   font-family: "Roboto", sans-serif;
-  background-color: #f3f5f7;
 }
 
 h1,
@@ -13,11 +12,11 @@ h5 {
 }
 
 .text-primary {
-  color: #ff6d41 !important;
+  color: #1151f3 !important;
 }
 
 .text-secondary {
-  color: #479cc8;
+  color: #12a4f5;
 }
 
 .font-weight-bold {
@@ -38,6 +37,7 @@ a {
   bottom: 0px !important;
   width: 250px;
   transform: translateX(0px);
+  border-top: 1px solid #fff;
 }
 
 .body {
@@ -45,17 +45,17 @@ a {
 }
 
 .sidebar-toggle {
-  background-color: #3a474d !important;
+  background-color: #262526 !important;
   color: #eaeef0 !important;
   border-right: none !important;
 }
 
 .sidebar-toggle:hover {
-  color: #479cc8 !important;
+  color: #12a4f5 !important;
 }
 
 .rz-bg-dark {
-  background-color: #3a474d;
+  background-color: #262526;
 }
 
 .valid.modified:not([type=checkbox]) {
@@ -92,7 +92,7 @@ a {
   /* Support for IE. */
   font-feature-settings: "liga";
   content: "done_outline";
-  color: #3E7C17;
+  color: #3e7c17;
   margin-left: 20px;
 }
 

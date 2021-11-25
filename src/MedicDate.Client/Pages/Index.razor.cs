@@ -4,15 +4,18 @@ using MedicDate.Shared.Models.Cita;
 using MedicDate.Shared.Models.Paciente;
 using MedicDate.Utility;
 using Microsoft.AspNetCore.Components;
+using Microsoft.JSInterop;
 
 namespace MedicDate.Client.Pages
 {
-   public partial class Index : ComponentBase
+   public partial class Index : ComponentBase, IDisposable
    {
       [Inject]
       public IHttpRepository HttpRepo { get; set; } = null!;
       [Inject]
       public INotificationService NotifService { get; set; } = null!;
+      [Inject]
+      public IJSRuntime jsRuntime { get; set; } = null!;
 
       private List<CitaEstadoMonthReviewDto>? _citasCompletadas;
       private List<CitaEstadoMonthReviewDto>? _citasCanceladas;
@@ -38,6 +41,15 @@ namespace MedicDate.Client.Pages
             GetPacientesAnualMonthReviewAsync(DateTime.Now.AddYears(-1).Year);
          _pacientesPresentYear = await
             GetPacientesAnualMonthReviewAsync(DateTime.Now.Year);
+      }
+
+      protected override void OnAfterRender(bool firstRender)
+      {
+         if (firstRender)
+         {
+            var jsInProcess = (IJSInProcessRuntime) jsRuntime;
+            jsInProcess.InvokeVoid("changeBodyContainerHeight");
+         }
       }
 
       private async Task<List<T>?> GetResourceListAsync<T>(string url)
@@ -72,6 +84,12 @@ namespace MedicDate.Client.Pages
       {
          return await GetResourceListAsync<CitaRegisteredQuarterReviewDto>
             ($"Cita/getQuarterReview/{year}");
+      }
+
+      public void Dispose()
+      {
+         var jsInProcess = (IJSInProcessRuntime) jsRuntime;
+         jsInProcess.InvokeVoid("changeBodyContainerHeightToMaxVh");
       }
    }
 }

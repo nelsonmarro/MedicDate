@@ -2,15 +2,15 @@
 @using MedicDate.Shared.Models.Grupo
 
 <div class="row">
-    <div class="col-12 text-left">
-        <h2 class="text-primary">Grupos</h2>
-    </div>
-    <div class="col-12">
-        <ErrorBoundary>
-            <RadzenGenericGrid TItem="GrupoResponseDto" TotalCount="@_totalCount"
-                               Headers="@_tableHeaders" ItemList="@_grupoList"
-                               OpRoutes="@_opRoutes" OnDeleteData="@DeleteGrupo"
-                               PropNames="@_propNames" />
-        </ErrorBoundary>
-    </div>
+   <div class="col-12 text-left">
+      <h2 class="text-primary">Grupos</h2>
+   </div>
+   <div class="col-12">
+      <ErrorBoundary>
+         <RadzenGenericGrid TItem="GrupoResponseDto" TotalCount="@_totalCount"
+                            Headers="@_tableHeaders" ItemList="@_grupoList"
+                            OpRoutes="@_opRoutes" OnDeleteData="@DeleteGrupo"
+                            PropNames="@_propNames" />
+      </ErrorBoundary>
+   </div>
 </div>
