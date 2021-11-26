@@ -1,6 +1,7 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using MedicDate.Bussines.ApplicationServices.IApplicationServices;
 using MedicDate.Bussines.DomainServices.IDomainServices;
+using MedicDate.DataAccess;
 using MedicDate.DataAccess.Entities;
 using MedicDate.DataAccess.Helpers;
 using MedicDate.Shared.Models.Auth;
@@ -20,6 +21,7 @@ public class AccountService : IAccountService
    private readonly SignInManager<ApplicationUser> _signInManager;
    private readonly ITokenBuilderService _tokenBuilderService;
    private readonly UserManager<ApplicationUser> _userManager;
+   private readonly ApplicationDbContext _context;
 
    public AccountService(
      UserManager<ApplicationUser> userManager,
@@ -27,7 +29,7 @@ public class AccountService : IAccountService
      RoleManager<AppRole> roleManager,
      ITokenBuilderService tokenBuilderService,
      IOptions<JwtSettings> jwtSettings,
-     IEmailSender emailSender)
+     IEmailSender emailSender, ApplicationDbContext context)
    {
       _userManager = userManager;
       _signInManager = signInManager;
@@ -35,6 +37,7 @@ public class AccountService : IAccountService
       _tokenBuilderService = tokenBuilderService;
       _emailSender = emailSender;
       _jwtSettings = jwtSettings.Value;
+      _context = context;
    }
 
    public async Task<OperationResult> SendForgotPasswordRequestAsync(
@@ -51,7 +54,7 @@ public class AccountService : IAccountService
         await _userManager.GeneratePasswordResetTokenAsync(userDb);
 
       var callbackUrl =
-        $"https://localhost:7098/usuario/resetPassword?code={code}";
+        $"https://medic-datepro.com/usuario/resetPassword?code={code}";
 
       await _emailSender.SendEmailAsync(forgotPasswordModel.Email,
         "Restablecer Contraseña - MedicDate",
@@ -122,7 +125,7 @@ public class AccountService : IAccountService
           applicationUser);
 
       var callbackUrl =
-        $"https://localhost:7098/usuario/confirmEmail?userId={applicationUser.Id}&code={code}";
+        $"https://medic-datepro.com/usuario/confirmEmail?userId={applicationUser.Id}&code={code}";
 
       await _emailSender.SendEmailAsync(applicationUser.Email,
         "Confirme su cuenta - MedicDate",
@@ -167,7 +170,7 @@ public class AccountService : IAccountService
           changeEmailDto.NewEmail);
 
       var callbackUrl =
-        $"https://localhost:7098/usuario/emailChangedConfirm?code={code}&userId={userDb.Id}";
+        $"https://medic-datepro.com/usuario/emailChangedConfirm?code={code}&userId={userDb.Id}";
 
       await _emailSender.SendEmailAsync(userDb.Email,
         "Cambio de email - MedicDate",
@@ -213,16 +216,19 @@ public class AccountService : IAccountService
 
       if (user is not null)
       {
-         if (user.LockoutEnd is null)
-            user.LockoutEnd = DateTime.Now;
-
          if (user.LockoutEnd is not null && user.LockoutEnd > DateTime.Now)
             user.LockoutEnd = DateTimeOffset.Now;
 
-         await _userManager.UpdateAsync(user);
+         var result = await _userManager.UpdateAsync(user);
+
+         if (!result.Succeeded)
+         {
+            return OperationResult.Success(BadRequest,
+               "Error al desbloquear al usuario");
+         }
 
          return OperationResult.Success(OK,
-           "Usuario desbloqueado con éxito");
+            "Usuario desbloqueado con éxito");
       }
 
       return OperationResult.Error(NotFound,
@@ -239,16 +245,19 @@ public class AccountService : IAccountService
       var user = findResult.DataResult;
       if (user is not null)
       {
-         if (user.LockoutEnd is null)
-            user.LockoutEnd = DateTime.Now;
-
          if (user.LockoutEnd is not null && user.LockoutEnd < DateTime.Now)
             user.LockoutEnd = DateTimeOffset.Now.AddYears(100);
 
-         await _userManager.UpdateAsync(user);
+         var result = await _userManager.UpdateAsync(user);
+
+         if (!result.Succeeded)
+         {
+            return OperationResult.Success(BadRequest,
+               "Error al bloquear al usuario");
+         }
 
          return OperationResult.Success(OK,
-           "Usuario bloqueado con éxito");
+            "Usuario bloqueado con éxito");
       }
 
       return OperationResult.Error(NotFound,
