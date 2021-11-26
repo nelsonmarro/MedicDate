@@ -12,7 +12,6 @@ public partial class RadzenGenericGrid<TItem>
    private bool _callLoadData;
 
    public RadzenDataGrid<TItem> DataGrid = default!;
-   private List<TItem>? _itemList;
 
    [Inject] public DialogService DialogService { get; set; } = default!;
 
@@ -38,11 +37,6 @@ public partial class RadzenGenericGrid<TItem>
       _callLoadData = !firstRender;
    }
 
-   protected override void OnParametersSet()
-   {
-      if (ItemList is not null) _itemList = ItemList;
-   }
-
    private async Task LoadData(LoadDataArgs? args = null, int pageIndex = 0
      , int pageSize = 10)
    {
@@ -61,19 +55,19 @@ public partial class RadzenGenericGrid<TItem>
       if (!response.Error)
          if (response.Response is not null)
          {
-            _itemList = response.Response.DataResult;
+            ItemList = response.Response.DataResult;
             TotalCount = response.Response.TotalCount;
          }
 
       if (args is not null)
       {
-         var query = _itemList?.AsQueryable();
+         var query = ItemList?.AsQueryable();
          if (!string.IsNullOrEmpty(args.Filter)) query = query.Where(args.Filter);
 
          if (!string.IsNullOrEmpty(args.OrderBy))
             query = query.OrderBy(args.OrderBy);
 
-         _itemList = query?.ToList();
+         ItemList = query?.ToList();
       }
    }
 
