@@ -214,10 +214,10 @@ public class AccountService : IAccountService
       if (user is not null)
       {
          if (user.LockoutEnd is null)
-            user.LockoutEnd = DateTimeOffset.Now;
+            user.LockoutEnd = DateTimeOffset.UtcNow;
 
-         if (user.LockoutEnd is not null && user.LockoutEnd > DateTime.Now)
-            user.LockoutEnd = DateTimeOffset.Now;
+         if (user.LockoutEnd is not null && user.LockoutEnd > DateTimeOffset.UtcNow)
+            user.LockoutEnd = DateTimeOffset.UtcNow;
 
          var result = await _userManager.UpdateAsync(user);
 
@@ -246,10 +246,10 @@ public class AccountService : IAccountService
       if (user is not null)
       {
          if (user.LockoutEnd is null)
-            user.LockoutEnd = DateTimeOffset.Now;
+            user.LockoutEnd = DateTimeOffset.UtcNow;
 
-         if (user.LockoutEnd is not null && user.LockoutEnd < DateTime.Now)
-            user.LockoutEnd = DateTimeOffset.Now.AddYears(100);
+         if (user.LockoutEnd is not null && user.LockoutEnd < DateTimeOffset.UtcNow)
+            user.LockoutEnd = DateTimeOffset.UtcNow.AddYears(100);
 
          var result = await _userManager.UpdateAsync(user);
 

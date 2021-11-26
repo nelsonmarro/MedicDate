@@ -61,7 +61,7 @@
                                      Sortable="false" TextAlign="@TextAlign.Center"
                                      Width="70px">
                   <Template Context="user">
-                     @if (user.LockoutEnd > DateTimeOffset.Now)
+                     @if (user.LockoutEnd > DateTimeOffset.UtcNow)
                      {
                         <RadzenButton Icon="lock" ButtonStyle="@ButtonStyle.Danger"
                                    Click="@(() => UnlockUser(user.Id))">
