@@ -63,9 +63,8 @@ public partial class AppUserList
       if (!httpResp.Error)
       {
          NotificationService.ShowSuccess("Operación exitosa!",
-           await httpResp.GetResponseBody());
+           "Usuario bloqueado con exito");
 
-         await Task.Delay(1000);
          var result =
            await BaseListComponentOps
              .LoadItemListAsync<AppUserResponseDto>(GetUrl);
@@ -85,8 +84,8 @@ public partial class AppUserList
       if (!httpResp.Error)
       {
          NotificationService.ShowSuccess("Operación exitosa!",
-           await httpResp.GetResponseBody());
-         await Task.Delay(1000);
+           "Usuario desbloqueado con exito");
+
          var result =
            await BaseListComponentOps.LoadItemListAsync<AppUserResponseDto>(GetUrl);
 
