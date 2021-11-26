@@ -11,7 +11,7 @@ public partial class RadzenGenericGrid<TItem>
 {
    private bool _callLoadData;
 
-   private RadzenDataGrid<TItem> _dataGrid = default!;
+   public RadzenDataGrid<TItem> DataGrid = default!;
    private List<TItem>? _itemList;
 
    [Inject] public DialogService DialogService { get; set; } = default!;

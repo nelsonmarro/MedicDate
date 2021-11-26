@@ -40,8 +40,8 @@ namespace MedicDate.Client.Services
             return new ResourceListComponentResult<T>
             {
                Succeded = true,
-               ItemList = response.Response?.DataResult ?? new List<T>(),
-               TotalCount = response.Response?.TotalCount ?? 0
+               ItemList = response.Response?.DataResult,
+               TotalCount = response.Response?.TotalCount ?? 0,
             };
          }
 

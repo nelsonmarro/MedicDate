@@ -3,6 +3,6 @@
 public class ResourceListComponentResult<T> where T : class
 {
    public bool Succeded { get; set; }
-   public List<T> ItemList { get; set; } = new List<T>();
+   public List<T>? ItemList { get; set; }
    public int TotalCount { get; set; }
 }

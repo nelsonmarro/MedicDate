@@ -1,4 +1,5 @@
-﻿using MedicDate.Client.Data.HttpRepository.IHttpRepository;
+﻿using MedicDate.Client.Components;
+using MedicDate.Client.Data.HttpRepository.IHttpRepository;
 using MedicDate.Client.Helpers;
 using MedicDate.Client.Services.IServices;
 using MedicDate.Shared.Models.AppRole;
@@ -21,6 +22,7 @@ public partial class AppUserList
    private readonly string[] _propNames =
      {"Nombre", "Apellidos", "Email", "PhoneNumber"};
 
+   private RadzenGenericGrid<AppUserRequestDto> _genericGrid = default!;
    private List<RoleResponseDto> _roleList = new();
    private int _totalCount;
 
@@ -63,15 +65,7 @@ public partial class AppUserList
          NotificationService.ShowSuccess("Operación exitosa!",
            await httpResp.GetResponseBody());
 
-         var result =
-           await BaseListComponentOps
-             .LoadItemListAsync<AppUserResponseDto>(GetUrl);
-
-         if (result.Succeded)
-         {
-            _userList = result.ItemList;
-            _totalCount = result.TotalCount;
-         }
+         await _genericGrid.DataGrid.Reload();
       }
    }
 
@@ -84,15 +78,7 @@ public partial class AppUserList
          NotificationService.ShowSuccess("Operación exitosa!",
            await httpResp.GetResponseBody());
 
-         var result =
-           await BaseListComponentOps
-             .LoadItemListAsync<AppUserResponseDto>(GetUrl);
-
-         if (result.Succeded)
-         {
-            _userList = result.ItemList;
-            _totalCount = result.TotalCount;
-         }
+         await _genericGrid.DataGrid.Reload();
       }
    }
 

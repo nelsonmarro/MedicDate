@@ -1,7 +1,6 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using MedicDate.Bussines.ApplicationServices.IApplicationServices;
 using MedicDate.Bussines.DomainServices.IDomainServices;
-using MedicDate.DataAccess;
 using MedicDate.DataAccess.Entities;
 using MedicDate.DataAccess.Helpers;
 using MedicDate.Shared.Models.Auth;
@@ -21,7 +20,6 @@ public class AccountService : IAccountService
    private readonly SignInManager<ApplicationUser> _signInManager;
    private readonly ITokenBuilderService _tokenBuilderService;
    private readonly UserManager<ApplicationUser> _userManager;
-   private readonly ApplicationDbContext _context;
 
    public AccountService(
      UserManager<ApplicationUser> userManager,
@@ -29,7 +27,7 @@ public class AccountService : IAccountService
      RoleManager<AppRole> roleManager,
      ITokenBuilderService tokenBuilderService,
      IOptions<JwtSettings> jwtSettings,
-     IEmailSender emailSender, ApplicationDbContext context)
+     IEmailSender emailSender)
    {
       _userManager = userManager;
       _signInManager = signInManager;
@@ -37,7 +35,6 @@ public class AccountService : IAccountService
       _tokenBuilderService = tokenBuilderService;
       _emailSender = emailSender;
       _jwtSettings = jwtSettings.Value;
-      _context = context;
    }
 
    public async Task<OperationResult> SendForgotPasswordRequestAsync(
@@ -216,6 +213,9 @@ public class AccountService : IAccountService
 
       if (user is not null)
       {
+         if (user.LockoutEnd is null)
+            user.LockoutEnd = DateTimeOffset.Now;
+
          if (user.LockoutEnd is not null && user.LockoutEnd > DateTime.Now)
             user.LockoutEnd = DateTimeOffset.Now;
 
@@ -245,6 +245,9 @@ public class AccountService : IAccountService
       var user = findResult.DataResult;
       if (user is not null)
       {
+         if (user.LockoutEnd is null)
+            user.LockoutEnd = DateTimeOffset.Now;
+
          if (user.LockoutEnd is not null && user.LockoutEnd < DateTime.Now)
             user.LockoutEnd = DateTimeOffset.Now.AddYears(100);
 
