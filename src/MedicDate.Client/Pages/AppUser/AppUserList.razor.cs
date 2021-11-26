@@ -86,7 +86,6 @@ public partial class AppUserList
          NotificationService.ShowSuccess("Operación exitosa!",
            await httpResp.GetResponseBody());
 
-         await _grid.DataGrid.Reload();
          var result =
            await BaseListComponentOps.LoadItemListAsync<AppUserResponseDto>(GetUrl);
 
