@@ -65,6 +65,7 @@ public partial class AppUserList
          NotificationService.ShowSuccess("Operación exitosa!",
            await httpResp.GetResponseBody());
 
+         await Task.Delay(1000);
          var result =
            await BaseListComponentOps
              .LoadItemListAsync<AppUserResponseDto>(GetUrl);
@@ -85,7 +86,7 @@ public partial class AppUserList
       {
          NotificationService.ShowSuccess("Operación exitosa!",
            await httpResp.GetResponseBody());
-
+         await Task.Delay(1000);
          var result =
            await BaseListComponentOps.LoadItemListAsync<AppUserResponseDto>(GetUrl);
 

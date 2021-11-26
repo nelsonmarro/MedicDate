@@ -21,7 +21,7 @@ else
 {
    <div class="my-3">
       <RadzenDataGrid @ref="DataGrid" Count="@TotalCount"
-                   Data="@ItemList"
+                   Data="@_itemList"
                    LoadData="@(e => LoadData(e, DataGrid.CurrentPage, DataGrid.PageSize))"
                    AllowFiltering="@AllowFilter"
                    FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"

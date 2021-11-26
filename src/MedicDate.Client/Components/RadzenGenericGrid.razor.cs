@@ -32,9 +32,16 @@ public partial class RadzenGenericGrid<TItem>
    [Parameter] public OpRoutes? OpRoutes { get; set; }
    [Parameter] public EventCallback<string> OnDeleteData { get; set; }
 
+   private List<TItem>? _itemList;
+
    protected override void OnAfterRender(bool firstRender)
    {
       _callLoadData = !firstRender;
+   }
+
+   protected override void OnParametersSet()
+   {
+      _itemList = ItemList;
    }
 
    private async Task LoadData(LoadDataArgs? args = null, int pageIndex = 0
@@ -55,19 +62,19 @@ public partial class RadzenGenericGrid<TItem>
       if (!response.Error)
          if (response.Response is not null)
          {
-            ItemList = response.Response.DataResult;
+            _itemList = response.Response.DataResult;
             TotalCount = response.Response.TotalCount;
          }
 
       if (args is not null)
       {
-         var query = ItemList?.AsQueryable();
+         var query = _itemList?.AsQueryable();
          if (!string.IsNullOrEmpty(args.Filter)) query = query.Where(args.Filter);
 
          if (!string.IsNullOrEmpty(args.OrderBy))
             query = query.OrderBy(args.OrderBy);
 
-         ItemList = query?.ToList();
+         _itemList = query?.ToList();
       }
    }
 
