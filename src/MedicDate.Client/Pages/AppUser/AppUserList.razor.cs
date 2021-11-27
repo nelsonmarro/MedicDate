@@ -60,7 +60,8 @@ public partial class AppUserList
 
       if (httpResp is not null)
       {
-         if (!httpResp.Error)
+         if (!httpResp.Error
+            && httpResp.Response is not null)
          {
             NotificationService.ShowSuccess("Operación exitosa!",
               await httpResp.GetResponseBody());
@@ -83,7 +84,8 @@ public partial class AppUserList
 
       if (httpResp is not null)
       {
-         if (!httpResp.Error)
+         if (!httpResp.Error
+            && httpResp.Response is not null)
          {
             NotificationService.ShowSuccess("Operación exitosa!",
               await httpResp.GetResponseBody());
