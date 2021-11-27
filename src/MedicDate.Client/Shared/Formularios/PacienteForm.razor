@@ -13,21 +13,21 @@
         </div>
 
         <div class="row">
-            <div class="col-lg-6 col-auto mb-3">
+            <div class="col-md-6 mb-3">
                 <RadzenLabel Text="Nombres" />
                 <div class="mt-1">
                     <RadzenTextBox @bind-Value="PacienteRequestDto.Nombres" class="w-100" />
                     <ValidationMessage For="() => PacienteRequestDto.Nombres" />
                 </div>
             </div>
-            <div class="col-lg-6 col-auto mb-3">
+            <div class="col-md-6 mb-3">
                 <RadzenLabel Text="Apellidos" />
                 <div class="mt-1">
                     <RadzenTextBox @bind-Value="PacienteRequestDto.Apellidos" class="w-100" />
                     <ValidationMessage For="() => PacienteRequestDto.Apellidos" />
                 </div>
             </div>
-            <div class="col-lg-6 col-auto mb-3">
+            <div class="col-md-6 mb-3">
                 <RadzenLabel Text="Sexo" />
                 <div class="mt-1">
                     <RadzenDropDown TValue="string" Data="SexoListDropDownDto.SexoList"
@@ -38,7 +38,7 @@
                     <ValidationMessage For="() => PacienteRequestDto.Sexo" />
                 </div>
             </div>
-            <div class="col-lg-6 col-auto mb-3">
+            <div class="col-md-6 mb-3">
                 <RadzenLabel Text="Fecha de Nacimiento" />
                 <div class="mt-1">
                     <RadzenDatePicker @bind-Value="PacienteRequestDto.FechaNacimiento"
@@ -47,28 +47,28 @@
                     <ValidationMessage For="() => PacienteRequestDto.FechaNacimiento" />
                 </div>
             </div>
-            <div class="col-lg-6 col-auto mb-3">
+            <div class="col-md-6 mb-3">
                 <RadzenLabel Text="Cédula" />
                 <div class="mt-1">
                     <RadzenTextBox @bind-Value="PacienteRequestDto.Cedula" class="w-100" />
                     <ValidationMessage For="() => PacienteRequestDto.Cedula" />
                 </div>
             </div>
-            <div class="col-lg-6 col-auto mb-3">
+            <div class="col-md-6 mb-3">
                 <RadzenLabel Text="Email" />
                 <div class="mt-1">
                     <RadzenTextBox @bind-Value="PacienteRequestDto.Email" class="w-100" />
                     <ValidationMessage For="() => PacienteRequestDto.Email" />
                 </div>
             </div>
-            <div class="col-lg-6 col-auto mb-3">
+            <div class="col-md-6 mb-3">
                 <RadzenLabel Text="Teléfono de contacto" />
                 <div class="mt-1">
                     <RadzenTextBox @bind-Value="PacienteRequestDto.Telefono" class="w-100" />
                     <ValidationMessage For="() => PacienteRequestDto.Telefono" />
                 </div>
             </div>
-            <div class="col-lg-6 col-auto mb-3">
+            <div class="col-md-6 mb-3">
                 <RadzenLabel Text="Grupos" />
                 <div class="mt-1">
                     @if (_grupos is not null)
@@ -87,7 +87,7 @@
                     }
                 </div>
             </div>
-            <div class="col-lg-6 col-auto mb-3">
+            <div class="col-md-6 mb-3">
                 <RadzenLabel Text="Dirección" />
                 <div class="mt-1">
                     <RadzenTextArea @bind-Value="PacienteRequestDto.Direccion" class="w-100"

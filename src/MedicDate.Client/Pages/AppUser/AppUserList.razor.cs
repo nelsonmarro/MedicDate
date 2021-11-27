@@ -4,6 +4,7 @@ using MedicDate.Client.Services.IServices;
 using MedicDate.Shared.Models.AppRole;
 using MedicDate.Shared.Models.AppUser;
 using Microsoft.AspNetCore.Components;
+using Radzen;
 
 namespace MedicDate.Client.Pages.AppUser;
 
@@ -29,11 +30,10 @@ public partial class AppUserList
    [Inject]
    public IBaseListComponentOperations BaseListComponentOps { get; set; } =
      default!;
-
    [Inject]
    public INotificationService NotificationService { get; set; } = default!;
-
    [Inject] public IHttpRepository HttpRepo { get; set; } = default!;
+   [Inject] public DialogService DialogService { get; set; } = default!;
 
    protected override async Task OnInitializedAsync()
    {
@@ -56,46 +56,48 @@ public partial class AppUserList
 
    private async Task LockUser(string userId)
    {
+      NotificationService.ShowLoadingDialog(DialogService);
+
       var httpResp = await HttpRepo.Post("api/Account/lock", userId);
 
-      if (httpResp is not null)
+      NotificationService.CloseDialog(DialogService);
+
+      if (!httpResp.Error)
       {
-         if (!httpResp.Error)
+         NotificationService.ShowSuccess("Operación exitosa!",
+           await httpResp.GetResponseBody());
+
+         var result =
+           await BaseListComponentOps.LoadItemListAsync<AppUserResponseDto>(GetUrl);
+
+         if (result.Succeded)
          {
-            NotificationService.ShowSuccess("Operación exitosa!",
-              await httpResp.GetResponseBody());
-
-            var result =
-              await BaseListComponentOps.LoadItemListAsync<AppUserResponseDto>(GetUrl);
-
-            if (result.Succeded)
-            {
-               _userList = result.ItemList;
-               _totalCount = result.TotalCount;
-            }
+            _userList = result.ItemList;
+            _totalCount = result.TotalCount;
          }
       }
    }
 
    private async Task UnlockUser(string userId)
    {
+      NotificationService.ShowLoadingDialog(DialogService);
+
       var httpResp = await HttpRepo.Post("api/Account/unlock", userId);
 
-      if (httpResp is not null)
+      NotificationService.CloseDialog(DialogService);
+
+      if (!httpResp.Error)
       {
-         if (!httpResp.Error)
+         NotificationService.ShowSuccess("Operación exitosa!",
+           await httpResp.GetResponseBody());
+
+         var result =
+           await BaseListComponentOps.LoadItemListAsync<AppUserResponseDto>(GetUrl);
+
+         if (result.Succeded)
          {
-            NotificationService.ShowSuccess("Operación exitosa!",
-              await httpResp.GetResponseBody());
-
-            var result =
-              await BaseListComponentOps.LoadItemListAsync<AppUserResponseDto>(GetUrl);
-
-            if (result.Succeded)
-            {
-               _userList = result.ItemList;
-               _totalCount = result.TotalCount;
-            }
+            _userList = result.ItemList;
+            _totalCount = result.TotalCount;
          }
       }
    }

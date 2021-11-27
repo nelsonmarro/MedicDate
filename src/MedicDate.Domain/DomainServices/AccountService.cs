@@ -213,11 +213,9 @@ public class AccountService : IAccountService
 
       if (user is not null)
       {
-         if (user.LockoutEnd is null)
-            user.LockoutEnd = DateTimeOffset.UtcNow;
 
          if (user.LockoutEnd is not null && user.LockoutEnd > DateTimeOffset.UtcNow)
-            user.LockoutEnd = DateTimeOffset.UtcNow;
+            user.LockoutEnd = null;
 
          var result = await _userManager.UpdateAsync(user);
 
