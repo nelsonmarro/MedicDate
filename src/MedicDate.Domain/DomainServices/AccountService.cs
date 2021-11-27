@@ -51,7 +51,7 @@ public class AccountService : IAccountService
         await _userManager.GeneratePasswordResetTokenAsync(userDb);
 
       var callbackUrl =
-        $"https://medic-datepro.com/usuario/resetPassword?code={code}";
+        $"https://citas.medic-datepro.com/usuario/resetPassword?code={code}";
 
       await _emailSender.SendEmailAsync(forgotPasswordModel.Email,
         "Restablecer Contraseña - MedicDate",
@@ -122,7 +122,7 @@ public class AccountService : IAccountService
           applicationUser);
 
       var callbackUrl =
-        $"https://medic-datepro.com/usuario/confirmEmail?userId={applicationUser.Id}&code={code}";
+        $"https://citas.medic-datepro.com/usuario/confirmEmail?userId={applicationUser.Id}&code={code}";
 
       await _emailSender.SendEmailAsync(applicationUser.Email,
         "Confirme su cuenta - MedicDate",
@@ -167,7 +167,7 @@ public class AccountService : IAccountService
           changeEmailDto.NewEmail);
 
       var callbackUrl =
-        $"https://medic-datepro.com/usuario/emailChangedConfirm?code={code}&userId={userDb.Id}";
+        $"https://citas.medic-datepro.com/usuario/emailChangedConfirm?code={code}&userId={userDb.Id}";
 
       await _emailSender.SendEmailAsync(userDb.Email,
         "Cambio de email - MedicDate",
