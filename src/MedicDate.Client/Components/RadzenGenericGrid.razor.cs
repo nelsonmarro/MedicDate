@@ -31,6 +31,7 @@ public partial class RadzenGenericGrid<TItem>
    [Parameter] public AllowCrudOps AllowCrudOps { get; set; } = new();
    [Parameter] public OpRoutes? OpRoutes { get; set; }
    [Parameter] public EventCallback<string> OnDeleteData { get; set; }
+   [Parameter] public bool RefreshItemList { get; set; } = true;
 
    private List<TItem>? _itemList;
 
@@ -41,7 +42,13 @@ public partial class RadzenGenericGrid<TItem>
 
    protected override void OnParametersSet()
    {
-      _itemList = ItemList;
+      if (RefreshItemList)
+      {
+         _itemList = ItemList;
+         Console.WriteLine("I got hit");
+      }
+
+
    }
 
    private async Task LoadData(LoadDataArgs? args = null, int pageIndex = 0

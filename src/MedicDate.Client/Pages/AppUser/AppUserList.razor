@@ -23,7 +23,7 @@
          <RadzenGenericGrid TItem="AppUserResponseDto" TotalCount="@_totalCount"
                             ItemList="@_userList" OpRoutes="@_opRoutes"
                             OnDeleteData="@DeleteUser" PropNames="_propNames"
-                            Headers="_headers" @ref="_grid">
+                            Headers="_headers" @ref="_grid" RefreshItemList="_refreshUsers">
             <CustomGridCols>
                <RadzenDataGridColumn TItem="AppUserResponseDto"
                                      Title="Roles" Filterable="false"

@@ -25,6 +25,7 @@ public partial class AppUserList
    private List<RoleResponseDto> _roleList = new();
    private int _totalCount;
    private RadzenGenericGrid<AppUserResponseDto> _grid = null!;
+   private bool _refreshUsers;
 
    private List<AppUserResponseDto>? _userList;
 
@@ -58,12 +59,16 @@ public partial class AppUserList
 
    private async Task LockUser(string userId)
    {
+      _refreshUsers = false;
+
       var httpResp = await HttpRepo.Post("api/Account/lock", userId);
 
       if (!httpResp.Error)
       {
          NotificationService.ShowSuccess("Operación exitosa!",
-           "Usuario bloqueado con exito");
+           await httpResp.GetResponseBody());
+
+         _refreshUsers = true;
 
          var result =
            await BaseListComponentOps
@@ -79,12 +84,16 @@ public partial class AppUserList
 
    private async Task UnlockUser(string userId)
    {
+      _refreshUsers = false;
+
       var httpResp = await HttpRepo.Post("api/Account/unlock", userId);
 
       if (!httpResp.Error)
       {
          NotificationService.ShowSuccess("Operación exitosa!",
-           "Usuario desbloqueado con exito");
+           await httpResp.GetResponseBody());
+
+         _refreshUsers = true;
 
          var result =
            await BaseListComponentOps.LoadItemListAsync<AppUserResponseDto>(GetUrl);
