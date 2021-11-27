@@ -37,12 +37,15 @@ namespace MedicDate.Client.Services
 
          if (!response.Error)
          {
-            return new ResourceListComponentResult<T>
+            if (response.Response is not null)
             {
-               Succeded = true,
-               ItemList = response.Response?.DataResult,
-               TotalCount = response.Response?.TotalCount ?? 0,
-            };
+               return new ResourceListComponentResult<T>
+               {
+                  Succeded = true,
+                  ItemList = response.Response.DataResult,
+                  TotalCount = response.Response.TotalCount,
+               };
+            }
          }
 
          return new ResourceListComponentResult<T>
