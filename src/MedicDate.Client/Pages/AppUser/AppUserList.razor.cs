@@ -1,5 +1,4 @@
-﻿using MedicDate.Client.Components;
-using MedicDate.Client.Data.HttpRepository.IHttpRepository;
+﻿using MedicDate.Client.Data.HttpRepository.IHttpRepository;
 using MedicDate.Client.Helpers;
 using MedicDate.Client.Services.IServices;
 using MedicDate.Shared.Models.AppRole;
@@ -24,8 +23,6 @@ public partial class AppUserList
 
    private List<RoleResponseDto> _roleList = new();
    private int _totalCount;
-   private RadzenGenericGrid<AppUserResponseDto> _grid = null!;
-   private bool _refreshUsers;
 
    private List<AppUserResponseDto>? _userList;
 
@@ -59,49 +56,46 @@ public partial class AppUserList
 
    private async Task LockUser(string userId)
    {
-      _refreshUsers = false;
-
       var httpResp = await HttpRepo.Post("api/Account/lock", userId);
 
-      if (!httpResp.Error)
+      if (httpResp is not null)
       {
-         NotificationService.ShowSuccess("Operación exitosa!",
-           await httpResp.GetResponseBody());
-
-         _refreshUsers = true;
-
-         var result =
-           await BaseListComponentOps
-             .LoadItemListAsync<AppUserResponseDto>(GetUrl);
-
-         if (result.Succeded)
+         if (!httpResp.Error)
          {
-            _userList = result.ItemList;
-            _totalCount = result.TotalCount;
+            NotificationService.ShowSuccess("Operación exitosa!",
+              await httpResp.GetResponseBody());
+
+            var result =
+              await BaseListComponentOps.LoadItemListAsync<AppUserResponseDto>(GetUrl);
+
+            if (result.Succeded)
+            {
+               _userList = result.ItemList;
+               _totalCount = result.TotalCount;
+            }
          }
       }
    }
 
    private async Task UnlockUser(string userId)
    {
-      _refreshUsers = false;
-
       var httpResp = await HttpRepo.Post("api/Account/unlock", userId);
 
-      if (!httpResp.Error)
+      if (httpResp is not null)
       {
-         NotificationService.ShowSuccess("Operación exitosa!",
-           await httpResp.GetResponseBody());
-
-         _refreshUsers = true;
-
-         var result =
-           await BaseListComponentOps.LoadItemListAsync<AppUserResponseDto>(GetUrl);
-
-         if (result.Succeded)
+         if (!httpResp.Error)
          {
-            _userList = result.ItemList;
-            _totalCount = result.TotalCount;
+            NotificationService.ShowSuccess("Operación exitosa!",
+              await httpResp.GetResponseBody());
+
+            var result =
+              await BaseListComponentOps.LoadItemListAsync<AppUserResponseDto>(GetUrl);
+
+            if (result.Succeded)
+            {
+               _userList = result.ItemList;
+               _totalCount = result.TotalCount;
+            }
          }
       }
    }
