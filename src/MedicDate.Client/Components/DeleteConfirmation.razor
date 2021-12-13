@@ -1,41 +1,42 @@
 ﻿@inject DialogService _dialogService
 
 <div class="text-center py-2">
-   <span class="text-warning">
-      <i class="fas fa-exclamation-triangle fa-4x"></i>
-   </span>
+    <span class="text-warning">
+        <RadzenIcon Icon="delete" Style="font-size: 50px"
+                    class="text-danger" />
+    </span>
 </div>
 <p class="py-2 text-center">
-   @if (DetailsText is not null)
-   {
-      @DetailsText
-   }
-   else
-   {
-      <span>
-         ¿ Está seguro de borrar este registro ?
-      </span>
-   }
+    @if (DetailsText is not null)
+    {
+        @DetailsText
+    }
+    else
+    {
+        <span>
+            ¿ Está seguro de borrar este registro ?
+        </span>
+    }
 </p>
 
 <div class="pt-1 container">
-   <div class="row">
-      <div class="col-6">
-         <RadzenButton Text="Aceptar" class="w-100" Click="@Delete" />
-      </div>
-      <div class="col-6">
-         <RadzenButton Text="Cancelar" class="w-100" ButtonStyle="@ButtonStyle.Secondary"
-                       Click="@(() => _dialogService.Close(false))" />
-      </div>
-   </div>
+    <div class="row">
+        <div class="col-6">
+            <RadzenButton Text="Aceptar" class="w-100" Click="@Delete" />
+        </div>
+        <div class="col-6">
+            <RadzenButton Text="Cancelar" class="w-100" ButtonStyle="@ButtonStyle.Secondary"
+                          Click="@(() => _dialogService.Close(false))" />
+        </div>
+    </div>
 </div>
 
 @code {
-   [Parameter]
-   public string? DetailsText { get; set; }
+    [Parameter]
+    public string? DetailsText { get; set; }
 
-   private void Delete()
-   {
-      _dialogService.Close(true);
-   }
+    private void Delete()
+    {
+        _dialogService.Close(true);
+    }
 }

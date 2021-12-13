@@ -8,7 +8,15 @@ h2,
 h3,
 h4,
 h5 {
-  font-weight: 500 !important;
+  font-weight: 400 !important;
+}
+
+.header {
+  left: 261px !important;
+}
+
+.header-expanded {
+  left: 0 !important;
 }
 
 .text-primary {
@@ -27,31 +35,25 @@ a {
   text-decoration: none;
 }
 
-.rz-navigation-item-wrapper,
-.sidebar-toggle {
-  transition: all 300ms;
-}
-
-.rad-sidebar {
-  top: 51px;
-  bottom: 0px !important;
-  width: 250px;
-  transform: translateX(0px);
-  border-top: 1px solid #fff;
-}
-
 .body {
   margin-bottom: 30px !important;
 }
 
 .sidebar-toggle {
-  background-color: #262526 !important;
-  color: #eaeef0 !important;
+  transition: color 300ms;
   border-right: none !important;
+  color: #fff;
+  background-color: #262526;
+}
+
+.rz-sidebar {
+  bottom: 0 !important;
+  top: 0 !important;
 }
 
 .sidebar-toggle:hover {
-  color: #12a4f5 !important;
+  color: #376df5;
+  background: #262526 !important;
 }
 
 .rz-bg-dark {
@@ -123,4 +125,122 @@ a {
 
 .blazor-error-boundary::after {
   content: "An error has occurred.";
+}
+
+.lds-grid {
+  display: block;
+  width: 80px;
+  height: 80px;
+  position: absolute;
+  left: 47%;
+  top: 35%;
+}
+
+.lds-grid div {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #1151f3;
+  animation: lds-grid 1.2s linear infinite;
+}
+
+.lds-grid div:nth-child(1) {
+  top: 8px;
+  left: 8px;
+  animation-delay: 0s;
+}
+
+.lds-grid div:nth-child(2) {
+  top: 8px;
+  left: 32px;
+  animation-delay: -0.4s;
+}
+
+.lds-grid div:nth-child(3) {
+  top: 8px;
+  left: 56px;
+  animation-delay: -0.8s;
+}
+
+.lds-grid div:nth-child(4) {
+  top: 32px;
+  left: 8px;
+  animation-delay: -0.4s;
+}
+
+.lds-grid div:nth-child(5) {
+  top: 32px;
+  left: 32px;
+  animation-delay: -0.8s;
+}
+
+.lds-grid div:nth-child(6) {
+  top: 32px;
+  left: 56px;
+  animation-delay: -1.2s;
+}
+
+.lds-grid div:nth-child(7) {
+  top: 56px;
+  left: 8px;
+  animation-delay: -0.8s;
+}
+
+.lds-grid div:nth-child(8) {
+  top: 56px;
+  left: 32px;
+  animation-delay: -1.2s;
+}
+
+.lds-grid div:nth-child(9) {
+  top: 56px;
+  left: 56px;
+  animation-delay: -1.6s;
+}
+
+@keyframes lds-grid {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+.spinner {
+  border: 5px solid silver;
+  border-top: 5px solid #1151f3;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  animation: spin 700ms linear infinite;
+  top: 39%;
+  left: 56%;
+  position: absolute;
+  transform: translate -39%, -56%;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+@media only screen and (max-width: 768px) {
+  .spinner {
+    top: 32%;
+    left: 42%;
+  }
+
+  .lds-grid {
+    display: block;
+    width: 80px;
+    height: 80px;
+    position: absolute;
+    left: 41%;
+    top: 30%;
+    transform: translate -41%, -30%;
+  }
 }

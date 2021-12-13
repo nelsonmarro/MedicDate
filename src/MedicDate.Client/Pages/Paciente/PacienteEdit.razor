@@ -4,13 +4,13 @@
 
 @if (_pacienteModel is null)
 {
-    <span>Cargando <i class="fas fa-spinner fa-spin"></i></span>
+   <CircularLoading />
 }
 else
 {
-    <ErrorBoundary>
-        <CascadingValue Value="_isBussy">
-            <PacienteForm PacienteRequestDto="_pacienteModel" OnSubmit="EditPaciente" />
-        </CascadingValue>
-    </ErrorBoundary>
+   <ErrorBoundary>
+      <CascadingValue Value="_isBussy">
+         <PacienteForm PacienteRequestDto="_pacienteModel" OnSubmit="EditPaciente" />
+      </CascadingValue>
+   </ErrorBoundary>
 }

@@ -1,17 +1,25 @@
-﻿<div class="rz-bg-dark row justify-content-start align-items-center">
-   <div class="col-6 d-flex align-items-center">
-      <RadzenSidebarToggle Click="@(async () => await OnToggleClick.InvokeAsync())">
-      </RadzenSidebarToggle>
-   </div>
+﻿@inject IJSRuntime JsRuntime
 
-   <div class="col-6 d-flex align-items-center justify-content-end">
-      <LoginDisplay />
-   </div>
+<div class="rz-bg-dark row justify-content-start align-items-center"
+     id="nav-bar">
+  <div class="col-6 d-flex align-items-center">
+    <RadzenSidebarToggle Click="@ToggleSidebar">
+    </RadzenSidebarToggle>
+  </div>
+
+  <div class="col-6 d-flex align-items-center justify-content-end">
+    <LoginDisplay />
+  </div>
 </div>
 
 @code {
 
-   [Parameter]
-   public EventCallback OnToggleClick { get; set; }
+  [Parameter]
+  public EventCallback OnToggleClick { get; set; }
 
+  private async Task ToggleSidebar()
+  {
+    await OnToggleClick.InvokeAsync();
+    await JsRuntime.InvokeVoidAsync("toggleHeaderExpand");
+  }
 }

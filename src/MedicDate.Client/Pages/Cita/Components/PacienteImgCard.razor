@@ -2,85 +2,91 @@
 @inject DialogService DialogService
 
 <div class="col">
-    <div class="card shadow rounded">
-        @if (Archivo?.ImageInfo is not null &&
-        !string.IsNullOrEmpty(Archivo.ImageInfo.ImgBase64))
-        {
-            <img src="data:@Archivo.ImageInfo.MimeType;base64,@Archivo.ImageInfo.ImgBase64" alt="Imagen Paciente"
-            class="card-img-top rounded" />
-        }
-        else if (!string.IsNullOrEmpty(Archivo?.RutaArchivo))
-        {
-            <img src="@Archivo.RutaArchivo" alt="Imagen Paciente" class="card-img-top" />
-        }
-        <div class="card-body">
-            <h4 class="card-title">Descripción</h4>
-            <p class="card-text">
-                @Archivo?.Descripcion
-            </p>
-            <div class="my-2 d-flex flex-md-row flex-column">
-                <div class="mb-2 mb-md-0 mr-0 me-md-2">
-                    <RadzenButton Icon="edit" Click="OpenEditArchivoDialog" />
-                </div>
-                <div>
-                    <RadzenButton Icon="delete" ButtonStyle="ButtonStyle.Danger" Click="DeleteArchivoAsync" />
-                </div>
-                <div class="w-100 text-end">
-                    @if (!string.IsNullOrEmpty(Archivo?.RutaArchivo))
-                    {
-                        <RadzenLink Icon="visibility" Path="@Archivo.RutaArchivo" Target="_blank" Style="font-size: 24px" />
-                    }
-                </div>
-            </div>
+  <div class="card shadow rounded">
+    @if (Archivo?.ImageInfo is not null &&
+    !string.IsNullOrEmpty(Archivo.ImageInfo.ImgBase64))
+    {
+      <img src="data:@Archivo.ImageInfo.MimeType;base64,@Archivo.ImageInfo.ImgBase64"
+         alt="Imagen Paciente" class="card-img-top rounded" />
+    }
+    else if (!string.IsNullOrEmpty(Archivo?.RutaArchivo))
+    {
+      <img src="@Archivo.RutaArchivo" alt="Imagen Paciente"
+         class="card-img-top" />
+    }
+    <div class="card-body">
+      <h4 class="card-title">Descripción</h4>
+      <p class="card-text">
+        @Archivo?.Descripcion
+      </p>
+      <div class="my-2 d-flex flex-md-row flex-column">
+        <div class="mb-2 mb-md-0 mr-0 me-md-2">
+          <RadzenButton Icon="edit"
+                        Click="OpenEditArchivoDialog" />
         </div>
+        <div>
+          <RadzenButton Icon="delete"
+                        ButtonStyle="ButtonStyle.Danger"
+                        Click="DeleteArchivoAsync" />
+        </div>
+        <div class="w-100 text-end">
+          @if (!string.IsNullOrEmpty(Archivo?.RutaArchivo))
+          {
+            <RadzenLink Icon="visibility"
+                      Path="@Archivo.RutaArchivo" Target="_blank"
+                      Style="font-size: 24px" />
+          }
+        </div>
+      </div>
     </div>
+  </div>
 </div>
 
 @code {
-    [Parameter]
-    public ArchivoCitaVm? Archivo { get; set; }
+  [Parameter]
+  public ArchivoCitaVm? Archivo { get; set; }
 
-    [Parameter]
-    public EventCallback<ArchivoCitaVm> OnDeleteArchivo { get; set; }
+  [Parameter]
+  public EventCallback<ArchivoCitaVm> OnDeleteArchivo { get; set; }
 
-    [Parameter]
-    public EventCallback<UpdateArchivoRequestDto> OnArchivoUpdate { get; set; }
+  [Parameter]
+  public EventCallback<UpdateArchivoRequestDto> OnArchivoUpdate { get; set; }
 
-    private async Task DeleteArchivoAsync()
+  private async Task DeleteArchivoAsync()
+  {
+    var result = await DialogService.OpenAsync<DeleteConfirmation>("Borrar Registro",
+    new Dictionary<string, object> { },
+    new DialogOptions { Width = "465px", Height = "280px" });
+
+    if (result is true)
     {
-        var result = await DialogService.OpenAsync<DeleteConfirmation>("Borrar Registro",
-        new Dictionary<string, object> { },
-        new DialogOptions { Width = "465px", Height = "280px" });
-
-        if (result is true)
-        {
-            await OnDeleteArchivo.InvokeAsync(Archivo);
-        }
+      await OnDeleteArchivo.InvokeAsync(Archivo);
     }
+  }
 
-    private async Task OpenEditArchivoDialog()
+  private async Task OpenEditArchivoDialog()
+  {
+    if (Archivo is not null)
     {
-        if (Archivo is not null)
+      var archivoToEdit = new UpdateArchivoRequestDto
         {
-            var archivoToEdit = new UpdateArchivoRequestDto
-            {
-                Id = Archivo.Id,
-                ContentType = Archivo.ImageInfo.MimeType,
-                CreatedRoute = Archivo.RutaArchivo,
-                Description = Archivo.Descripcion,
-                ExtensionImage = Archivo.Extension
-            };
+          Id = Archivo.Id,
+          ContentType = Archivo.ImageInfo.MimeType,
+          CreatedRoute = Archivo.RutaArchivo,
+          Description = Archivo.Descripcion,
+          ExtensionImage = Archivo.Extension
+        };
 
-            var editedArchivo = await DialogService.OpenAsync<EditImgPacienteDialog>("Editar Archívo", new Dictionary<string,
-            object>
-{
-{"ArchivoUpdate", archivoToEdit}
-});
+      var editedArchivo = await DialogService.OpenAsync<EditImgPacienteDialog>("Editar Archívo", new
+      Dictionary<string, object>
+      {
+          {"ArchivoUpdate", archivoToEdit}
+      });
 
-            if (editedArchivo is not null)
-            {
-                await OnArchivoUpdate.InvokeAsync(editedArchivo);
-            }
-        }
+      if (editedArchivo is not null)
+      {
+        await OnArchivoUpdate.InvokeAsync(editedArchivo);
+      }
     }
+  }
 }

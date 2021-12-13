@@ -3,57 +3,59 @@
 @page "/login"
 
 <div class="img-section">
-    <div class="animate__animated animate__fadeInLeft h-100">
-        <img src="/assets/imgs/auth-background.jpg" class="w-100 h-100"
-             alt="Auth Background">
-    </div>
+  <div class="animate__animated animate__fadeInLeft h-100">
+    <img src="/assets/imgs/auth-background.jpg" class="w-100 h-100"
+         alt="Auth Background">
+  </div>
 </div>
 <div class="mt-3 mt-lg-5 mx-auto login-form-section">
-    <h2 class="text-primary text-center mb-3 mb-lg-4">
-        Bienvenido a Medic Date
-    </h2>
-    @if (_showAuthError)
+  <h2 class="text-primary text-center mb-3 mb-lg-4">
+    Bienvenido a Medic Date
+  </h2>
+  @if (_showAuthError)
+  {
+    if (!string.IsNullOrEmpty(Error))
     {
-        if (!string.IsNullOrEmpty(Error))
-        {
-            <div class="alert alert-danger animate__animated animate__fadeInUp"
-         role="alert">
-                <span>@Error</span>
-            </div>
-        }
+      <div class="alert alert-danger animate__animated animate__fadeInUp"
+       role="alert">
+        <span>@Error</span>
+      </div>
     }
-
+  }
+  <div>
     <ErrorBoundary>
-        <RadzenCard class="mb-3 mb-lg-0 animate__animated animate__fadeInUp">
-            <h3 class="text-secondary text-center">Iniciar Sesión</h3>
-            <EditForm Model="@_loginRequestDto" OnValidSubmit="ExecuteLogin">
-                <DataAnnotationsValidator />
-                <div class="mb-3">
-                    <RadzenLabel Text="Email" />
-                    <div class="mt-1">
-                        <RadzenTextBox @bind-Value="_loginRequestDto.Email"
-                                       class="w-100" />
-                        <ValidationMessage For="() => _loginRequestDto.Email" />
-                    </div>
-                </div>
-                <div class="mb-3">
-                    <RadzenLabel Text="Contraseña" />
-                    <div class="mt-1">
-                        <RadzenPassword @bind-Value="_loginRequestDto.Password"
-                                        class="w-100" />
-                        <ValidationMessage For="() => _loginRequestDto.Password" />
-                    </div>
-                </div>
-                <div class="mb-2">
-                    <RadzenButton ButtonType="ButtonType.Submit"
-                                  Text="Iniciar Sesión" Icon="login" />
-                </div>
-            </EditForm>
+      <RadzenCard class="mb-3 mb-lg-0 animate__animated animate__fadeInUp">
+        <h3 class="text-secondary text-center">Iniciar Sesión</h3>
+        <EditForm Model="@_loginRequestDto" OnValidSubmit="ExecuteLogin">
+          <DataAnnotationsValidator />
+          <div class="mb-3">
+            <RadzenLabel Text="Email" />
+            <div class="mt-1">
+              <RadzenTextBox @bind-Value="_loginRequestDto.Email"
+                             class="w-100" />
+              <ValidationMessage For="() => _loginRequestDto.Email" />
+            </div>
+          </div>
+          <div class="mb-3">
+            <RadzenLabel Text="Contraseña" />
+            <div class="mt-1">
+              <RadzenPassword @bind-Value="_loginRequestDto.Password"
+                              class="w-100" />
+              <ValidationMessage For="() => _loginRequestDto.Password" />
+            </div>
+          </div>
+          <div class="mb-2">
+            <RadzenButton ButtonType="ButtonType.Submit"
+                          Text="Iniciar Sesión" Icon="login" />
+          </div>
+        </EditForm>
 
-            <p>
-                <RadzenLink Text="¿Olvidó su contraseña?"
-                            Path="usuario/forgotPassword" />
-            </p>
-        </RadzenCard>
+        <div>
+          <RadzenLink Text="¿Olvidó su contraseña?"
+                      Path="usuario/forgotPassword" />
+        </div>
+      </RadzenCard>
     </ErrorBoundary>
+  </div>
+
 </div>

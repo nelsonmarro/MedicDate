@@ -4,61 +4,61 @@ using Radzen;
 
 namespace MedicDate.Client.Services
 {
-  public class DialogNotificationService : IDialogNotificationService
-  {
-    private readonly DialogService _dialogService;
-
-    public DialogNotificationService(DialogService dialogService)
+    public class DialogNotificationService : IDialogNotificationService
     {
-      _dialogService = dialogService;
-    }
+        private readonly DialogService _dialogService;
 
-    public async Task ShowSuccess(string title, string details)
-    {
-      await _dialogService.OpenAsync<NotificationDialog>("",
-          new Dictionary<string, object>()
-          {
-                    { "Icon", "fa-check" },
+        public DialogNotificationService(DialogService dialogService)
+        {
+            _dialogService = dialogService;
+        }
+
+        public async Task ShowSuccess(string title, string details)
+        {
+            await _dialogService.OpenAsync<NotificationDialog>("",
+                new Dictionary<string, object>()
+                {
+                    { "Icon", "check_circle_outline" },
                     { "Title", title },
                     { "Text", details },
                     { "Color", "success" }
-          });
-    }
+                });
+        }
 
-    public async Task ShowError(string title, string details)
-    {
-      await _dialogService.OpenAsync<NotificationDialog>("",
-          new Dictionary<string, object>()
-          {
-                    { "Icon", "fa-times-circle" },
+        public async Task ShowError(string title, string details)
+        {
+            await _dialogService.OpenAsync<NotificationDialog>("",
+                new Dictionary<string, object>()
+                {
+                    { "Icon", "error" },
                     { "Title", title },
                     { "Text", details },
                     { "Color", "danger" }
-          });
-    }
+                });
+        }
 
-    public async Task ShowWarning(string title, string details)
-    {
-      await _dialogService.OpenAsync<NotificationDialog>("",
-          new Dictionary<string, object>()
-          {
-                    { "Icon", "fa-exclamation-triangle" },
+        public async Task ShowWarning(string title, string details)
+        {
+            await _dialogService.OpenAsync<NotificationDialog>("",
+                new Dictionary<string, object>()
+                {
+                    { "Icon", "warning" },
                     { "Title", title },
                     { "Text", details },
                     { "Color", "warning" }
-          });
-    }
+                });
+        }
 
-    public async Task ShowInfo(string title, string details)
-    {
-      await _dialogService.OpenAsync<NotificationDialog>("",
-          new Dictionary<string, object>()
-          {
-                    { "Icon", "fa-exclamation-circle" },
+        public async Task ShowInfo(string title, string details)
+        {
+            await _dialogService.OpenAsync<NotificationDialog>("",
+                new Dictionary<string, object>()
+                {
+                    { "Icon", "info" },
                     { "Title", title },
                     { "Text", details },
                     { "Color", "info" }
-          });
+                });
+        }
     }
-  }
 }

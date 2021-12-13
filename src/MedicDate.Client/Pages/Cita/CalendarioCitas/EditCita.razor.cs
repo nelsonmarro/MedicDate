@@ -20,7 +20,7 @@ public partial class EditCita : ComponentBase
    private IEnumerable<string?> _actividadesIds = new List<string?>();
    private ActividadesTable? _actividadesTable;
 
-   private CitaRequestDto _citaRequest = new();
+   private CitaRequestDto? _citaRequest;
    private bool _isBussy;
    private List<ArchivoCitaVm>? _loadedArchivosPaciente;
    private List<MedicoCitaResponseDto>? _medicos;
@@ -81,6 +81,8 @@ public partial class EditCita : ComponentBase
                Id = x.Id,
                RutaArchivo = x.RutaArchivo
             }).ToList();
+
+      StateHasChanged();
    }
 
    private async Task<List<T>?> RequestResourceListAsync<T>(
@@ -92,6 +94,9 @@ public partial class EditCita : ComponentBase
 
    private bool ValidateDatesForEdit()
    {
+      if (_citaRequest is null)
+         return false;
+
       var timeInicio = TimeOnly.FromDateTime(_citaRequest.FechaInicio);
       var timeFin = TimeOnly.FromDateTime(_citaRequest.FechaFin);
       if (timeInicio.Hour < 7 || timeFin.Hour > 23)
@@ -120,6 +125,13 @@ public partial class EditCita : ComponentBase
 
    private async Task UpdateCita()
    {
+      if (_citaRequest is null)
+      {
+         NotificationService.ShowError("Error",
+            "Error al actualizar la cita");
+         return;
+      }
+
       if (ValidateDatesForEdit())
       {
          _citaRequest.ActividadesCita =
@@ -150,14 +162,14 @@ public partial class EditCita : ComponentBase
 
             NavigationManager
                .NavigateTo(
-               $"calendarioCitas?StartDate={new DateTime(day: 1, month: _citaRequest.FechaInicio.Month, year: _citaRequest.FechaInicio.Year)}&EndDate={new DateTime(day: 1, month: _citaRequest.FechaInicio.Month + 1, year: _citaRequest.FechaInicio.Year)}");
+               $"calendarioCitas?StartDate={new DateTime(day: 1, month: _citaRequest.FechaInicio.Month, year: _citaRequest.FechaInicio.Year)}&EndDate={new DateTime(day: 1, month: _citaRequest.FechaInicio.Month, year: _citaRequest.FechaInicio.Year).AddMonths(1)}");
          }
       }
    }
 
    private async Task SelectActividad(object? value)
    {
-      _citaRequest.ActividadesCita.Clear();
+      _citaRequest?.ActividadesCita.Clear();
       _actividadesIds = (IEnumerable<string>?) value ?? Array.Empty<string>();
 
       var actividadesIds = _actividadesIds.ToList();
@@ -173,7 +185,7 @@ public partial class EditCita : ComponentBase
          return;
       }
 
-      _citaRequest.ActividadesCita.AddRange(actividadesIds
+      _citaRequest?.ActividadesCita.AddRange(actividadesIds
          .Select(actId => new ActividadCitaRequestDto { ActividadId = actId }));
 
       if (_selectedActividades.Count > actividadesIds.Count())
@@ -204,6 +216,9 @@ public partial class EditCita : ComponentBase
 
    private void CreateSelectedActividadesList()
    {
+      if (_citaRequest is null)
+         return;
+
       if (_actividades is not null)
          _selectedActividades.AddRange
          (_actividades.Join(_citaRequest.ActividadesCita, x => x.Id, y => y.ActividadId, (Z, q) =>
@@ -284,6 +299,6 @@ public partial class EditCita : ComponentBase
    {
       NavigationManager
          .NavigateTo(
-         $"calendarioCitas?StartDate={new DateTime(day: 1, month: _citaRequest.FechaInicio.Month, year: _citaRequest.FechaInicio.Year)}&EndDate={new DateTime(day: 1, month: _citaRequest.FechaInicio.Month + 1, year: _citaRequest.FechaInicio.Year)}");
+         $"calendarioCitas?StartDate={new DateTime(day: 1, month: _citaRequest!.FechaInicio.Month, year: _citaRequest.FechaInicio.Year)}&EndDate={new DateTime(day: 1, month: _citaRequest.FechaInicio.Month, year: _citaRequest.FechaInicio.Year).AddMonths(1)}");
    }
 }

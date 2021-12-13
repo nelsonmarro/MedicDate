@@ -13,66 +13,72 @@ namespace MedicDate.Bussines.DomainServices;
 
 public class TokenService : ITokenService
 {
-   private readonly JwtSettings _jwtSettings;
-   private readonly ITokenBuilderService _tokenBuilderService;
-   private readonly UserManager<ApplicationUser> _userManager;
+    private readonly JwtSettings _jwtSettings;
+    private readonly ITokenBuilderService _tokenBuilderService;
+    private readonly UserManager<ApplicationUser> _userManager;
 
-   public TokenService(
-     UserManager<ApplicationUser> userManager,
-     ITokenBuilderService tokenBuilderService, IOptions<JwtSettings> jwtOptions)
-   {
-      _userManager = userManager;
-      _tokenBuilderService = tokenBuilderService;
-      _jwtSettings = jwtOptions.Value;
-   }
+    public TokenService(
+      UserManager<ApplicationUser> userManager,
+      ITokenBuilderService tokenBuilderService, IOptions<JwtSettings> jwtOptions)
+    {
+        _userManager = userManager;
+        _tokenBuilderService = tokenBuilderService;
+        _jwtSettings = jwtOptions.Value;
+    }
 
-   public async Task<OperationResult<LoginResponseDto>> RefreshTokenAsync(
-     RefreshTokenDto refreshTokenDto)
-   {
-      if (refreshTokenDto is null)
-         return OperationResult<LoginResponseDto>.Error(NotFound,
+    public async Task<OperationResult<LoginResponseDto>> RefreshTokenAsync(
+      RefreshTokenDto refreshTokenDto)
+    {
+        if (refreshTokenDto is null)
+        {
+            return OperationResult<LoginResponseDto>.Error(NotFound,
            "Error al validar la sesión del usuario");
+        }
 
-      var principal = _tokenBuilderService.GetPrincipalFromExpiredToken(
+        var principal = _tokenBuilderService.GetPrincipalFromExpiredToken(
         refreshTokenDto.Token, _jwtSettings.SecretKey,
         _jwtSettings.ValidAudience, _jwtSettings.ValidIssuer);
 
-      var emailClaim = principal.FindFirst(ClaimTypes.Email);
-      var user = await _userManager.FindByEmailAsync(emailClaim?.Value);
+        var emailClaim = principal.FindFirst(ClaimTypes.Email);
+        var user = await _userManager.FindByEmailAsync(emailClaim?.Value);
 
-      if (string.IsNullOrEmpty(user.RefreshToken))
-         return OperationResult<LoginResponseDto>.Error(NotFound,
+        if (string.IsNullOrEmpty(user.RefreshToken))
+        {
+            return OperationResult<LoginResponseDto>.Error(NotFound,
            "No se encotró un refresh token en la DB");
+        }
 
-      if (user.RefreshToken != refreshTokenDto.RefreshToken ||
+        if (user.RefreshToken != refreshTokenDto.RefreshToken ||
           user.RefreshTokenExpiryTime <= DateTime.Now)
-         return OperationResult<LoginResponseDto>.Error(BadRequest,
+        {
+            return OperationResult<LoginResponseDto>.Error(BadRequest,
            new LoginResponseDto
            {
-              IsAuthSuccessful = false,
-              ErrorMessage = "Petición inválida al servidor"
+               IsAuthSuccessful = false,
+               ErrorMessage = "Petición inválida al servidor"
            });
+        }
 
-      var signinCreds =
+        var signinCreds =
         _tokenBuilderService.GetSigningCredentials(_jwtSettings.SecretKey);
 
-      var claims = await _tokenBuilderService.GetClaims(user);
+        var claims = await _tokenBuilderService.GetClaims(user);
 
-      var tokenOptions = _tokenBuilderService.GenerateTokenOptions(signinCreds,
-        claims, _jwtSettings.ValidAudience, _jwtSettings.ValidIssuer,
-        _jwtSettings.ExpiryInMinutes);
+        var tokenOptions = _tokenBuilderService.GenerateTokenOptions(signinCreds,
+          claims, _jwtSettings.ValidAudience, _jwtSettings.ValidIssuer,
+          _jwtSettings.ExpiryInMinutes);
 
-      var token = new JwtSecurityTokenHandler().WriteToken(tokenOptions);
-      user.RefreshToken = _tokenBuilderService.GenerateRefreshToken();
+        var token = new JwtSecurityTokenHandler().WriteToken(tokenOptions);
+        user.RefreshToken = _tokenBuilderService.GenerateRefreshToken();
 
-      await _userManager.UpdateAsync(user);
+        await _userManager.UpdateAsync(user);
 
-      return OperationResult<LoginResponseDto>.Success(
-        new LoginResponseDto
-        {
-           Token = token,
-           RefreshToken = user.RefreshToken,
-           IsAuthSuccessful = true
-        });
-   }
+        return OperationResult<LoginResponseDto>.Success(
+          new LoginResponseDto
+          {
+              Token = token,
+              RefreshToken = user.RefreshToken,
+              IsAuthSuccessful = true
+          });
+    }
 }

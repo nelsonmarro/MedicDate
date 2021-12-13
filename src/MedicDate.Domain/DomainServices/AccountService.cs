@@ -14,363 +14,380 @@ namespace MedicDate.Bussines.DomainServices;
 
 public class AccountService : IAccountService
 {
-   private readonly IEmailSender _emailSender;
-   private readonly JwtSettings _jwtSettings;
-   private readonly RoleManager<AppRole> _roleManager;
-   private readonly SignInManager<ApplicationUser> _signInManager;
-   private readonly ITokenBuilderService _tokenBuilderService;
-   private readonly UserManager<ApplicationUser> _userManager;
+    private readonly IEmailSender _emailSender;
+    private readonly JwtSettings _jwtSettings;
+    private readonly RoleManager<AppRole> _roleManager;
+    private readonly SignInManager<ApplicationUser> _signInManager;
+    private readonly ITokenBuilderService _tokenBuilderService;
+    private readonly UserManager<ApplicationUser> _userManager;
 
-   public AccountService(
-     UserManager<ApplicationUser> userManager,
-     SignInManager<ApplicationUser> signInManager,
-     RoleManager<AppRole> roleManager,
-     ITokenBuilderService tokenBuilderService,
-     IOptions<JwtSettings> jwtSettings,
-     IEmailSender emailSender)
-   {
-      _userManager = userManager;
-      _signInManager = signInManager;
-      _roleManager = roleManager;
-      _tokenBuilderService = tokenBuilderService;
-      _emailSender = emailSender;
-      _jwtSettings = jwtSettings.Value;
-   }
+    public AccountService(
+      UserManager<ApplicationUser> userManager,
+      SignInManager<ApplicationUser> signInManager,
+      RoleManager<AppRole> roleManager,
+      ITokenBuilderService tokenBuilderService,
+      IOptions<JwtSettings> jwtSettings,
+      IEmailSender emailSender)
+    {
+        _userManager = userManager;
+        _signInManager = signInManager;
+        _roleManager = roleManager;
+        _tokenBuilderService = tokenBuilderService;
+        _emailSender = emailSender;
+        _jwtSettings = jwtSettings.Value;
+    }
 
-   public async Task<OperationResult> SendForgotPasswordRequestAsync(
-     ForgotPasswordDto forgotPasswordModel)
-   {
-      var userDb =
-        await _userManager.FindByEmailAsync(forgotPasswordModel.Email);
+    public async Task<OperationResult> SendForgotPasswordRequestAsync(
+      ForgotPasswordDto forgotPasswordModel)
+    {
+        var userDb =
+          await _userManager.FindByEmailAsync(forgotPasswordModel.Email);
 
-      if (userDb == null)
-         return OperationResult.Error(NotFound,
-           "No se encotró el usuario en el sistema");
+        if (userDb == null)
+        {
+            return OperationResult.Error(NotFound,
+              "No se encotró el usuario en el sistema");
+        }
 
-      var code =
-        await _userManager.GeneratePasswordResetTokenAsync(userDb);
+        var code =
+          await _userManager.GeneratePasswordResetTokenAsync(userDb);
 
-      var callbackUrl =
-        $"https://citas.medic-datepro.com/usuario/resetPassword?code={code}";
+        var callbackUrl =
+          $"https://citas.medic-datepro.com/usuario/resetPassword?code={code}";
 
-      await _emailSender.SendEmailAsync(forgotPasswordModel.Email,
-        "Restablecer Contraseña - MedicDate",
-        $"Por favor restablezca su contraseña haciendo click <a href=\"{callbackUrl}\">aquí</a>");
+        await _emailSender.SendEmailAsync(forgotPasswordModel.Email,
+          "Restablecer Contraseña - MedicDate",
+          $"Por favor restablezca su contraseña haciendo click <a href=\"{callbackUrl}\">aquí</a>");
 
-      return OperationResult.Success(OK,
-        "Petición para cambio de contraseña enviada");
-   }
+        return OperationResult.Success(OK,
+          "Petición para cambio de contraseña enviada");
+    }
 
-   public async Task<OperationResult> ResetPasswordAsync(
-     ResetPasswordDto resetPasswordDto)
-   {
-      var userDb =
-        await _userManager.FindByEmailAsync(resetPasswordDto.Email);
+    public async Task<OperationResult> ResetPasswordAsync(
+      ResetPasswordDto resetPasswordDto)
+    {
+        var userDb =
+          await _userManager.FindByEmailAsync(resetPasswordDto.Email);
 
-      if (userDb == null)
-         return OperationResult.Success(OK,
-           "Contraseña cambiada con éxito");
+        if (userDb == null)
+        {
+            return OperationResult.Success(OK,
+              "Contraseña cambiada con éxito");
+        }
 
-      var result =
-        await _userManager.ResetPasswordAsync(userDb,
-          resetPasswordDto.Code?.Replace(" ", "+"),
-          resetPasswordDto.Password);
+        var result =
+          await _userManager.ResetPasswordAsync(userDb,
+            resetPasswordDto.Code?.Replace(" ", "+"),
+            resetPasswordDto.Password);
 
-      if (!result.Succeeded)
-         return OperationResult.Error(BadRequest,
-           "No se pudo cambiar la contraseña");
-
-      return OperationResult.Success(OK,
-        "Contraseña cambiada con éxito");
-   }
-
-   public async Task<OperationResult> ConfirmAccountEmailAsync(
-     ConfirmEmailDto confirmEmailDto)
-   {
-      var findResult = await FindUserByIdAsync(confirmEmailDto.UserId);
-
-      if (!findResult.Succeeded)
-         return OperationResult.Error(findResult.ErrorResult);
-
-
-      var userdB = findResult.DataResult;
-
-      if (userdB is not null)
-      {
-         var result =
-           await _userManager.ConfirmEmailAsync(userdB,
-             confirmEmailDto.Code.Replace(" ", "+"));
-
-         return !result.Succeeded
-           ? OperationResult.Error(BadRequest,
-             "Error al confirmar la cuenta")
-           : OperationResult.Success(OK,
-             "Cuenta confirmada con éxito");
-      }
-
-     ;
-
-      return OperationResult.Error(NotFound,
-        "No se encontró el usuario requerido");
-   }
-
-   public async Task SendAccountConfirmationEmailAsync(
-     ApplicationUser applicationUser)
-   {
-      var code =
-        await _userManager.GenerateEmailConfirmationTokenAsync(
-          applicationUser);
-
-      var callbackUrl =
-        $"https://citas.medic-datepro.com/usuario/confirmEmail?userId={applicationUser.Id}&code={code}";
-
-      await _emailSender.SendEmailAsync(applicationUser.Email,
-        "Confirme su cuenta - MedicDate",
-        $"Por favor confirma tu cuenta haciendo click <a href=\"{callbackUrl}\">aquí</a>");
-   }
-
-   public async Task<OperationResult> SendAccountConfirmationEmailAsync(
-     string userEmail)
-   {
-      var userDb = await _userManager.FindByEmailAsync(userEmail);
-
-      if (userDb is null)
-         return OperationResult.Error(NotFound,
-           "No se encotró el usuario para confirmar la cuenta");
-
-      await SendAccountConfirmationEmailAsync(userDb);
-
-      return OperationResult.Success(OK,
-        "Email de confirmación de cuenta enviado");
-   }
-
-   public async Task<OperationResult> SendChangeEmailTokenAsync(
-     ChangeEmailDto changeEmailDto)
-   {
-      var user =
-        await _userManager.FindByEmailAsync(changeEmailDto.NewEmail);
-
-      if (user != null)
-         return OperationResult.Error(BadRequest,
-           $"El email \"{changeEmailDto.NewEmail}\" ya se encuetra registrado, elija otro por favor.");
-
-      var userDb =
-        await _userManager.FindByEmailAsync(changeEmailDto
-          .CurrentEmail);
-
-      if (userDb is null)
-         return OperationResult.Error(NotFound,
-           "No se encotró el usuario para cambiar el email");
-
-      var code =
-        await _userManager.GenerateChangeEmailTokenAsync(userDb,
-          changeEmailDto.NewEmail);
-
-      var callbackUrl =
-        $"https://citas.medic-datepro.com/usuario/emailChangedConfirm?code={code}&userId={userDb.Id}";
-
-      await _emailSender.SendEmailAsync(userDb.Email,
-        "Cambio de email - MedicDate",
-        $"Para proceder con el cambio de email has click <a href=\"{callbackUrl}\">aquí</a>");
-
-      return OperationResult.Success(NoContent);
-   }
-
-   public async Task<OperationResult> ChangeEmailAsync(string userId,
-     ChangeEmailDto changeEmailDto)
-   {
-      var findResult = await FindUserByIdAsync(userId);
-
-      if (!findResult.Succeeded)
-         return OperationResult.Error(findResult.ErrorResult);
-
-
-      var userdB = findResult.DataResult;
-
-      if (userdB is not null)
-      {
-         var result = await _userManager.ChangeEmailAsync(userdB,
-           changeEmailDto.NewEmail,
-           changeEmailDto.Code.Replace(" ", "+"));
-
-         if (!result.Succeeded)
+        if (!result.Succeeded)
+        {
             return OperationResult.Error(BadRequest,
-              "No se pudo cambiar el email");
-      }
+              "No se pudo cambiar la contraseña");
+        }
 
-      return OperationResult.Error(NotFound,
-        "No se encontró el usuario requerido");
-   }
+        return OperationResult.Success(OK,
+          "Contraseña cambiada con éxito");
+    }
 
-   public async Task<OperationResult> UnlockUserAsync(string userId)
-   {
-      var findResult = await FindUserByIdAsync(userId);
+    public async Task<OperationResult> ConfirmAccountEmailAsync(
+      ConfirmEmailDto confirmEmailDto)
+    {
+        var findResult = await FindUserByIdAsync(confirmEmailDto.UserId);
 
-      if (!findResult.Succeeded)
-         return OperationResult.Error(findResult.ErrorResult);
+        if (!findResult.Succeeded)
+            return OperationResult.Error(findResult.ErrorResult);
 
-      var user = findResult.DataResult;
+        var userdB = findResult.DataResult;
 
-      if (user is not null)
-      {
+        if (userdB is not null)
+        {
+            var result =
+              await _userManager.ConfirmEmailAsync(userdB,
+                confirmEmailDto.Code.Replace(" ", "+"));
 
-         if (user.LockoutEnd is not null && user.LockoutEnd > DateTimeOffset.UtcNow)
-            user.LockoutEnd = null;
+            return !result.Succeeded
+              ? OperationResult.Error(BadRequest,
+                "Error al confirmar la cuenta")
+              : OperationResult.Success(OK,
+                "Cuenta confirmada con éxito");
+        }
 
-         var result = await _userManager.UpdateAsync(user);
+        return OperationResult.Error(NotFound,
+          "No se encontró el usuario requerido");
+    }
 
-         if (!result.Succeeded)
-         {
-            return OperationResult.Success(BadRequest,
-               "Error al desbloquear al usuario");
-         }
+    public async Task SendAccountConfirmationEmailAsync(
+      ApplicationUser applicationUser)
+    {
+        var code =
+          await _userManager.GenerateEmailConfirmationTokenAsync(
+            applicationUser);
 
-         return OperationResult.Success(OK,
-            "Usuario desbloqueado con éxito");
-      }
+        var callbackUrl =
+          $"https://citas.medic-datepro.com/usuario/confirmEmail?userId={applicationUser.Id}&code={code}";
 
-      return OperationResult.Error(NotFound,
-        "No se encontró el usuario requerido");
-   }
+        await _emailSender.SendEmailAsync(applicationUser.Email,
+          "Confirme su cuenta - MedicDate",
+          $"Por favor confirma tu cuenta haciendo click <a href=\"{callbackUrl}\">aquí</a>");
+    }
 
-   public async Task<OperationResult> LockUserAsync(string userId)
-   {
-      var findResult = await FindUserByIdAsync(userId);
+    public async Task<OperationResult> SendAccountConfirmationEmailAsync(
+      string userEmail)
+    {
+        var userDb = await _userManager.FindByEmailAsync(userEmail);
 
-      if (!findResult.Succeeded)
-         return OperationResult.Error(findResult.ErrorResult);
+        if (userDb is null)
+        {
+            return OperationResult.Error(NotFound,
+              "No se encotró el usuario para confirmar la cuenta");
+        }
 
-      var user = findResult.DataResult;
-      if (user is not null)
-      {
-         if (user.LockoutEnd is null)
-            user.LockoutEnd = DateTimeOffset.UtcNow;
+        await SendAccountConfirmationEmailAsync(userDb);
 
-         if (user.LockoutEnd is not null && user.LockoutEnd < DateTimeOffset.UtcNow)
-            user.LockoutEnd = DateTimeOffset.UtcNow.AddYears(100);
+        return OperationResult.Success(OK,
+          "Email de confirmación de cuenta enviado");
+    }
 
-         var result = await _userManager.UpdateAsync(user);
+    public async Task<OperationResult> SendChangeEmailTokenAsync(
+      ChangeEmailDto changeEmailDto)
+    {
+        var user =
+          await _userManager.FindByEmailAsync(changeEmailDto.NewEmail);
 
-         if (!result.Succeeded)
-         {
-            return OperationResult.Success(BadRequest,
-               "Error al bloquear al usuario");
-         }
+        if (user != null)
+        {
+            return OperationResult.Error(BadRequest,
+              $"El email \"{changeEmailDto.NewEmail}\" ya se encuetra registrado, elija otro por favor.");
+        }
 
-         return OperationResult.Success(OK,
-            "Usuario bloqueado con éxito");
-      }
+        var userDb =
+          await _userManager.FindByEmailAsync(changeEmailDto
+            .CurrentEmail);
 
-      return OperationResult.Error(NotFound,
-        "No se encontró el usuario requerido");
-   }
+        if (userDb is null)
+        {
+            return OperationResult.Error(NotFound,
+              "No se encotró el usuario para cambiar el email");
+        }
 
-   public async Task<OperationResult> RegisterUserAsync(
-     RegisterUserDto registerUserDto)
-   {
-      var appUser = new ApplicationUser
-      {
-         Nombre = registerUserDto.Nombre,
-         Apellidos = registerUserDto.Apellidos,
-         Email = registerUserDto.Email,
-         UserName = registerUserDto.Email,
-         PhoneNumber = registerUserDto.PhoneNumber
-      };
+        var code =
+          await _userManager.GenerateChangeEmailTokenAsync(userDb,
+            changeEmailDto.NewEmail);
 
-      var result =
-        await _userManager.CreateAsync(appUser,
-          registerUserDto.Password);
+        var callbackUrl =
+          $"https://citas.medic-datepro.com/usuario/emailChangedConfirm?code={code}&userId={userDb.Id}";
 
-      if (!result.Succeeded)
-      {
-         var errors = result.Errors.Select(e => e.Description);
-         return OperationResult.Error(BadRequest, errors);
-      }
+        await _emailSender.SendEmailAsync(userDb.Email,
+          "Cambio de email - MedicDate",
+          $"Para proceder con el cambio de email has click <a href=\"{callbackUrl}\">aquí</a>");
 
-      var roleResult =
-        await AssingRolesToUserAsync(registerUserDto.RolesIds, appUser);
+        return OperationResult.Success(NoContent);
+    }
 
-      if (!roleResult)
-         return OperationResult.Error(BadRequest,
-           "Error al asignar los roles");
+    public async Task<OperationResult> ChangeEmailAsync(string userId,
+      ChangeEmailDto changeEmailDto)
+    {
+        var findResult = await FindUserByIdAsync(userId);
 
-      await SendAccountConfirmationEmailAsync(appUser);
+        if (!findResult.Succeeded)
+            return OperationResult.Error(findResult.ErrorResult);
 
-      return OperationResult.Error(OK, "Usuario registrado con éxito");
-   }
+        var userdB = findResult.DataResult;
 
-   private async Task<bool> AssingRolesToUserAsync(List<string> roleIds,
-     ApplicationUser appUser)
-   {
-      if (roleIds is null || roleIds.Count <= 0)
-         return false;
+        if (userdB is not null)
+        {
+            var result = await _userManager.ChangeEmailAsync(userdB,
+              changeEmailDto.NewEmail,
+              changeEmailDto.Code.Replace(" ", "+"));
 
-      var roleNames = await _roleManager.Roles
-        .AsNoTracking()
-        .Where(x => roleIds.Contains(x.Id))
-        .Select(x => x.Name).ToListAsync();
+            if (!result.Succeeded)
+            {
+                return OperationResult.Error(BadRequest,
+                  "No se pudo cambiar el email");
+            }
+        }
 
-      var assingRolesResult =
-        await _userManager.AddToRolesAsync(appUser, roleNames);
+        return OperationResult.Error(NotFound,
+          "No se encontró el usuario requerido");
+    }
 
-      return assingRolesResult.Succeeded;
-   }
+    public async Task<OperationResult> UnlockUserAsync(string userId)
+    {
+        var findResult = await FindUserByIdAsync(userId);
 
-   private async Task<OperationResult<ApplicationUser>> FindUserByIdAsync(
-     string userId)
-   {
-      var user = await _userManager.FindByIdAsync(userId);
+        if (!findResult.Succeeded)
+            return OperationResult.Error(findResult.ErrorResult);
 
-      if (user is null)
-         return OperationResult<ApplicationUser>.Error(NotFound,
+        var user = findResult.DataResult;
+
+        if (user is not null)
+        {
+            if (user.LockoutEnd is not null && user.LockoutEnd > DateTimeOffset.UtcNow)
+                user.LockoutEnd = null;
+
+            var result = await _userManager.UpdateAsync(user);
+
+            if (!result.Succeeded)
+            {
+                return OperationResult.Success(BadRequest,
+                   "Error al desbloquear al usuario");
+            }
+
+            return OperationResult.Success(OK,
+               "Usuario desbloqueado con éxito");
+        }
+
+        return OperationResult.Error(NotFound,
+          "No se encontró el usuario requerido");
+    }
+
+    public async Task<OperationResult> LockUserAsync(string userId)
+    {
+        var findResult = await FindUserByIdAsync(userId);
+
+        if (!findResult.Succeeded)
+            return OperationResult.Error(findResult.ErrorResult);
+
+        var user = findResult.DataResult;
+        if (user is not null)
+        {
+            if (user.LockoutEnd is null)
+                user.LockoutEnd = DateTimeOffset.UtcNow;
+
+            if (user.LockoutEnd is not null && user.LockoutEnd < DateTimeOffset.UtcNow)
+                user.LockoutEnd = DateTimeOffset.UtcNow.AddYears(100);
+
+            var result = await _userManager.UpdateAsync(user);
+
+            if (!result.Succeeded)
+            {
+                return OperationResult.Success(BadRequest,
+                   "Error al bloquear al usuario");
+            }
+
+            return OperationResult.Success(OK,
+               "Usuario bloqueado con éxito");
+        }
+
+        return OperationResult.Error(NotFound,
+          "No se encontró el usuario requerido");
+    }
+
+    public async Task<OperationResult> RegisterUserAsync(
+      RegisterUserDto registerUserDto)
+    {
+        var appUser = new ApplicationUser
+        {
+            Nombre = registerUserDto.Nombre,
+            Apellidos = registerUserDto.Apellidos,
+            Email = registerUserDto.Email,
+            UserName = registerUserDto.Email,
+            PhoneNumber = registerUserDto.PhoneNumber
+        };
+
+        var result =
+          await _userManager.CreateAsync(appUser,
+            registerUserDto.Password);
+
+        if (!result.Succeeded)
+        {
+            var errors = result.Errors.Select(e => e.Description);
+            return OperationResult.Error(BadRequest, errors);
+        }
+
+        var roleResult =
+          await AssingRolesToUserAsync(registerUserDto.RolesIds, appUser);
+
+        if (!roleResult)
+        {
+            return OperationResult.Error(BadRequest,
+              "Error al asignar los roles");
+        }
+
+        await SendAccountConfirmationEmailAsync(appUser);
+
+        return OperationResult.Error(OK, "Usuario registrado con éxito");
+    }
+
+    private async Task<bool> AssingRolesToUserAsync(List<string> roleIds,
+      ApplicationUser appUser)
+    {
+        if (roleIds is null || roleIds.Count <= 0)
+            return false;
+
+        var roleNames = await _roleManager.Roles
+          .AsNoTracking()
+          .Where(x => roleIds.Contains(x.Id))
+          .Select(x => x.Name).ToListAsync();
+
+        var assingRolesResult =
+          await _userManager.AddToRolesAsync(appUser, roleNames);
+
+        return assingRolesResult.Succeeded;
+    }
+
+    private async Task<OperationResult<ApplicationUser>> FindUserByIdAsync(
+      string userId)
+    {
+        var user = await _userManager.FindByIdAsync(userId);
+
+        if (user is null)
+        {
+            return OperationResult<ApplicationUser>.Error(NotFound,
            "No se pudo encontrar el usuario");
+        }
 
-      return OperationResult<ApplicationUser>.Success(user);
-   }
+        return OperationResult<ApplicationUser>.Success(user);
+    }
 
-   public async Task<OperationResult<LoginResponseDto>> LoginUserAsync(
-     LoginRequestDto loginRequestDto)
-   {
-      var user =
-        await _userManager.FindByEmailAsync(loginRequestDto.Email);
+    public async Task<OperationResult<LoginResponseDto>> LoginUserAsync(
+      LoginRequestDto loginRequestDto)
+    {
+        var user =
+          await _userManager.FindByEmailAsync(loginRequestDto.Email);
 
-      if (user is null)
-         return OperationResult<LoginResponseDto>.Error(BadRequest,
+        if (user is null)
+        {
+            return OperationResult<LoginResponseDto>.Error(BadRequest,
            new LoginResponseDto
            { ErrorMessage = "Inicio de sesión incorrecto." });
+        }
 
-      var result =
+        var result =
         await _signInManager.PasswordSignInAsync(loginRequestDto.Email,
-          loginRequestDto.Password, false, false);
+          loginRequestDto.Password, true, false);
 
-      if (!result.Succeeded)
-         return OperationResult<LoginResponseDto>.Error(BadRequest,
+        if (!result.Succeeded)
+        {
+            return OperationResult<LoginResponseDto>.Error(BadRequest,
            new LoginResponseDto
            { ErrorMessage = "Inicio de sesión incorrecto." });
+        }
 
-      var signingCredentials =
+        var signingCredentials =
         _tokenBuilderService.GetSigningCredentials(_jwtSettings.SecretKey);
 
-      var claims = await _tokenBuilderService.GetClaims(user);
+        var claims = await _tokenBuilderService.GetClaims(user);
 
-      var tokenOptions = _tokenBuilderService.GenerateTokenOptions(
-        signingCredentials, claims,
-        _jwtSettings.ValidAudience, _jwtSettings.ValidIssuer,
-        _jwtSettings.ExpiryInMinutes);
+        var tokenOptions = _tokenBuilderService.GenerateTokenOptions(
+          signingCredentials, claims,
+          _jwtSettings.ValidAudience, _jwtSettings.ValidIssuer,
+          _jwtSettings.ExpiryInMinutes);
 
-      var token = new JwtSecurityTokenHandler().WriteToken(tokenOptions);
+        var token = new JwtSecurityTokenHandler().WriteToken(tokenOptions);
 
-      user.RefreshToken = _tokenBuilderService.GenerateRefreshToken();
-      user.RefreshTokenExpiryTime = DateTime.Now.AddDays(7);
+        user.RefreshToken = _tokenBuilderService.GenerateRefreshToken();
+        user.RefreshTokenExpiryTime = DateTime.Now.AddDays(7);
 
-      await _userManager.UpdateAsync(user);
+        await _userManager.UpdateAsync(user);
 
-      return OperationResult<LoginResponseDto>.Success(
-        new LoginResponseDto
-        {
-           IsAuthSuccessful = true,
-           Token = token,
-           RefreshToken = user.RefreshToken
-        });
-   }
+        return OperationResult<LoginResponseDto>.Success(
+          new LoginResponseDto
+          {
+              IsAuthSuccessful = true,
+              Token = token,
+              RefreshToken = user.RefreshToken
+          });
+    }
 }

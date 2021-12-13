@@ -1,23 +1,22 @@
 ﻿@using Microsoft.AspNetCore.Components.Authorization
 
 <AuthorizeView>
-   <Authorized Context="authState">
-      <RadzenProfileMenu Style="background: #262526; margin-right: 5px; border: none;">
-         <Template>
-            <RadzenGravatar Email="@(authState.User.Identity?.Name)" />
-         </Template>
-         <ChildContent>
-            <RadzenProfileMenuItem Text="@($"Hola, {authState.User.Identity?.Name}!")"
-                                   Style="padding: 10px" />
-            <RadzenProfileMenuItem Text="Salir" Path="logout" Icon="exit_to_app" />
-         </ChildContent>
-      </RadzenProfileMenu>
-   </Authorized>
-   <NotAuthorized>
-      <NavLink class="nav-link" href="login">Iniciar Sesión</NavLink>
-   </NotAuthorized>
+    <Authorized Context="authState">
+        <RadzenProfileMenu
+            Style="background: #262526; margin-right: 5px; border: none;">
+            <Template>
+                <RadzenGravatar Email="@(authState.User.Identity?.Name)" />
+            </Template>
+            <ChildContent>
+                <RadzenProfileMenuItem
+                    Text="@($"Hola, {authState.User.Identity?.Name}!")"
+                    Style="padding: 10px" />
+                <RadzenProfileMenuItem Text="Salir" Path="logout"
+                    Icon="exit_to_app" />
+            </ChildContent>
+        </RadzenProfileMenu>
+    </Authorized>
+    <NotAuthorized>
+        <NavLink class="nav-link" href="login">Iniciar Sesión</NavLink>
+    </NotAuthorized>
 </AuthorizeView>
-
-@code {
-
-}

@@ -7,12 +7,9 @@
 
    @if (_citasCanceladas is null)
    {
-      <p>
-         Cargando
-         <i class="fas fa-spinner fa-spin"></i>
-      </p>
+      <CircularLoading /> 
    }
-   else
+   else 
    {
       <div class="row">
          <div class="col-12">
@@ -24,12 +21,18 @@
                <div class="mt-3">
                   <ErrorBoundary>
                      <RadzenChart>
-                        <RadzenColumnSeries Data="@_citasCompletadas" CategoryProperty="RegisterationDate"
-                                         Title="@Sd.ESTADO_CITA_COMPLETADA" ValueProperty="TotalCitas" />
-                        <RadzenColumnSeries Data="@_citasCanceladas" CategoryProperty="RegisterationDate"
-                                         Title="@Sd.ESTADO_CITA_CANCELADA" ValueProperty="TotalCitas" />
-                        <RadzenColumnSeries Data="@_citasNoAsistdas" CategoryProperty="RegisterationDate"
-                                         Title="@Sd.ESTADO_CITA_NOASISTIOPACIENTE" ValueProperty="TotalCitas" />
+                        <RadzenColumnSeries Data="@_citasCompletadas"
+                                         CategoryProperty="RegisterationDate"
+                                         Title="@Sd.ESTADO_CITA_COMPLETADA"
+                                         ValueProperty="TotalCitas" />
+                        <RadzenColumnSeries Data="@_citasCanceladas"
+                                         CategoryProperty="RegisterationDate"
+                                         Title="@Sd.ESTADO_CITA_CANCELADA"
+                                         ValueProperty="TotalCitas" />
+                        <RadzenColumnSeries Data="@_citasNoAsistdas"
+                                         CategoryProperty="RegisterationDate"
+                                         Title="@Sd.ESTADO_CITA_NOASISTIOPACIENTE"
+                                         ValueProperty="TotalCitas" />
 
                         <RadzenCategoryAxis FormatString="{0:MMM}" Padding="20" />
                         <RadzenColumnOptions Radius="3" />
@@ -49,8 +52,10 @@
                      Resúmen Mensual de Pacientes Registrados
                   </h3>
                   <RadzenChart>
-                     <RadzenLineSeries Data="@_pacientesPreviousYear" CategoryProperty="RegistrationDate"
-                                    Title=@($"{DateTime.Now.AddYears(-1).Year}") LineType="LineType.Solid"
+                     <RadzenLineSeries Data="@_pacientesPreviousYear"
+                                    CategoryProperty="RegistrationDate"
+                                    Title=@($"{DateTime.Now.AddYears(-1).Year}")
+                                    LineType="LineType.Solid"
                                     ValueProperty="TotalRegisteration">
                         <RadzenMarkers MarkerType="MarkerType.Circle" />
                      </RadzenLineSeries>
@@ -58,7 +63,8 @@
                      <RadzenLineSeries Data="@_pacientesPresentYear"
                                     CategoryProperty="RegistrationDate"
                                     Title=@($"{DateTime.Now.Year}")
-                                    LineType="LineType.Solid" ValueProperty="TotalRegisteration">
+                                    LineType="LineType.Solid"
+                                    ValueProperty="TotalRegisteration">
                         <RadzenMarkers MarkerType="MarkerType.Circle" />
                      </RadzenLineSeries>
 
@@ -113,5 +119,4 @@
          </div>
       </div>
    }
-
 </div>

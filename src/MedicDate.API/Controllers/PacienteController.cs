@@ -4,10 +4,12 @@ using MedicDate.DataAccess.Entities;
 using MedicDate.DataAccess.Repository.IRepository;
 using MedicDate.Shared.Models.Common;
 using MedicDate.Shared.Models.Paciente;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MedicDate.API.Controllers;
 
+[Authorize]
 [Route("api/[controller]")]
 [ApiController]
 public class PacienteController : BaseController<Paciente>

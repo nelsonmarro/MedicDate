@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using Microsoft.OpenApi.Models;
 
 namespace MedicDate.API.Extensions;
 
@@ -48,6 +49,45 @@ public static class ApplicationServicesExtensions
       services.AddScoped<IArchivoRepository, ArchivoRepository>();
 
       services.AddSingleton<IConfigureOptions<MvcOptions>, ConfigureModelBindingLocalization>();
+
+      services.AddLocalization(options => options.ResourcesPath = "Resources");
+
+      services.AddCors(opt => opt.AddDefaultPolicy(
+        builder =>
+        {
+           builder.AllowAnyOrigin()
+           .AllowAnyMethod()
+           .AllowAnyHeader();
+        }));
+
+      services.AddSwaggerGen(c =>
+      {
+         c.SwaggerDoc("v1", new OpenApiInfo
+         { Title = "MedicDate_Api", Version = "v1" });
+         c.AddSecurityDefinition("bearer", new OpenApiSecurityScheme
+         {
+            In = ParameterLocation.Header,
+            Description = "Please Bearer and then token in the field",
+            Name = "Authorization",
+            Type = SecuritySchemeType.ApiKey
+         });
+         c.AddSecurityRequirement(new OpenApiSecurityRequirement
+        {
+        {
+          new OpenApiSecurityScheme
+          {
+            Reference = new OpenApiReference
+            {
+              Type = ReferenceType.SecurityScheme,
+              Id = "bearer"
+            }
+          },
+          Array.Empty<string>()
+        }
+        });
+      });
+
+      services.AddResponseCaching();
 
       return services;
    }

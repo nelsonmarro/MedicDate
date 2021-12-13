@@ -28,6 +28,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\MedicDate.Domain\MedicDate.Domain.csproj" />
+    <ProjectReference Include="..\MedicDate.Shared.Models\MedicDate.Shared.Models.csproj" />
   </ItemGroup>
 
 </Project>

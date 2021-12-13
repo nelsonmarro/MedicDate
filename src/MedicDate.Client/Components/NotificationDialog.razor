@@ -2,13 +2,13 @@
 
 <div class="text-center pb-2">
 	<span class="text-@Color">
-		<i class="fas @Icon fa-5x"></i>
+		<RadzenIcon Icon="@Icon" Style="font-size: 70px;"/>
 	</span>
 </div>
 
-<h2 class="text-center py-2">@Title</h2>
+<h2 class="text-center">@Title</h2>
 
-<p class="py-1 text-center px-5">
+<p class="py-1 text-center px-4 p-2">
 	@((MarkupString)(Text ?? ""))
 </p>
 
@@ -18,7 +18,6 @@
 
 
 @code {
-
 	[Parameter]
 	public string? Icon { get; set; }
 

@@ -41,7 +41,7 @@ namespace MedicDate.Client.Pages.AppUser
          }
          else
          {
-            NotificationService.ShowError("Error!", "Usuario creado con éxito");
+            NotificationService.ShowSuccess("Operación Exitosa!", "Usuario creado con éxito");
             NavigationManager.NavigateTo("usuarioList");
          }
       }

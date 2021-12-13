@@ -4,7 +4,6 @@ using MedicDate.API.Helpers;
 using MedicDate.API.Middlewares;
 using MedicDate.Bussines.ApplicationServices.IApplicationServices;
 using Microsoft.AspNetCore.Localization;
-using Microsoft.OpenApi.Models;
 
 namespace MedicDate.API;
 
@@ -22,50 +21,11 @@ public class Startup
    {
       services.AddApplicationServices(Configuration);
       services.AddDomainServices();
-
-      services.AddLocalization(options => options.ResourcesPath = "Resources");
-
+      services.AddIdentityServices(Configuration);
       services.AddControllers(opts =>
       {
          // 2 - Index QueryStringValueProviderFactory
          opts.ValueProviderFactories[2] = new CustomValueProviderFactory();
-      });
-
-      services.AddCors(opt => opt.AddDefaultPolicy(
-        builder =>
-        {
-           builder.AllowAnyOrigin()
-           .AllowAnyMethod()
-           .AllowAnyHeader();
-        }));
-
-      services.AddIdentityServices(Configuration);
-
-      services.AddSwaggerGen(c =>
-      {
-         c.SwaggerDoc("v1", new OpenApiInfo
-         { Title = "MedicDate_Api", Version = "v1" });
-         c.AddSecurityDefinition("bearer", new OpenApiSecurityScheme
-         {
-            In = ParameterLocation.Header,
-            Description = "Please Bearer and then token in the field",
-            Name = "Authorization",
-            Type = SecuritySchemeType.ApiKey
-         });
-         c.AddSecurityRequirement(new OpenApiSecurityRequirement
-        {
-        {
-          new OpenApiSecurityScheme
-          {
-            Reference = new OpenApiReference
-            {
-              Type = ReferenceType.SecurityScheme,
-              Id = "bearer"
-            }
-          },
-          Array.Empty<string>()
-        }
-        });
       });
    }
 
@@ -102,6 +62,7 @@ public class Startup
       dbInitializer.Initialize();
 
       app.UseRouting();
+      app.UseResponseCaching();
       app.UseCors();
 
       app.UseAuthentication();

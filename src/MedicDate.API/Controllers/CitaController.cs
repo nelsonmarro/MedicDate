@@ -5,10 +5,12 @@ using MedicDate.DataAccess.Entities;
 using MedicDate.DataAccess.Repository.IRepository;
 using MedicDate.Shared.Models.Cita;
 using MedicDate.Shared.Models.Common;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MedicDate.API.Controllers;
 
+[Authorize]
 [Route("api/[controller]")]
 [ApiController]
 public class CitaController : BaseController<Cita>
