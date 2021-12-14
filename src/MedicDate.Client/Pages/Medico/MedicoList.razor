@@ -2,56 +2,56 @@
 @using MedicDate.Shared.Models.Medico
 
 <div class="row">
-   <div class="col-12 text-left">
-      <h2 class="text-primary">Doctores</h2>
-   </div>
-   <div class="col-12 d-flex flex-column flex-md-row mt-3 mb-2 mb-md-0">
-      <div class="me-md-3">
-         <span>Filtrar por especialidad:</span>
-      </div>
-      <div>
-         <ErrorBoundary>
-            <RadzenDropDown AllowClear="true" TValue="string"
-                            Style="width: 300px" Data="@_especialidadList"
-                            AllowVirtualization="true" Placeholder="Seleccione"
-                            Change="@FilterByEspecialidad" ValueProperty="Id"
-                            TextProperty="NombreEspecialidad" />
-         </ErrorBoundary>
-      </div>
-   </div>
-   <div class="col-12">
+  <div class="col-12 text-left">
+    <h2 class="text-primary">Doctores</h2>
+  </div>
+  <div class="col-12 d-flex flex-column flex-md-row mt-3 mb-2 mb-md-0">
+    <div class="me-md-3">
+      <span>Filtrar por especialidad:</span>
+    </div>
+    <div>
       <ErrorBoundary>
-         <RadzenGenericGrid TItem="MedicoResponseDto" ItemList="@_medicoList"
-                            OpRoutes="@_opRoutes" OnDeleteData="@DeleteMedico"
-                            PropNames="_propNames" Headers="_headers"
-                            TotalCount="@_totalCount">
-            <CustomGridCols>
-               <RadzenDataGridColumn TItem="MedicoResponseDto" Property="Especialidades"
-                                     Title="Especialidades" Filterable="false"
-                                     Sortable="false">
-                  <Template Context="medico">
-                     @if (medico.Especialidades?.Count is > 0 and <= 3)
-                     {
-                        <div class="d-flex flex-row flex-wrap">
-                           @foreach (var item in medico.Especialidades)
-                           {
-                              <div>
-                                 <span class="text-primary" style="font-weight: bold;">
-                                    @(item.NombreEspecialidad).&nbsp;&nbsp;
-                                 </span>
-                              </div>
-                           }
-                        </div>
-                     }
-                     else
-                     {
-                        <RadzenButton Text="ver todas" Size="@ButtonSize.Small"
-                                   Click="OpenEspecialidadesDialog" />
-                     }
-                  </Template>
-               </RadzenDataGridColumn>
-            </CustomGridCols>
-         </RadzenGenericGrid>
+        <RadzenDropDown AllowClear="true" TValue="string"
+                        Style="width: 300px" Data="@_especialidadList"
+                        AllowVirtualization="true" Placeholder="Seleccione"
+                        Change="@FilterByEspecialidad" ValueProperty="Id"
+                        TextProperty="NombreEspecialidad" />
       </ErrorBoundary>
-   </div>
+    </div>
+  </div>
+  <div class="col-12">
+    <ErrorBoundary>
+      <RadzenGenericGrid TItem="MedicoResponseDto" ItemList="@_medicoList"
+                         OpRoutes="@_opRoutes" OnDeleteData="@DeleteMedico"
+                         PropNames="_propNames" Headers="_headers"
+                         TotalCount="@_totalCount">
+        <CustomGridCols>
+          <RadzenDataGridColumn TItem="MedicoResponseDto" Property="Especialidades"
+                                Title="Especialidades" Filterable="false"
+                                Sortable="false">
+            <Template Context="medico">
+              @if (medico.Especialidades?.Count is > 0 and <= 3)
+              {
+                <div class="d-flex flex-row flex-wrap">
+                  @foreach (var item in medico.Especialidades)
+                  {
+                    <div>
+                      <span class="text-primary" style="font-weight: bold;">
+                        @(item.NombreEspecialidad).&nbsp;&nbsp;
+                      </span>
+                    </div>
+                  }
+                </div>
+              }
+              else
+              {
+                <RadzenButton Text="ver todas" Size="@ButtonSize.Small"
+                            Click="OpenEspecialidadesDialog" />
+              }
+            </Template>
+          </RadzenDataGridColumn>
+        </CustomGridCols>
+      </RadzenGenericGrid>
+    </ErrorBoundary>
+  </div>
 </div>

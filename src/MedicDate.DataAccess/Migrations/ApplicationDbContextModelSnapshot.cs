@@ -26,14 +26,16 @@ namespace MedicDate.DataAccess.Migrations
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(900)");
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ClinicaId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Nombre")
                         .IsRequired()
                         .HasMaxLength(500)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(500)");
+                        .HasColumnType("nvarchar(500)");
 
                     b.HasKey("Id");
 
@@ -43,20 +45,17 @@ namespace MedicDate.DataAccess.Migrations
             modelBuilder.Entity("MedicDate.DataAccess.Entities.ActividadCita", b =>
                 {
                     b.Property<string>("CitaId")
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(900)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ActividadId")
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(900)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<bool>("ActividadTerminada")
                         .HasColumnType("bit");
 
                     b.Property<string>("Detalles")
                         .HasMaxLength(1000)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(1000)");
+                        .HasColumnType("nvarchar(1000)");
 
                     b.HasKey("CitaId", "ActividadId");
 
@@ -68,26 +67,25 @@ namespace MedicDate.DataAccess.Migrations
             modelBuilder.Entity("MedicDate.DataAccess.Entities.ApplicationUser", b =>
                 {
                     b.Property<string>("Id")
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(900)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
                     b.Property<string>("Apellidos")
                         .IsRequired()
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(max)");
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ClinicaId")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(max)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Email")
                         .HasMaxLength(256)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(256)");
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
@@ -100,49 +98,41 @@ namespace MedicDate.DataAccess.Migrations
 
                     b.Property<string>("Nombre")
                         .IsRequired()
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(max)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("NormalizedEmail")
                         .HasMaxLength(256)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(256)");
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<string>("NormalizedUserName")
                         .HasMaxLength(256)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(256)");
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<string>("PasswordHash")
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(max)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PhoneNumber")
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(max)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
 
                     b.Property<string>("RefreshToken")
                         .HasMaxLength(400)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(400)");
+                        .HasColumnType("nvarchar(400)");
 
                     b.Property<DateTime>("RefreshTokenExpiryTime")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("SecurityStamp")
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(max)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("bit");
 
                     b.Property<string>("UserName")
                         .HasMaxLength(256)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(256)");
+                        .HasColumnType("nvarchar(256)");
 
                     b.HasKey("Id");
 
@@ -159,17 +149,15 @@ namespace MedicDate.DataAccess.Migrations
 
             modelBuilder.Entity("MedicDate.DataAccess.Entities.ApplicationUserRole", b =>
                 {
-                    b.Property<string>("UserId")
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(900)");
-
                     b.Property<string>("RoleId")
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(900)");
+                        .HasColumnType("nvarchar(450)");
 
-                    b.HasKey("UserId", "RoleId");
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
 
-                    b.HasIndex("RoleId");
+                    b.HasKey("RoleId", "UserId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("AspNetUserRoles", (string)null);
                 });
@@ -177,28 +165,23 @@ namespace MedicDate.DataAccess.Migrations
             modelBuilder.Entity("MedicDate.DataAccess.Entities.AppRole", b =>
                 {
                     b.Property<string>("Id")
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(900)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(max)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Descripcion")
                         .HasMaxLength(300)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(300)");
+                        .HasColumnType("nvarchar(300)");
 
                     b.Property<string>("Name")
                         .HasMaxLength(256)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(256)");
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<string>("NormalizedName")
                         .HasMaxLength(256)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(256)");
+                        .HasColumnType("nvarchar(256)");
 
                     b.HasKey("Id");
 
@@ -214,24 +197,20 @@ namespace MedicDate.DataAccess.Migrations
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(900)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("CitaId")
                         .IsRequired()
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(900)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Descripcion")
                         .HasMaxLength(300)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(300)");
+                        .HasColumnType("nvarchar(300)");
 
                     b.Property<string>("RutaArchivo")
                         .IsRequired()
                         .HasMaxLength(1000)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(1000)");
+                        .HasColumnType("nvarchar(1000)");
 
                     b.HasKey("Id");
 
@@ -244,14 +223,16 @@ namespace MedicDate.DataAccess.Migrations
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(900)");
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ClinicaId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Estado")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(100)");
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime>("FechaFin")
                         .HasColumnType("datetime2");
@@ -260,14 +241,10 @@ namespace MedicDate.DataAccess.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("MedicoId")
-                        .IsRequired()
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(900)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("PacienteId")
-                        .IsRequired()
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(900)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
@@ -278,18 +255,49 @@ namespace MedicDate.DataAccess.Migrations
                     b.ToTable("Cita");
                 });
 
+            modelBuilder.Entity("MedicDate.DataAccess.Entities.Clinica", b =>
+                {
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Direccion")
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
+
+                    b.Property<string>("Nombre")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
+
+                    b.Property<string>("Ruc")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
+
+                    b.Property<string>("Telefono")
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Clinica");
+                });
+
             modelBuilder.Entity("MedicDate.DataAccess.Entities.Especialidad", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(900)");
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ClinicaId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("NombreEspecialidad")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(100)");
+                        .HasColumnType("nvarchar(100)");
 
                     b.HasKey("Id");
 
@@ -300,14 +308,16 @@ namespace MedicDate.DataAccess.Migrations
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(900)");
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ClinicaId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Nombre")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(100)");
+                        .HasColumnType("nvarchar(100)");
 
                     b.HasKey("Id");
 
@@ -317,12 +327,10 @@ namespace MedicDate.DataAccess.Migrations
             modelBuilder.Entity("MedicDate.DataAccess.Entities.GrupoPaciente", b =>
                 {
                     b.Property<string>("GrupoId")
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(900)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("PacienteId")
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(900)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("GrupoId", "PacienteId");
 
@@ -335,37 +343,35 @@ namespace MedicDate.DataAccess.Migrations
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(900)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Apellidos")
                         .IsRequired()
                         .HasMaxLength(150)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(150)");
+                        .HasColumnType("nvarchar(150)");
 
                     b.Property<string>("Cedula")
                         .IsRequired()
                         .HasMaxLength(10)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(10)");
+                        .HasColumnType("nvarchar(10)");
+
+                    b.Property<string>("ClinicaId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Nombre")
                         .IsRequired()
                         .HasMaxLength(150)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(150)");
+                        .HasColumnType("nvarchar(150)");
 
                     b.Property<string>("PhoneNumber")
                         .IsRequired()
                         .HasMaxLength(20)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(20)");
+                        .HasColumnType("nvarchar(20)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Cedula")
-                        .IsUnique();
+                    b.HasIndex("ClinicaId");
 
                     b.ToTable("Medico");
                 });
@@ -373,12 +379,10 @@ namespace MedicDate.DataAccess.Migrations
             modelBuilder.Entity("MedicDate.DataAccess.Entities.MedicoEspecialidad", b =>
                 {
                     b.Property<string>("MedicoId")
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(900)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("EspecialidadId")
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(900)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("MedicoId", "EspecialidadId");
 
@@ -391,34 +395,33 @@ namespace MedicDate.DataAccess.Migrations
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(900)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Apellidos")
                         .IsRequired()
                         .HasMaxLength(150)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(150)");
+                        .HasColumnType("nvarchar(150)");
 
                     b.Property<string>("Cedula")
                         .IsRequired()
                         .HasMaxLength(10)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(10)");
+                        .HasColumnType("nvarchar(10)");
+
+                    b.Property<string>("ClinicaId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("DateRegistered")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Direccion")
                         .HasMaxLength(300)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(300)");
+                        .HasColumnType("nvarchar(300)");
 
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(100)");
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime>("FechaNacimiento")
                         .HasColumnType("datetime2");
@@ -426,30 +429,28 @@ namespace MedicDate.DataAccess.Migrations
                     b.Property<string>("Nombres")
                         .IsRequired()
                         .HasMaxLength(150)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(150)");
+                        .HasColumnType("nvarchar(150)");
 
                     b.Property<string>("NumHistoria")
                         .IsRequired()
                         .HasMaxLength(1000)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(1000)");
+                        .HasColumnType("nvarchar(1000)");
 
                     b.Property<string>("Sexo")
                         .IsRequired()
                         .HasMaxLength(10)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(10)");
+                        .HasColumnType("nvarchar(10)");
 
                     b.Property<string>("Telefono")
                         .HasMaxLength(20)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(20)");
+                        .HasColumnType("nvarchar(20)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("Cedula")
                         .IsUnique();
+
+                    b.HasIndex("ClinicaId");
 
                     b.HasIndex("NumHistoria")
                         .IsUnique();
@@ -466,17 +467,14 @@ namespace MedicDate.DataAccess.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("ClaimType")
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(max)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ClaimValue")
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(max)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("RoleId")
                         .IsRequired()
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(900)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
@@ -494,17 +492,14 @@ namespace MedicDate.DataAccess.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("ClaimType")
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(max)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ClaimValue")
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(max)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserId")
                         .IsRequired()
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(900)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
@@ -516,21 +511,17 @@ namespace MedicDate.DataAccess.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
                     b.Property<string>("LoginProvider")
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(900)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ProviderKey")
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(900)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ProviderDisplayName")
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(max)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserId")
                         .IsRequired()
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(900)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("LoginProvider", "ProviderKey");
 
@@ -542,20 +533,16 @@ namespace MedicDate.DataAccess.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
                     b.Property<string>("UserId")
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(900)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("LoginProvider")
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(900)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Name")
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(900)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Value")
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(max)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("UserId", "LoginProvider", "Name");
 
@@ -616,14 +603,12 @@ namespace MedicDate.DataAccess.Migrations
                     b.HasOne("MedicDate.DataAccess.Entities.Medico", "Medico")
                         .WithMany("Citas")
                         .HasForeignKey("MedicoId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("MedicDate.DataAccess.Entities.Paciente", "Paciente")
                         .WithMany("Citas")
                         .HasForeignKey("PacienteId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.Navigation("Medico");
 
@@ -649,6 +634,17 @@ namespace MedicDate.DataAccess.Migrations
                     b.Navigation("Paciente");
                 });
 
+            modelBuilder.Entity("MedicDate.DataAccess.Entities.Medico", b =>
+                {
+                    b.HasOne("MedicDate.DataAccess.Entities.Clinica", "Clinica")
+                        .WithMany("Medicos")
+                        .HasForeignKey("ClinicaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Clinica");
+                });
+
             modelBuilder.Entity("MedicDate.DataAccess.Entities.MedicoEspecialidad", b =>
                 {
                     b.HasOne("MedicDate.DataAccess.Entities.Especialidad", "Especialidad")
@@ -666,6 +662,17 @@ namespace MedicDate.DataAccess.Migrations
                     b.Navigation("Especialidad");
 
                     b.Navigation("Medico");
+                });
+
+            modelBuilder.Entity("MedicDate.DataAccess.Entities.Paciente", b =>
+                {
+                    b.HasOne("MedicDate.DataAccess.Entities.Clinica", "Clinica")
+                        .WithMany("Pacientes")
+                        .HasForeignKey("ClinicaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Clinica");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -724,6 +731,13 @@ namespace MedicDate.DataAccess.Migrations
                     b.Navigation("ActividadesCita");
 
                     b.Navigation("Archivos");
+                });
+
+            modelBuilder.Entity("MedicDate.DataAccess.Entities.Clinica", b =>
+                {
+                    b.Navigation("Medicos");
+
+                    b.Navigation("Pacientes");
                 });
 
             modelBuilder.Entity("MedicDate.DataAccess.Entities.Especialidad", b =>

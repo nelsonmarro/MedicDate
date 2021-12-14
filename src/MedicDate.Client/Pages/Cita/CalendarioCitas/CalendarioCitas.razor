@@ -35,29 +35,29 @@
 
 @code {
   private RenderFragment<CitaCalendarDto> DisplayCitaEstadosMenu => cita =>
-          __builder =>
-          {
-          <div>
-            <RadzenMenu Click="@(args => OnMenuItemClick(args, cita))">
-              <RadzenMenuItem Text="Cerrar" Icon="cancel" Value=@("close") />
-              <RadzenMenuItem Path=@($"citaEditar/{cita.Id}") Text="Editar Cita"
+    __builder =>
+    {
+    <div>
+      <RadzenMenu Click="@(args => OnMenuItemClick(args, cita))">
+        <RadzenMenuItem Text="Cerrar" Icon="cancel" Value=@("close") />
+        <RadzenMenuItem Path=@($"citaEditar/{cita.Id}") Text="Editar Cita"
                     Icon="edit" />
-              <RadzenMenuItem Text="Eliminar Cita" Icon="delete" Value="cita.Id" />
-              <RadzenMenuItem Text="Estados" Icon="pending_actions">
-                @foreach (var estado in Sd.ListadoEstadosCita)
-                  {
-                    if (estado == cita.Estado)
-                    {
-                    <RadzenMenuItem Text="@estado" Value="@estado" class="estado-checked" />
-                    }
-                    else
-                    {
-                    <RadzenMenuItem Text="@estado" Value="@estado" />
-                    }
-                  }
-              </RadzenMenuItem>
-            </RadzenMenu>
-          </div>
+        <RadzenMenuItem Text="Eliminar Cita" Icon="delete" Value="cita.Id" />
+        <RadzenMenuItem Text="Estados" Icon="pending_actions">
+          @foreach (var estado in Sd.ListadoEstadosCita)
+            {
+              if (estado == cita.Estado)
+              {
+              <RadzenMenuItem Text="@estado" Value="@estado" class="estado-checked" />
+              }
+              else
+              {
+              <RadzenMenuItem Text="@estado" Value="@estado" />
+              }
+            }
+        </RadzenMenuItem>
+      </RadzenMenu>
+    </div>
 
-          };
+    };
 }

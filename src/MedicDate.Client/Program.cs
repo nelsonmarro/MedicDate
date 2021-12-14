@@ -1,4 +1,4 @@
-using Blazored.LocalStorage;
+﻿using Blazored.LocalStorage;
 using MedicDate.Client;
 using MedicDate.Client.Auth;
 using MedicDate.Client.Data.HttpRepository;

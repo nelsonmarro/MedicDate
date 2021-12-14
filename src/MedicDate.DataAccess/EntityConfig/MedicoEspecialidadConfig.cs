@@ -7,8 +7,8 @@ namespace MedicDate.DataAccess.EntityConfig;
 public class
   MedicoEspecialidadConfig : IEntityTypeConfiguration<MedicoEspecialidad>
 {
-   public void Configure(EntityTypeBuilder<MedicoEspecialidad> builder)
-   {
-      builder.HasKey(x => new { x.MedicoId, x.EspecialidadId });
-   }
+    public void Configure(EntityTypeBuilder<MedicoEspecialidad> builder)
+    {
+        builder.HasKey(x => new { x.MedicoId, x.EspecialidadId });
+    }
 }

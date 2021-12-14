@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace MedicDate.DataAccess.Migrations
 {
-    public partial class AddPreConventionModelConfigurations : Migration
+    public partial class InitialM : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -13,8 +13,9 @@ namespace MedicDate.DataAccess.Migrations
                 name: "Actividad",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "varchar(900)", unicode: false, nullable: false),
-                    Nombre = table.Column<string>(type: "varchar(500)", unicode: false, maxLength: 500, nullable: false)
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Nombre = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
+                    ClinicaId = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -25,11 +26,11 @@ namespace MedicDate.DataAccess.Migrations
                 name: "AspNetRoles",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "varchar(900)", unicode: false, nullable: false),
-                    Descripcion = table.Column<string>(type: "varchar(300)", unicode: false, maxLength: 300, nullable: true),
-                    Name = table.Column<string>(type: "varchar(256)", unicode: false, maxLength: 256, nullable: true),
-                    NormalizedName = table.Column<string>(type: "varchar(256)", unicode: false, maxLength: 256, nullable: true),
-                    ConcurrencyStamp = table.Column<string>(type: "varchar(max)", unicode: false, nullable: true)
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Descripcion = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: true),
+                    Name = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    NormalizedName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -40,20 +41,21 @@ namespace MedicDate.DataAccess.Migrations
                 name: "AspNetUsers",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "varchar(900)", unicode: false, nullable: false),
-                    Nombre = table.Column<string>(type: "varchar(max)", unicode: false, nullable: false),
-                    Apellidos = table.Column<string>(type: "varchar(max)", unicode: false, nullable: false),
-                    RefreshToken = table.Column<string>(type: "varchar(400)", unicode: false, maxLength: 400, nullable: true),
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Nombre = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Apellidos = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ClinicaId = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    RefreshToken = table.Column<string>(type: "nvarchar(400)", maxLength: 400, nullable: true),
                     RefreshTokenExpiryTime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UserName = table.Column<string>(type: "varchar(256)", unicode: false, maxLength: 256, nullable: true),
-                    NormalizedUserName = table.Column<string>(type: "varchar(256)", unicode: false, maxLength: 256, nullable: true),
-                    Email = table.Column<string>(type: "varchar(256)", unicode: false, maxLength: 256, nullable: true),
-                    NormalizedEmail = table.Column<string>(type: "varchar(256)", unicode: false, maxLength: 256, nullable: true),
+                    UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    NormalizedEmail = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     EmailConfirmed = table.Column<bool>(type: "bit", nullable: false),
-                    PasswordHash = table.Column<string>(type: "varchar(max)", unicode: false, nullable: true),
-                    SecurityStamp = table.Column<string>(type: "varchar(max)", unicode: false, nullable: true),
-                    ConcurrencyStamp = table.Column<string>(type: "varchar(max)", unicode: false, nullable: true),
-                    PhoneNumber = table.Column<string>(type: "varchar(max)", unicode: false, nullable: true),
+                    PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    SecurityStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     PhoneNumberConfirmed = table.Column<bool>(type: "bit", nullable: false),
                     TwoFactorEnabled = table.Column<bool>(type: "bit", nullable: false),
                     LockoutEnd = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
@@ -66,11 +68,27 @@ namespace MedicDate.DataAccess.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Clinica",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Nombre = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
+                    Ruc = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
+                    Direccion = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: true),
+                    Telefono = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Clinica", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Especialidad",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "varchar(900)", unicode: false, nullable: false),
-                    NombreEspecialidad = table.Column<string>(type: "varchar(100)", unicode: false, maxLength: 100, nullable: false)
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    NombreEspecialidad = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    ClinicaId = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -81,48 +99,13 @@ namespace MedicDate.DataAccess.Migrations
                 name: "Grupo",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "varchar(900)", unicode: false, nullable: false),
-                    Nombre = table.Column<string>(type: "varchar(100)", unicode: false, maxLength: 100, nullable: false)
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Nombre = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    ClinicaId = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Grupo", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Medico",
-                columns: table => new
-                {
-                    Id = table.Column<string>(type: "varchar(900)", unicode: false, nullable: false),
-                    Nombre = table.Column<string>(type: "varchar(150)", unicode: false, maxLength: 150, nullable: false),
-                    Apellidos = table.Column<string>(type: "varchar(150)", unicode: false, maxLength: 150, nullable: false),
-                    Cedula = table.Column<string>(type: "varchar(10)", unicode: false, maxLength: 10, nullable: false),
-                    PhoneNumber = table.Column<string>(type: "varchar(20)", unicode: false, maxLength: 20, nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Medico", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Paciente",
-                columns: table => new
-                {
-                    Id = table.Column<string>(type: "varchar(900)", unicode: false, nullable: false),
-                    Nombres = table.Column<string>(type: "varchar(150)", unicode: false, maxLength: 150, nullable: false),
-                    Apellidos = table.Column<string>(type: "varchar(150)", unicode: false, maxLength: 150, nullable: false),
-                    Sexo = table.Column<string>(type: "varchar(10)", unicode: false, maxLength: 10, nullable: false),
-                    NumHistoria = table.Column<string>(type: "varchar(1000)", unicode: false, maxLength: 1000, nullable: false),
-                    Cedula = table.Column<string>(type: "varchar(10)", unicode: false, maxLength: 10, nullable: false),
-                    FechaNacimiento = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Telefono = table.Column<string>(type: "varchar(20)", unicode: false, maxLength: 20, nullable: true),
-                    Email = table.Column<string>(type: "varchar(100)", unicode: false, maxLength: 100, nullable: false),
-                    Direccion = table.Column<string>(type: "varchar(300)", unicode: false, maxLength: 300, nullable: true),
-                    DateRegistered = table.Column<DateTime>(type: "datetime2", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Paciente", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -131,9 +114,9 @@ namespace MedicDate.DataAccess.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    RoleId = table.Column<string>(type: "varchar(900)", unicode: false, nullable: false),
-                    ClaimType = table.Column<string>(type: "varchar(max)", unicode: false, nullable: true),
-                    ClaimValue = table.Column<string>(type: "varchar(max)", unicode: false, nullable: true)
+                    RoleId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ClaimType = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ClaimValue = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -152,9 +135,9 @@ namespace MedicDate.DataAccess.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<string>(type: "varchar(900)", unicode: false, nullable: false),
-                    ClaimType = table.Column<string>(type: "varchar(max)", unicode: false, nullable: true),
-                    ClaimValue = table.Column<string>(type: "varchar(max)", unicode: false, nullable: true)
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ClaimType = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ClaimValue = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -171,10 +154,10 @@ namespace MedicDate.DataAccess.Migrations
                 name: "AspNetUserLogins",
                 columns: table => new
                 {
-                    LoginProvider = table.Column<string>(type: "varchar(900)", unicode: false, nullable: false),
-                    ProviderKey = table.Column<string>(type: "varchar(900)", unicode: false, nullable: false),
-                    ProviderDisplayName = table.Column<string>(type: "varchar(max)", unicode: false, nullable: true),
-                    UserId = table.Column<string>(type: "varchar(900)", unicode: false, nullable: false)
+                    LoginProvider = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ProviderKey = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ProviderDisplayName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -191,12 +174,12 @@ namespace MedicDate.DataAccess.Migrations
                 name: "AspNetUserRoles",
                 columns: table => new
                 {
-                    UserId = table.Column<string>(type: "varchar(900)", unicode: false, nullable: false),
-                    RoleId = table.Column<string>(type: "varchar(900)", unicode: false, nullable: false)
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    RoleId = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AspNetUserRoles", x => new { x.UserId, x.RoleId });
+                    table.PrimaryKey("PK_AspNetUserRoles", x => new { x.RoleId, x.UserId });
                     table.ForeignKey(
                         name: "FK_AspNetUserRoles_AspNetRoles_RoleId",
                         column: x => x.RoleId,
@@ -215,10 +198,10 @@ namespace MedicDate.DataAccess.Migrations
                 name: "AspNetUserTokens",
                 columns: table => new
                 {
-                    UserId = table.Column<string>(type: "varchar(900)", unicode: false, nullable: false),
-                    LoginProvider = table.Column<string>(type: "varchar(900)", unicode: false, nullable: false),
-                    Name = table.Column<string>(type: "varchar(900)", unicode: false, nullable: false),
-                    Value = table.Column<string>(type: "varchar(max)", unicode: false, nullable: true)
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    LoginProvider = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Value = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -232,11 +215,61 @@ namespace MedicDate.DataAccess.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Medico",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ClinicaId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Nombre = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
+                    Apellidos = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
+                    Cedula = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Medico", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Medico_Clinica_ClinicaId",
+                        column: x => x.ClinicaId,
+                        principalTable: "Clinica",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Paciente",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Nombres = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
+                    Apellidos = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
+                    Sexo = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
+                    NumHistoria = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false),
+                    ClinicaId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Cedula = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
+                    FechaNacimiento = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Telefono = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
+                    Email = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Direccion = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: true),
+                    DateRegistered = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Paciente", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Paciente_Clinica_ClinicaId",
+                        column: x => x.ClinicaId,
+                        principalTable: "Clinica",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "MedicoEspecialidad",
                 columns: table => new
                 {
-                    MedicoId = table.Column<string>(type: "varchar(900)", unicode: false, nullable: false),
-                    EspecialidadId = table.Column<string>(type: "varchar(900)", unicode: false, nullable: false)
+                    MedicoId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    EspecialidadId = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -259,12 +292,13 @@ namespace MedicDate.DataAccess.Migrations
                 name: "Cita",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "varchar(900)", unicode: false, nullable: false),
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     FechaInicio = table.Column<DateTime>(type: "datetime2", nullable: false),
                     FechaFin = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Estado = table.Column<string>(type: "varchar(100)", unicode: false, maxLength: 100, nullable: false),
-                    PacienteId = table.Column<string>(type: "varchar(900)", unicode: false, nullable: false),
-                    MedicoId = table.Column<string>(type: "varchar(900)", unicode: false, nullable: false)
+                    Estado = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    ClinicaId = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PacienteId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    MedicoId = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -273,22 +307,20 @@ namespace MedicDate.DataAccess.Migrations
                         name: "FK_Cita_Medico_MedicoId",
                         column: x => x.MedicoId,
                         principalTable: "Medico",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Cita_Paciente_PacienteId",
                         column: x => x.PacienteId,
                         principalTable: "Paciente",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
                 name: "GrupoPaciente",
                 columns: table => new
                 {
-                    PacienteId = table.Column<string>(type: "varchar(900)", unicode: false, nullable: false),
-                    GrupoId = table.Column<string>(type: "varchar(900)", unicode: false, nullable: false)
+                    PacienteId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    GrupoId = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -311,10 +343,10 @@ namespace MedicDate.DataAccess.Migrations
                 name: "ActividadCita",
                 columns: table => new
                 {
-                    CitaId = table.Column<string>(type: "varchar(900)", unicode: false, nullable: false),
-                    ActividadId = table.Column<string>(type: "varchar(900)", unicode: false, nullable: false),
+                    CitaId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ActividadId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     ActividadTerminada = table.Column<bool>(type: "bit", nullable: false),
-                    Detalles = table.Column<string>(type: "varchar(1000)", unicode: false, maxLength: 1000, nullable: true)
+                    Detalles = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -337,10 +369,10 @@ namespace MedicDate.DataAccess.Migrations
                 name: "Archivo",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "varchar(900)", unicode: false, nullable: false),
-                    RutaArchivo = table.Column<string>(type: "varchar(1000)", unicode: false, maxLength: 1000, nullable: false),
-                    Descripcion = table.Column<string>(type: "varchar(300)", unicode: false, maxLength: 300, nullable: true),
-                    CitaId = table.Column<string>(type: "varchar(900)", unicode: false, nullable: false)
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    RutaArchivo = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false),
+                    Descripcion = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: true),
+                    CitaId = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -386,9 +418,9 @@ namespace MedicDate.DataAccess.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_AspNetUserRoles_RoleId",
+                name: "IX_AspNetUserRoles_UserId",
                 table: "AspNetUserRoles",
-                column: "RoleId");
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "EmailIndex",
@@ -418,10 +450,9 @@ namespace MedicDate.DataAccess.Migrations
                 column: "PacienteId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Medico_Cedula",
+                name: "IX_Medico_ClinicaId",
                 table: "Medico",
-                column: "Cedula",
-                unique: true);
+                column: "ClinicaId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_MedicoEspecialidad_EspecialidadId",
@@ -433,6 +464,11 @@ namespace MedicDate.DataAccess.Migrations
                 table: "Paciente",
                 column: "Cedula",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Paciente_ClinicaId",
+                table: "Paciente",
+                column: "ClinicaId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Paciente_NumHistoria",
@@ -493,6 +529,9 @@ namespace MedicDate.DataAccess.Migrations
 
             migrationBuilder.DropTable(
                 name: "Paciente");
+
+            migrationBuilder.DropTable(
+                name: "Clinica");
         }
     }
 }

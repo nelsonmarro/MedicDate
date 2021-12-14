@@ -6,11 +6,14 @@ namespace MedicDate.DataAccess.Entities;
 
 public class Grupo : IId
 {
-  [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-  [Key]
-  public string Id { get; set; } = default!;
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    [Key]
+    public string Id { get; set; } = default!;
 
-  [StringLength(100)] public string Nombre { get; set; } = default!;
+    [StringLength(100)] public string Nombre { get; set; } = default!;
 
-  public List<GrupoPaciente> GruposPacientes { get; set; } = null!;
+    [Required]
+    public string ClinicaId { get; set; } = null!;
+
+    public List<GrupoPaciente> GruposPacientes { get; set; } = null!;
 }

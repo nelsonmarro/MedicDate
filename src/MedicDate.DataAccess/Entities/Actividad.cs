@@ -6,11 +6,14 @@ namespace MedicDate.DataAccess.Entities;
 
 public class Actividad : IId
 {
-  [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-  [Key]
-  public string Id { get; set; } = default!;
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    [Key]
+    public string Id { get; set; } = default!;
 
-  [StringLength(500)] public string Nombre { get; set; } = default!;
+    [StringLength(500)] public string Nombre { get; set; } = default!;
 
-  public List<ActividadCita> ActividadesCitas { get; set; } = default!;
+    [Required]
+    public string ClinicaId { get; set; } = null!;
+
+    public List<ActividadCita> ActividadesCitas { get; set; } = default!;
 }
