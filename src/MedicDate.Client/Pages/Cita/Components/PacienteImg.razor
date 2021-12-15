@@ -3,20 +3,21 @@
 @inject IHttpRepository HttpRepo
 @inject INotificationService NotifService
 @inject DialogService DialogService
+@using System.Security.Cryptography
 
 <InputFile multiple accept="image/*" OnChange="LoadImages"
-           class="mb-3 form-control"/>
+           class="mb-3 form-control" />
 
 <DisplayPacienteImage Loading="_loading"
                       Archivos="_selectedArchivos"
                       OnArchivoDelete="DeleteArchivoAsync"
-                      OnArchivoUpdate="UpdateImageAsync"/>
+                      OnArchivoUpdate="UpdateImageAsync" />
 
 <div class="my-3 text-right">
   <RadzenButton Text="Guardar"
                 ButtonStyle="ButtonStyle.Success"
                 Click="@SaveImagesAsync"
-                IsBusy="@_isSavingImages" BusyText="Guardando ..."/>
+                IsBusy="@_isSavingImages" BusyText="Guardando ..." />
 </div>
 
 @code {
@@ -59,14 +60,15 @@
       await file.OpenReadStream(maxAllowedSize).ReadAsync(imageBytes);
 
       var imageBase64 = Convert.ToBase64String(imageBytes);
-
+      var rng = new Random();
       _selectedArchivos?.Add(new ArchivoCitaVm
-      {
-        ImageInfo = new Base64ImgDto
-        {ImgBase64 = imageBase64, MimeType = fileMimeType},
-        Descripcion = "",
-        Extension = imageExtension
-      });
+        {
+          Id = rng.Next(int.MaxValue).ToString(),
+          ImageInfo = new Base64ImgDto
+          { ImgBase64 = imageBase64, MimeType = fileMimeType },
+          Descripcion = "",
+          Extension = imageExtension
+        });
     }
 
     _loading = false;
@@ -78,9 +80,9 @@
         && string.IsNullOrEmpty(archivoCitaVm.ImageInfo.ImgBase64))
     {
       var archivoToDelete = new DeleteArchivoRequestDto
-      {
-        RutaCreated = archivoCitaVm.RutaArchivo
-      };
+        {
+          RutaCreated = archivoCitaVm.RutaArchivo
+        };
 
       var httpResp = await HttpRepo.Post($"api/Archivo/delete/{archivoCitaVm.Id}",
         archivoToDelete);
@@ -105,13 +107,14 @@
       _newSelectedArchivos?.RemoveRange(0, SavedArchivos.Count);
     }
 
+    _newSelectedArchivos?.ForEach(x => x.Id = "");
     await OnSaveImages.InvokeAsync(_newSelectedArchivos);
     _isSavingImages = false;
   }
 
   private async Task UpdateImageAsync(UpdateArchivoRequestDto updateArchivoRequestDto)
   {
-    if (!string.IsNullOrEmpty(updateArchivoRequestDto.Id))
+    if (!int.TryParse(updateArchivoRequestDto.Id, out _))
     {
       NotifService.ShowLoadingDialog(DialogService);
 

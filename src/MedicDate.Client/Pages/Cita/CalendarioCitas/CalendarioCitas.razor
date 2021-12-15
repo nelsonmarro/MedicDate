@@ -14,8 +14,8 @@
                      Culture="CultureInfo.CurrentCulture" TodayText="Hoy"
                      Style="height: 80vh;">
       <Template Context="data">
-        <div class="w-100 h-100 cita-card"
-             @onclick=@(args => ShowContextMenuWithContent(args, data))>
+        <div class="w-100 h-100 cita-card" @onclick=@(args =>
+             ShowContextMenuWithContent(args, data))>
           @foreach (var item in data.InfoCita.Split("."))
           {
             <span>@item</span>
@@ -25,9 +25,12 @@
       </Template>
       <ChildContent>
         <RadzenMonthView MoreText="Ver más" Text="Mes" />
-        <RadzenWeekView TimeFormat="HH:mm" Text="Semana" />
+        <RadzenWeekView TimeFormat="HH:mm" Text="Semana"
+                        StartTime="@(new TimeOnly(10,00).ToTimeSpan())"
+                        EndTime="@(new TimeOnly(17,00).ToTimeSpan())" />
         <RadzenDayView TimeFormat="HH:mm" Text="Día"
-                       StartTime="@(new TimeOnly(7,00).ToTimeSpan())" />
+                       StartTime="@(new TimeOnly(10,00).ToTimeSpan())"
+                       EndTime="@(new TimeOnly(17,00).ToTimeSpan())" />
       </ChildContent>
     </RadzenScheduler>
   </ErrorBoundary>
@@ -35,29 +38,29 @@
 
 @code {
   private RenderFragment<CitaCalendarDto> DisplayCitaEstadosMenu => cita =>
-          __builder =>
-          {
-          <div>
-            <RadzenMenu Click="@(args => OnMenuItemClick(args, cita))">
-              <RadzenMenuItem Text="Cerrar" Icon="cancel" Value=@("close") />
-              <RadzenMenuItem Path=@($"citaEditar/{cita.Id}") Text="Editar Cita"
+        __builder =>
+        {
+        <div>
+          <RadzenMenu Click="@(args => OnMenuItemClick(args, cita))">
+            <RadzenMenuItem Text="Cerrar" Icon="cancel" Value=@("close") />
+            <RadzenMenuItem Path=@($"citaEditar/{cita.Id}") Text="Editar Cita"
                     Icon="edit" />
-              <RadzenMenuItem Text="Eliminar Cita" Icon="delete" Value="cita.Id" />
-              <RadzenMenuItem Text="Estados" Icon="pending_actions">
-                @foreach (var estado in Sd.ListadoEstadosCita)
+            <RadzenMenuItem Text="Eliminar Cita" Icon="delete" Value="cita.Id" />
+            <RadzenMenuItem Text="Estados" Icon="pending_actions">
+              @foreach (var estado in Sd.ListadoEstadosCita)
+                {
+                  if (estado == cita.Estado)
                   {
-                    if (estado == cita.Estado)
-                    {
-                    <RadzenMenuItem Text="@estado" Value="@estado" class="estado-checked" />
-                    }
-                    else
-                    {
-                    <RadzenMenuItem Text="@estado" Value="@estado" />
-                    }
+                  <RadzenMenuItem Text="@estado" Value="@estado"
+                      class="estado-checked" />
                   }
-              </RadzenMenuItem>
-            </RadzenMenu>
-          </div>
-
-          };
+                  else
+                  {
+                  <RadzenMenuItem Text="@estado" Value="@estado" />
+                  }
+                }
+            </RadzenMenuItem>
+          </RadzenMenu>
+        </div>
+        };
 }

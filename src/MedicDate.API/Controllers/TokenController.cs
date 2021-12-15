@@ -1,6 +1,5 @@
 ﻿using MedicDate.Bussines.DomainServices.IDomainServices;
 using MedicDate.Shared.Models.Auth;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MedicDate.API.Controllers;
