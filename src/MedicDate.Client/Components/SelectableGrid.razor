@@ -2,11 +2,11 @@
 
 @if (ItemList is null)
 {
-    <p>Cargando <i class="fas fa-spinner fa-spin"></i></p>
+  <p>Cargando <i class="fas fa-spinner fa-spin"></i></p>
 }
 else
 {
-    <RadzenDataGrid AllowFiltering="true" AllowPaging="true"
+  <RadzenDataGrid AllowFiltering="true" AllowPaging="true"
                 PageSize="5" AllowSorting="true"
                 Data="@_tempItemList" TItem="TItem"
                 EmptyText="No hay datos que mostrar"
@@ -15,32 +15,32 @@ else
                 SelectionMode="DataGridSelectionMode.Multiple"
                 @bind-Value="_tempSelectedItems" @ref="_dataGrid"
                 RowSelect="SelectRow" RowDeselect="DeselectRow">
-        <Columns>
-            <RadzenDataGridColumn TItem="TItem" Width="40px"
-                              Sortable="false" Filterable="false">
-                <HeaderTemplate>
-                    <RadzenCheckBox Value="@(_tempSelectedItems.Any(s => _tempItemList.Any(x => x.Id == s.Id)))"
-                                TriState="false" TValue="bool"
-                                Change="@(args => SelectAll(args))" />
-                </HeaderTemplate>
-                <Template Context="data">
-                    <RadzenCheckBox TriState="false" TValue="bool"
-                                Value="@(_tempSelectedItems.Any(x => x.Id == data.Id))" />
-                </Template>
-            </RadzenDataGridColumn>
-            @{
-                var i = 0;
-            }
-            @if (PropNames is not null && Headers is not null)
-            {
-                @foreach (var propiedad in PropNames)
-                {
-                    <RadzenDataGridColumn TItem="TItem"
-                              Property="@propiedad"
-                              Title="@Headers[i]" />
-                    i++;
-                }
-            }
-        </Columns>
-    </RadzenDataGrid>
+    <Columns>
+      <RadzenDataGridColumn TItem="TItem" Width="40px"
+                          Sortable="false" Filterable="false">
+        <HeaderTemplate>
+          <RadzenCheckBox Value="@(_tempSelectedItems.Any(s => _tempItemList.Any(x => x.Id == s.Id)))"
+                        TriState="false" TValue="bool"
+                        Change="@(args => SelectAll(args))" />
+        </HeaderTemplate>
+        <Template Context="data">
+          <RadzenCheckBox TriState="false" TValue="bool"
+                        Value="@(_tempSelectedItems.Any(x => x.Id == data.Id))" />
+        </Template>
+      </RadzenDataGridColumn>
+      @{
+        var i = 0;
+      }
+      @if (PropNames is not null && Headers is not null)
+      {
+        @foreach (var propiedad in PropNames)
+        {
+          <RadzenDataGridColumn TItem="TItem"
+                          Property="@propiedad"
+                          Title="@Headers[i]" />
+          i++;
+        }
+      }
+    </Columns>
+  </RadzenDataGrid>
 }

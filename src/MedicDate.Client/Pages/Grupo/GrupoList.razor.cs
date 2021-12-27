@@ -38,7 +38,7 @@ public partial class GrupoList
    {
       const string deleteUrl = "api/Grupo/eliminar";
       var result =
-        await BaseListComponentOps.DeleteItem<GrupoResponseDto>(idString,
+        await BaseListComponentOps.DeleteItemAndLoadDataList<GrupoResponseDto>(idString,
           deleteUrl, GetUrl);
 
       if (result.Succeded)

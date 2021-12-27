@@ -105,7 +105,7 @@ public partial class AppUserList
    private async Task DeleteUser(string id)
    {
       var result =
-        await BaseListComponentOps.DeleteItem<AppUserResponseDto>(id,
+        await BaseListComponentOps.DeleteItemAndLoadDataList<AppUserResponseDto>(id,
           "api/Usuario/eliminar", GetUrl);
 
       if (result.Succeded)

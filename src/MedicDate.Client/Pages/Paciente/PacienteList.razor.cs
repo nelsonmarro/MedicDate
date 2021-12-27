@@ -75,7 +75,7 @@ public partial class PacienteList
    private async Task DeleteMedico(string id)
    {
       var result =
-        await BaseListComponentOps.DeleteItem<PacienteResponseDto>(id,
+        await BaseListComponentOps.DeleteItemAndLoadDataList<PacienteResponseDto>(id,
           "api/Paciente/eliminar", GetUrl);
 
       if (result.Succeded)

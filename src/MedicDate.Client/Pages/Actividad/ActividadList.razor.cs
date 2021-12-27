@@ -38,7 +38,7 @@ public partial class ActividadList
    private async Task DeleteActividad(string idString)
    {
       const string deleteUrl = "api/Actividad/eliminar";
-      var result = await BaseListComponentOps.DeleteItem<ActividadResponseDto>(
+      var result = await BaseListComponentOps.DeleteItemAndLoadDataList<ActividadResponseDto>(
         idString,
         deleteUrl, GetUrl);
 

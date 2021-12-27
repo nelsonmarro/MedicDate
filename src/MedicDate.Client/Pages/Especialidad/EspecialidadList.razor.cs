@@ -41,7 +41,7 @@ public partial class EspecialidadList
    private async Task DeleteEspecialidad(string id)
    {
       var result =
-        await BaseListComponentOps.DeleteItem<EspecialidadResponseDto>(id,
+        await BaseListComponentOps.DeleteItemAndLoadDataList<EspecialidadResponseDto>(id,
           "api/Especialidad/eliminar", GetUrl);
 
       if (result.Succeded)

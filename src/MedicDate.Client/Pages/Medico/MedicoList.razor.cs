@@ -70,7 +70,7 @@ public partial class MedicoList
    private async Task DeleteMedico(string id)
    {
       var result =
-        await BaseListComponentOps.DeleteItem<MedicoResponseDto>(id,
+        await BaseListComponentOps.DeleteItemAndLoadDataList<MedicoResponseDto>(id,
           "api/Medico/eliminar", GetUrl);
 
       if (result.Succeded)

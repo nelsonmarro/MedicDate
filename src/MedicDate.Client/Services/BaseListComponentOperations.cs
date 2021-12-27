@@ -52,7 +52,7 @@ namespace MedicDate.Client.Services
             };
         }
 
-        public async Task<ResourceListComponentResult<T>> DeleteItem<T>(string idString, string deleteUrl, string getUrl) where T : class
+        public async Task<ResourceListComponentResult<T>> DeleteItemAndLoadDataList<T>(string idString, string deleteUrl, string getUrl) where T : class
         {
             var httpResp = await _httpRepo.Delete($"{deleteUrl}/{idString}");
 

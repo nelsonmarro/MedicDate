@@ -11,6 +11,6 @@ namespace MedicDate.Client.Services.IServices
         string? filterData = null
         ) where T : class;
 
-    public Task<ResourceListComponentResult<T>> DeleteItem<T>(string idString, string deleteUrl, string getUrl) where T : class;
+    public Task<ResourceListComponentResult<T>> DeleteItemAndLoadDataList<T>(string idString, string deleteUrl, string getUrl) where T : class;
   }
 }
