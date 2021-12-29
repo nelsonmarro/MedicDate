@@ -12,9 +12,12 @@ namespace MedicDate.API.Controllers;
 [ApiController]
 public class ClinicaController : BaseController<Clinica>
 {
-    public ClinicaController(IClinicaRepository repository, IMapper mapper)
-        : base(repository, mapper)
+    private readonly IClinicaRepository _clinicaRepo;
+
+    public ClinicaController(IClinicaRepository clinicaRepo, IMapper mapper)
+        : base(clinicaRepo, mapper)
     {
+        _clinicaRepo = clinicaRepo;
     }
 
     [HttpGet("listarConPaginacion")]
@@ -66,9 +69,7 @@ public class ClinicaController : BaseController<Clinica>
     public async Task<ActionResult> UpdateClinicaAsync(string id,
       ClinicaRequestDto clinicaReq)
     {
-        var resp =
-          await .UpdateEspecialidadAsync(id,
-            clinicaReq);
+        var resp = await _clinicaRepo.UpdateClinicaAsync(id, clinicaReq);
 
         return resp.Succeeded
           ? resp.SuccessResult
