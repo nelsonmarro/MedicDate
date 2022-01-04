@@ -17,6 +17,12 @@ public class Clinica : IId
     [StringLength(10)]
     public string Ruc { get; set; } = null!;
 
+    [Required]
+    public DateTime HoraApertura { get; set; }
+
+    [Required]
+    public DateTime HoraCerrado { get; set; }
+
     [StringLength(300)]
     public string? Direccion { get; set; }
 

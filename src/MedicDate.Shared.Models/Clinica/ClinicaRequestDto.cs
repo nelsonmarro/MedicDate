@@ -12,6 +12,14 @@ public class ClinicaRequestDto
     [StringLength(10, ErrorMessage = "El {0} no debe tener más {1} caracteres")]
     public string Ruc { get; set; } = string.Empty;
 
+    [Required(ErrorMessage = "El campo {0} es requerido")]
+    [Display(Name = "Hora de Apertura")]
+    public DateTime HoraApertura { get; set; }
+
+    [Required(ErrorMessage = "El campo {0} es requerido")]
+    [Display(Name = "Hora de Cerrado")]
+    public DateTime HoraCerrado { get; set; }
+
     [StringLength(300, ErrorMessage = "El {0} no debe tener más {1} caracteres")]
     public string? Direccion { get; set; }
 

@@ -2,62 +2,65 @@
 
 <RadzenFieldset AllowCollapse="true"
                 class="bg-white">
-   <HeaderTemplate>
-      <span>
-         <b style="font-size: 18px">Filtros</b>
-      </span>
-   </HeaderTemplate>
-   <ChildContent>
-      <div class="row">
-         <div class="col-md-6 conte-filtro-dates">
-            <div class="row">
-               <div class="col-md-6">
-                  <RadzenLabel Text="Fecha de Incio" />
-                  <RadzenDatePicker TValue="DateTime" class="w-100"
-                                    @bind-Value="_startDate"
-                                    ShowTime="true"
-                                    ShowTimeOkButton="true"
-                                    DateFormat="g"/>
-               </div>
-               <div class="col-md-6">
-                  <RadzenLabel Text="Fecha Fin" />
-                  <RadzenDatePicker TValue="DateTime" class="w-100"
-                                    @bind-Value="_endDate"
-                                    ShowTime="true"
-                                    ShowTimeOkButton="true"
-                                    DateFormat="g"/>
-               </div>
-               <div class="col-12 mt-3 mb-3 mb-md-0">
-                  <RadzenButton Text="Buscar" Click="FilterByDatesAsync" />
-               </div>
+    <HeaderTemplate>
+        <span>
+            <b style="font-size: 18px">Filtros</b>
+        </span>
+    </HeaderTemplate>
+    <ChildContent>
+        <div class="row">
+            <div class="col-md-6 conte-filtro-dates">
+                <div class="row">
+                    <div class="col-md-6">
+                        <RadzenLabel Text="Fecha de Incio" />
+                        <RadzenDatePicker TValue="DateTime" class="w-100"
+                                          @bind-Value="_startDate"
+                                          ShowTime="true"
+                                          ShowTimeOkButton="true"
+                                          DateFormat="g" />
+                    </div>
+                    <div class="col-md-6">
+                        <RadzenLabel Text="Fecha Fin" />
+                        <RadzenDatePicker TValue="DateTime" class="w-100"
+                                          @bind-Value="_endDate"
+                                          ShowTime="true"
+                                          ShowTimeOkButton="true"
+                                          DateFormat="g" />
+                    </div>
+                    <div class="col-12 mt-3 mb-3 mb-md-0">
+                        <RadzenButton Text="Buscar" Click="FilterByDatesAsync"
+                                      class="me-2" />
+                        <RadzenButton Text="Limpiar" Click="GoToCurrentMonthAsync"
+                                      ButtonStyle="ButtonStyle.Danger" />
+                    </div>
+                </div>
             </div>
-         </div>
-         <div class="col-md-6 mt-3 mt-md-0">
-            <div class="row">
-               <div class="col-md-12 mb-2">
-                  <RadzenLabel Text="Buscar por Doctor" />
-                  <RadzenDropDown Data="_medicos"
-                                  TValue="string" class="w-100"
-                                  AllowFiltering="true" AllowClear="true"
-                                  AllowVirtualization="true"
-                                  TextProperty="FullInfo"
-                                  ValueProperty="Id" Placeholder="Seleccione"
-                                  FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
-                                  Change="OnMedicoSelectedAsync" />
-               </div>
-               <div class="col-md-12">
-                  <RadzenLabel Text="Buscar por Paciente" />
-                  <RadzenDropDown Data="_pacientes"
-                                  TValue="string" class="w-100"
-                                  AllowFiltering="true" AllowClear="true"
-                                  AllowVirtualization="true"
-                                  TextProperty="FullInfo"
-                                  ValueProperty="Id" Placeholder="Seleccione"
-                                  FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
-                                  Change="OnPacienteSelectedAsync" />
-               </div>
+            <div class="col-md-6 mt-3 mt-md-0">
+                <div class="row">
+                    <div class="col-md-12 mb-2">
+                        <RadzenLabel Text="Buscar por Doctor" />
+                        <RadzenDropDown Data="_medicos"
+                                        TValue="string" class="w-100"
+                                        AllowFiltering="true" AllowClear="true"
+                                        AllowVirtualization="true"
+                                        TextProperty="FullInfo"
+                                        ValueProperty="Id" Placeholder="Seleccione"
+                                        FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                                        Change="OnMedicoSelectedAsync" />
+                    </div>
+                    <div class="col-md-12">
+                        <RadzenLabel Text="Buscar por Paciente" />
+                        <RadzenDropDown Data="_pacientes"
+                                        TValue="string" class="w-100"
+                                        AllowFiltering="true" AllowClear="true"
+                                        AllowVirtualization="true"
+                                        TextProperty="FullInfo"
+                                        ValueProperty="Id" Placeholder="Seleccione"
+                                        FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                                        Change="OnPacienteSelectedAsync" />
+                    </div>
+                </div>
             </div>
-         </div>
-      </div>
-   </ChildContent>
+        </div>
+    </ChildContent>
 </RadzenFieldset>

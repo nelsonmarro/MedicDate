@@ -1,48 +1,46 @@
 ﻿@using System.Globalization
 
 <RadzenPanelMenu style="height: 100%">
-   <p class="py-3 mb-0 text-center">
-      <RadzenLink Path="/" Text="Medic Date" class="text-white"
-                  Style="font-size: 25px; text-decoration: none;"
-                  Icon="medical_services">
-      </RadzenLink>
-   </p>
-   <AuthorizeView>
-      <Authorized>
-         <RadzenPanelMenuItem Text="Inicio" Icon="home" Path="/" class="mt-2" />
-         <RadzenPanelMenuItem Text="Citas" Icon="event_note">
-            <RadzenPanelMenuItem Text="Calendario Citas" Path=@($"/calendarioCitas?StartDate={new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1)}&EndDate={new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1).AddMonths(1)}")
+    <p class="py-3 mb-0 text-center">
+        <RadzenLink Path="/" Text="Medic Date" class="text-white"
+                    Style="font-size: 25px; text-decoration: none;"
+                    Icon="medical_services">
+        </RadzenLink>
+    </p>
+    <AuthorizeView>
+        <Authorized>
+            <RadzenPanelMenuItem Text="Inicio" Icon="home" Path="/" class="mt-2" />
+            <RadzenPanelMenuItem Text="Calendario Citas" Path=@($"calendarioCitas?StartDate={DateTime.Today}&EndDate={DateTime.Today.AddMonths(1)}")
                                  Icon="date_range" />
-         </RadzenPanelMenuItem>
-         <RadzenPanelMenuItem Text="Pacientes" Icon="personal_injury" Path="/pacienteList" />
-         <RadzenPanelMenuItem Text="Doctores" Icon="supervisor_account" Path="/medicoList" />
-         <RadzenPanelMenuItem Text="Especialidades" Icon="psychology" Path="/especialidadList" />
-         <RadzenPanelMenuItem Text="Administración del Sistema" Icon="settings">
-            <AuthorizeView Roles="@Sd.ROLE_ADMIN">
-               <Authorized Context="authState2">
-                  <RadzenPanelMenuItem Text="Usuarios" Path="/usuarioList" Icon="person" />
-               </Authorized>
-            </AuthorizeView>
-            <RadzenPanelMenuItem Text="Grupos" Path="/grupoList" Icon="groups" />
-            <RadzenPanelMenuItem Text="Actividades" Path="/actividadList" Icon="assignment" />
-         </RadzenPanelMenuItem>
-      </Authorized>
-   </AuthorizeView>
+            <RadzenPanelMenuItem Text="Pacientes" Icon="personal_injury" Path="pacienteList" />
+            <RadzenPanelMenuItem Text="Doctores" Icon="supervisor_account" Path="medicoList" />
+            <RadzenPanelMenuItem Text="Especialidades" Icon="psychology" Path="especialidadList" />
+            <RadzenPanelMenuItem Text="Actividades" Path="actividadList" Icon="assignment" />
+            <RadzenPanelMenuItem Text="Grupos" Path="grupoList" Icon="groups" />
+            <RadzenPanelMenuItem Text="Administración del Sistema" Icon="settings">
+                <AuthorizeView Roles=@($"{Sd.ROLE_ADMIN}")>
+                    <Authorized Context="authState">
+                        <RadzenPanelMenuItem Text="Usuarios" Path="usuarioList" Icon="person" />
+                    </Authorized>
+                </AuthorizeView>
+            </RadzenPanelMenuItem>
+        </Authorized>
+    </AuthorizeView>
 </RadzenPanelMenu>
 
 @code {
 
-   [CascadingParameter]
-   public Task<AuthenticationState>? AuthenticationState { get; set; }
+    [CascadingParameter]
+    public Task<AuthenticationState>? AuthenticationState { get; set; }
 
-   private AuthenticationState? _authState;
+    private AuthenticationState? _authState;
 
-   protected override async Task OnInitializedAsync()
-   {
-      if (AuthenticationState is not null)
-      {
-         _authState = await AuthenticationState;
-      }
-   }
+    protected override async Task OnInitializedAsync()
+    {
+        if (AuthenticationState is not null)
+        {
+            _authState = await AuthenticationState;
+        }
+    }
 
 }
