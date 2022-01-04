@@ -87,8 +87,6 @@ public static class ApplicationServicesExtensions
           });
         });
 
-        services.AddResponseCaching();
-
         return services;
     }
 }

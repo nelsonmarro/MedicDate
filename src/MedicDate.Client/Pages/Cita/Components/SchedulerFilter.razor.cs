@@ -74,8 +74,6 @@ public partial class SchedulerFilter
     {
         if (ValidateDatesForRequest())
             await OnDatesFilterSelected.InvokeAsync((_startDate, _endDate));
-        _startDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1, 10, 0, 0);
-        _endDate = _startDate.AddMonths(1);
     }
 
     private async Task GoToCurrentMonthAsync()

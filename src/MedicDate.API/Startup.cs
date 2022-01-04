@@ -9,65 +9,64 @@ namespace MedicDate.API;
 
 public class Startup
 {
-   public Startup(IConfiguration configuration)
-   {
-      Configuration = configuration;
-   }
+    public Startup(IConfiguration configuration)
+    {
+        Configuration = configuration;
+    }
 
-   private IConfiguration Configuration { get; }
+    private IConfiguration Configuration { get; }
 
-   // This method gets called by the runtime. Use this method to add services to the container.
-   public void ConfigureServices(IServiceCollection services)
-   {
-      services.AddApplicationServices(Configuration);
-      services.AddDomainServices();
-      services.AddIdentityServices(Configuration);
-      services.AddControllers(opts =>
-      {
-         // 2 - Index QueryStringValueProviderFactory
-         opts.ValueProviderFactories[2] = new CustomValueProviderFactory();
-      });
-   }
+    // This method gets called by the runtime. Use this method to add services to the container.
+    public void ConfigureServices(IServiceCollection services)
+    {
+        services.AddApplicationServices(Configuration);
+        services.AddDomainServices();
+        services.AddIdentityServices(Configuration);
+        services.AddControllers(opts =>
+        {
+            // 2 - Index QueryStringValueProviderFactory
+            opts.ValueProviderFactories[2] = new CustomValueProviderFactory();
+        });
+    }
 
-   // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-   public void Configure(IApplicationBuilder app, IWebHostEnvironment env,
-     IDbInitializer dbInitializer)
-   {
-      var supportedCultures = new[]
-      {
-      new CultureInfo("es-ES"),
-      new CultureInfo("es"),
-      new CultureInfo("en-US"),
-      new CultureInfo("en")
-    };
-      app.UseRequestLocalization(new RequestLocalizationOptions
-      {
-         DefaultRequestCulture = new RequestCulture("es-ES"),
-         SupportedCultures = supportedCultures,
-         SupportedUICultures = supportedCultures
-      });
+    // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+    public void Configure(IApplicationBuilder app, IWebHostEnvironment env,
+      IDbInitializer dbInitializer)
+    {
+        app.UseMiddleware<ExceptionMiddleware>();
 
-      app.UseMiddleware<ExceptionMiddleware>();
+        var supportedCultures = new[]
+        {
+        new CultureInfo("es-ES"),
+        new CultureInfo("es"),
+        new CultureInfo("en-US"),
+        new CultureInfo("en")
+        };
+        app.UseRequestLocalization(new RequestLocalizationOptions
+        {
+            DefaultRequestCulture = new RequestCulture("es-ES"),
+            SupportedCultures = supportedCultures,
+            SupportedUICultures = supportedCultures
+        });
 
-      app.UseSwagger();
-      app.UseSwaggerUI(c =>
-      {
-         c.SwaggerEndpoint("/swagger/v1/swagger.json"
-         , "MedicDate_API v1");
-         c.RoutePrefix = string.Empty;
-      });
+        app.UseSwagger();
+        app.UseSwaggerUI(c =>
+        {
+            c.SwaggerEndpoint("/swagger/v1/swagger.json"
+          , "MedicDate_API v1");
+            c.RoutePrefix = string.Empty;
+        });
 
-      app.UseHttpsRedirection();
+        app.UseHttpsRedirection();
 
-      dbInitializer.Initialize();
+        dbInitializer.Initialize();
 
-      app.UseRouting();
-      app.UseResponseCaching();
-      app.UseCors();
+        app.UseRouting();
+        app.UseCors();
 
-      app.UseAuthentication();
-      app.UseAuthorization();
+        app.UseAuthentication();
+        app.UseAuthorization();
 
-      app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
-   }
+        app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+    }
 }

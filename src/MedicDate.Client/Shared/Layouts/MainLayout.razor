@@ -4,33 +4,33 @@
 @implements IDisposable
 
 <div style="width: 100%;">
-  <RadzenBody @ref="@body" @bind-Expanded="@bodyExpanded">
-    <ChildContent>
-      <RadzenContentContainer Name="main">
-        <div class="">
-          <RadzenHeader>
-            <ChildContent>
-              <AppHeader OnToggleClick="@ChangeToggle" />
-            </ChildContent>
-          </RadzenHeader>
-          @Body
-        </div>
-      </RadzenContentContainer>
-    </ChildContent>
-  </RadzenBody>
+    <RadzenBody @ref="@body" @bind-Expanded="@bodyExpanded">
+        <ChildContent>
+            <RadzenContentContainer Name="main">
+                <div>
+                    <RadzenHeader>
+                        <ChildContent>
+                            <AppHeader OnToggleClick="@ChangeToggle" />
+                        </ChildContent>
+                    </RadzenHeader>
+                    @Body
+                </div>
+            </RadzenContentContainer>
+        </ChildContent>
+    </RadzenBody>
 </div>
 
 <RadzenSidebar @ref="@sidebar" @bind-Expanded="@sidebarExpanded">
-  <ChildContent>
-    <AppSideBar />
-  </ChildContent>
+    <ChildContent>
+        <AppSideBar />
+    </ChildContent>
 </RadzenSidebar>
 
 @* <RadzenFooter class="bg-light">
-  <ChildContent>
-  <AppFooter/>
-  </ChildContent>
-  </RadzenFooter> *@
+    <ChildContent>
+    <AppFooter/>
+    </ChildContent>
+    </RadzenFooter> *@
 
 <RadzenDialog />
 <RadzenNotification Style="position: absolute; top: 20px" />
@@ -38,44 +38,44 @@
 <RadzenTooltip />
 
 @code {
-  RadzenSidebar sidebar  = null!;
-  RadzenBody body = null!;
-  bool sidebarExpanded = true;
-  bool bodyExpanded = false;
+    RadzenSidebar sidebar = null!;
+    RadzenBody body = null!;
+    bool sidebarExpanded = true;
+    bool bodyExpanded = false;
 
-  protected override async Task OnInitializedAsync()
-  {
-    var result = await _jsRuntime.InvokeAsync<bool>("isSmWindow");
-
-    if (result)
+    protected override async Task OnInitializedAsync()
     {
-      sidebarExpanded = false;
-      bodyExpanded = true;
+        var result = await _jsRuntime.InvokeAsync<bool>("isSmWindow");
+
+        if (result)
+        {
+            sidebarExpanded = false;
+            bodyExpanded = true;
+        }
+
+        _httpInterceptorProvider.AuthTokenInterceptor.RegisterEvent();
+        _httpInterceptorProvider.ErrorInterceptor.RegisterEvent();
     }
 
-    _httpInterceptorProvider.AuthTokenInterceptor.RegisterEvent();
-    _httpInterceptorProvider.ErrorInterceptor.RegisterEvent();
-  }
 
-
-  protected override async void OnAfterRender(bool firstRender)
-  {
-    if (firstRender)
+    protected override async void OnAfterRender(bool firstRender)
     {
-      await _jsRuntime.InvokeVoidAsync("expandSidebarOnSmScreen");
+        if (firstRender)
+        {
+            await _jsRuntime.InvokeVoidAsync("expandSidebarOnSmScreen");
+        }
     }
-  }
 
-  private void ChangeToggle()
-  {
-    sidebarExpanded = !sidebarExpanded;
-    bodyExpanded = !bodyExpanded;
-  }
+    private void ChangeToggle()
+    {
+        sidebarExpanded = !sidebarExpanded;
+        bodyExpanded = !bodyExpanded;
+    }
 
-  public void Dispose()
-  {
-    _httpInterceptorProvider.AuthTokenInterceptor.DisposeEvent();
-    _httpInterceptorProvider.ErrorInterceptor.DisposeEvent();
-  }
+    public void Dispose()
+    {
+        _httpInterceptorProvider.AuthTokenInterceptor.DisposeEvent();
+        _httpInterceptorProvider.ErrorInterceptor.DisposeEvent();
+    }
 
 }
