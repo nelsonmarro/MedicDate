@@ -27,7 +27,7 @@ public class DbInitializer : IDbInitializer
         if (_context.Database.GetPendingMigrations().Any())
             _context.Database.Migrate();
 
-        if (_context.Roles.Any(x => x.Name == Sd.ROLE_ADMIN)) return;
+        if (_context.Roles.Any(x => x.Name == Sd.ROLE_ADMIN_GENERAL)) return;
 
         CreateSystemRoles();
 
@@ -38,7 +38,7 @@ public class DbInitializer : IDbInitializer
     {
         _roleManager.CreateAsync(new AppRole
         {
-            Name = Sd.ROLE_ADMIN,
+            Name = Sd.ROLE_ADMIN_GENERAL,
             Descripcion =
             "Tiene permisos para todos los módulos y funciones de la aplicación"
         }).GetAwaiter().GetResult();
@@ -47,20 +47,20 @@ public class DbInitializer : IDbInitializer
         {
             Name = Sd.ROLE_DOCTOR,
             Descripcion =
-            "Puede Registrar citas"
+            "Puede Registrar pacientes y citas. No puede registrar otros doctores"
         }).GetAwaiter().GetResult();
 
         _roleManager.CreateAsync(new AppRole
         {
-            Name = Sd.ROLE_Asistente,
-            Descripcion = "Puede Registrar citas"
+            Name = Sd.ROLE_CLINICA_ASISTENTE,
+            Descripcion = "Puede Registrar citas, pacientes y doctores"
         }).GetAwaiter().GetResult();
 
         _roleManager.CreateAsync(new AppRole
         {
             Name = Sd.ROLE_CLINICA_ADMIN,
             Descripcion =
-            "Puede Registrar citas. Puede de registrar otros usuarios para la clínica a la que pertenece. Puede editar los datos de la clinica"
+            "Puede Registrar citas. Puede de registrar otros usuarios para la clínica a la que pertenece. Puede editar los datos de la clinica a la que pertenece"
         }).GetAwaiter().GetResult();
     }
 
@@ -80,6 +80,6 @@ public class DbInitializer : IDbInitializer
           x.Email == "nelsonmarro99@gmail.com");
 
         if (user is not null)
-            _userManager.AddToRoleAsync(user, Sd.ROLE_ADMIN).GetAwaiter().GetResult();
+            _userManager.AddToRoleAsync(user, Sd.ROLE_ADMIN_GENERAL).GetAwaiter().GetResult();
     }
 }

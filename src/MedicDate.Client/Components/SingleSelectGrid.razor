@@ -1,0 +1,58 @@
+﻿@typeparam TItem
+
+<RadzenDataGrid AllowFiltering="true"
+                FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                FilterMode="FilterMode.Simple"
+                AllowPaging="true" PageSize="5"
+                AllowSorting="true" Data="ItemList"
+                TItem="TItem" EmptyText="No hay datos que mostrar"
+                SelectionMode="DataGridSelectionMode.Single"
+                AllowColumnResize="AllowColumnResize"
+                ValueChanged="OnValueSelected"
+                Value="_selectedItems">
+    <Columns>
+        @{
+            var i = 0;
+        }
+        @if (PropNames is not null && Headers is not null)
+        {
+            @foreach (var propiedad in PropNames)
+            {
+                <RadzenDataGridColumn TItem="TItem"
+                              Property="@propiedad"
+                              Title="@Headers[i]" />
+                i++;
+            }
+        }
+    </Columns>
+</RadzenDataGrid>
+
+@code {
+    [Parameter] public IList<TItem>? ItemList { get; set; }
+    [Parameter] public IList<TItem>? SelectedItems { get; set; }
+    [Parameter] public string[]? Headers { get; set; }
+    [Parameter] public string[]? PropNames { get; set; }
+    [Parameter] public bool AllowColumnResize { get; set; } = true;
+    [Parameter] public EventCallback<TItem?> OnValueChange { get; set; }
+
+    private IList<TItem>? _selectedItems;
+
+    protected override void OnParametersSet()
+    {
+        if (SelectedItems?.Count > 0)
+        {
+            _selectedItems = SelectedItems;
+        }
+    }
+
+    private async Task OnValueSelected(IList<TItem> seletedValues)
+    {
+        _selectedItems?.Clear();
+        foreach (var item in seletedValues)
+        {
+            _selectedItems?.Add(item);
+        }
+
+        await OnValueChange.InvokeAsync(seletedValues.FirstOrDefault());
+    }
+}

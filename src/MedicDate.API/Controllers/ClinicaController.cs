@@ -3,7 +3,6 @@ using MedicDate.DataAccess.Entities;
 using MedicDate.DataAccess.Repository.IRepository;
 using MedicDate.Shared.Models.Clinica;
 using MedicDate.Shared.Models.Common;
-using MedicDate.Shared.Models.Especialidad;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MedicDate.API.Controllers;
@@ -62,7 +61,7 @@ public class ClinicaController : BaseController<Clinica>
       ClinicaRequestDto clinicaReq)
     {
         return await AddResourceAsync<ClinicaRequestDto,
-          EspecialidadResponseDto>(clinicaReq, "GetClinica");
+          ClinicaResponseDto>(clinicaReq, "GetClinica");
     }
 
     [HttpPut("editar/{id}")]

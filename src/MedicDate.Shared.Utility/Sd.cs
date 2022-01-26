@@ -2,9 +2,9 @@
 
 public static class Sd
 {
-    public const string ROLE_ADMIN = "Administrador";
+    public const string ROLE_ADMIN_GENERAL = "Administrador General";
     public const string ROLE_DOCTOR = "Doctor";
-    public const string ROLE_Asistente = "Asistente";
+    public const string ROLE_CLINICA_ASISTENTE = "Asistente Clinica";
     public const string ROLE_CLINICA_ADMIN = "Administrador Clinica";
     public const string TOKEN_ACCESS = "authToken";
     public const string TOKEN_REFRESH = "refreshToken";

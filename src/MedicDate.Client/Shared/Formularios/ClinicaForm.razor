@@ -1,0 +1,62 @@
+﻿<RadzenCard>
+    <EditForm Model="@ClinicaModel" OnValidSubmit="OnSubmit">
+        <DataAnnotationsValidator />
+        <div class="row mb-3">
+            <div class="col-6">
+                <RadzenLabel Text="Nombre Clínica" />
+                <div class="mt-1">
+                    <RadzenTextBox @bind-Value="ClinicaModel.Nombre" class="w-100" />
+                    <ValidationMessage For="() => ClinicaModel.Nombre" />
+                </div>
+            </div>
+            <div class="col-6">
+                <RadzenLabel Text="RUC" />
+                <div class="mt-1">
+                    <RadzenTextBox @bind-Value="ClinicaModel.Ruc" class="w-100" />
+                    <ValidationMessage For="() => ClinicaModel.Ruc" />
+                </div>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-6">
+                <RadzenLabel Text="Hora de Apertura" />
+                <div class="mt-1">
+                    <RadzenDatePicker TValue="DateTime" ShowTime="true"
+                                      TimeOnly="true" DateFormat="HH:mm"
+                                      @bind-Value="ClinicaModel.HoraApertura"
+                                      class="w-100" />
+                    <ValidationMessage For="() => ClinicaModel.HoraApertura" />
+                </div>
+            </div>
+            <div class="col-6">
+                <RadzenLabel Text="Hora de Cerrado" />
+                <div class="mt-1">
+                    <RadzenDatePicker TValue="DateTime" ShowTime="true"
+                                      TimeOnly="true" DateFormat="HH:mm"
+                                      @bind-Value="ClinicaModel.HoraCerrado"
+                                      class="w-100" />
+                    <ValidationMessage For="() => ClinicaModel.HoraCerrado" />
+                </div>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-4">
+                <RadzenLabel Text="Teléfono" />
+                <div class="mt-1">
+                    <RadzenTextBox @bind-Value="ClinicaModel.Telefono" class="w-100" />
+                    <ValidationMessage For="() => ClinicaModel.Telefono" />
+                </div>
+            </div>
+            <div class="col-8">
+                <RadzenLabel Text="Dirección" />
+                <div class="mt-1">
+                    <RadzenTextArea @bind-Value="ClinicaModel.Direccion" class="w-100" />
+                    <ValidationMessage For="() => ClinicaModel.Direccion" />
+                </div>
+            </div>
+        </div>
+        <div class="mb-2">
+            <FormButtons NavLinkRoute="clinicaList" />
+        </div>
+    </EditForm>
+</RadzenCard>

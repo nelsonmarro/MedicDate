@@ -7,6 +7,7 @@ using MedicDate.Shared.Models.Auth;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using static System.Net.HttpStatusCode;
 
@@ -15,6 +16,7 @@ namespace MedicDate.Bussines.DomainServices;
 public class AccountService : IAccountService
 {
     private readonly IEmailSender _emailSender;
+    private readonly IConfiguration _configuration;
     private readonly JwtSettings _jwtSettings;
     private readonly RoleManager<AppRole> _roleManager;
     private readonly SignInManager<ApplicationUser> _signInManager;
@@ -27,13 +29,15 @@ public class AccountService : IAccountService
       RoleManager<AppRole> roleManager,
       ITokenBuilderService tokenBuilderService,
       IOptions<JwtSettings> jwtSettings,
-      IEmailSender emailSender)
+      IEmailSender emailSender,
+      IConfiguration configuration)
     {
         _userManager = userManager;
         _signInManager = signInManager;
         _roleManager = roleManager;
         _tokenBuilderService = tokenBuilderService;
         _emailSender = emailSender;
+        _configuration = configuration;
         _jwtSettings = jwtSettings.Value;
     }
 
@@ -53,7 +57,7 @@ public class AccountService : IAccountService
           await _userManager.GeneratePasswordResetTokenAsync(userDb);
 
         var callbackUrl =
-          $"https://citas.medic-datepro.com/usuario/resetPassword?code={code}";
+          $"{_configuration.GetValue<string>("ClientUrl")}/usuario/resetPassword?code={code}";
 
         await _emailSender.SendEmailAsync(forgotPasswordModel.Email,
           "Restablecer Contraseña - MedicDate",
@@ -125,7 +129,7 @@ public class AccountService : IAccountService
             applicationUser);
 
         var callbackUrl =
-          $"https://citas.medic-datepro.com/usuario/confirmEmail?userId={applicationUser.Id}&code={code}";
+          $"{_configuration.GetValue<string>("ClientUrl")}/usuario/confirmEmail?userId={applicationUser.Id}&code={code}";
 
         await _emailSender.SendEmailAsync(applicationUser.Email,
           "Confirme su cuenta - MedicDate",
@@ -176,7 +180,7 @@ public class AccountService : IAccountService
             changeEmailDto.NewEmail);
 
         var callbackUrl =
-          $"https://citas.medic-datepro.com/usuario/emailChangedConfirm?code={code}&userId={userDb.Id}";
+          $"{_configuration.GetValue<string>("ClientUrl")}/usuario/emailChangedConfirm?code={code}&userId={userDb.Id}";
 
         await _emailSender.SendEmailAsync(userDb.Email,
           "Cambio de email - MedicDate",
@@ -283,7 +287,8 @@ public class AccountService : IAccountService
             Apellidos = registerUserDto.Apellidos,
             Email = registerUserDto.Email,
             UserName = registerUserDto.Email,
-            PhoneNumber = registerUserDto.PhoneNumber
+            PhoneNumber = registerUserDto.PhoneNumber,
+            ClinicaId = registerUserDto.ClinicaId
         };
 
         var result =

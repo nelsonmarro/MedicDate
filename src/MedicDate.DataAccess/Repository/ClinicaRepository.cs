@@ -29,7 +29,7 @@ public class ClinicaRepository : Repository<Clinica>, IClinicaRepository
                 "No se encotró la clínica requerida");
         }
 
-        _mapper.Map(clinicaRequest, clinicaRequest);
+        _mapper.Map(clinicaRequest, clinicaDb);
         await _context.SaveChangesAsync();
 
         return OperationResult.Success(OK,

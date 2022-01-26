@@ -14,7 +14,7 @@ public class Clinica : IId
     public string Nombre { get; set; } = null!;
 
     [Required]
-    [StringLength(10)]
+    [StringLength(13)]
     public string Ruc { get; set; } = null!;
 
     [Required]

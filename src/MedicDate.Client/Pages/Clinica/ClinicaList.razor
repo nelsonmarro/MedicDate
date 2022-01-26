@@ -1,0 +1,42 @@
+﻿@page "/clinicaList"
+@using MedicDate.Shared.Models.Clinica
+
+<PageTitle>Clínicas</PageTitle>
+
+<div class="row">
+    <div class="col-12 text-left">
+        <h2 class="text-primary">Clínicas</h2>
+    </div>
+    <div class="col-12">
+        <ErrorBoundary>
+            <RadzenGenericGrid TItem="ClinicaResponseDto"
+                               TotalCount="@_totalCount" Headers="@_tableHeaders"
+                               ItemList="@_clinicaList" OpRoutes="@_opRoutes"
+                               PropNames="@_propNames"
+                               OnDeleteData="@DeleteClinica">
+                <CustomGridCols>
+                    <RadzenDataGridColumn TItem="ClinicaResponseDto"
+                                          Property="HoraApertura"
+                                          Title="Hora Apertura"
+                                          Filterable="false"
+                                          Sortable="false">
+                        <Template>
+                            @context.HoraApertura.ToString("HH:mm")
+                        </Template>
+                    </RadzenDataGridColumn>
+
+                    <RadzenDataGridColumn TItem="ClinicaResponseDto"
+                                          Property="HoraCerrado"
+                                          Title="Hora Cerrado"
+                                          Filterable="false"
+                                          Sortable="false">
+                        <Template>
+                            @context.HoraCerrado.ToString("HH:mm")
+                        </Template>
+                    </RadzenDataGridColumn>
+                </CustomGridCols>
+            </RadzenGenericGrid>
+        </ErrorBoundary>
+    </div>
+</div>
+

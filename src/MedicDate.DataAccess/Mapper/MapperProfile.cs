@@ -18,7 +18,7 @@ public class MapperProfile : Profile
     public MapperProfile()
     {
         CreateMap<Clinica, ClinicaResponseDto>().ReverseMap();
-        CreateMap<ClinicaRequestDto, Clinica>();
+        CreateMap<ClinicaRequestDto, Clinica>().ReverseMap();
 
         CreateMap<Especialidad, EspecialidadResponseDto>();
         CreateMap<EspecialidadRequestDto, Especialidad>()

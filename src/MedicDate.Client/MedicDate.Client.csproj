@@ -31,7 +31,7 @@
 		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" Version="6.0.1" />
 		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="6.0.1" PrivateAssets="all" />
 		<PackageReference Include="Microsoft.Extensions.Http" Version="6.0.0" />
-		<PackageReference Include="Radzen.Blazor" Version="3.13.12" />
+		<PackageReference Include="Radzen.Blazor" Version="3.14.7" />
 		<PackageReference Include="System.Net.Http.Json" Version="6.0.0" />
 		<PackageReference Include="Toolbelt.Blazor.HttpClientInterceptor" Version="10.0.0" />
 	</ItemGroup>
@@ -39,9 +39,5 @@
 	<ItemGroup>
 		<ProjectReference Include="..\MedicDate.Shared.Models\MedicDate.Shared.Models.csproj" />
 		<ProjectReference Include="..\MedicDate.Shared.Utility\MedicDate.Shared.Utility.csproj" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Folder Include="Pages\Clinica\" />
 	</ItemGroup>
 </Project>

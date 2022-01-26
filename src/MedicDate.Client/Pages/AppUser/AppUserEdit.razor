@@ -2,7 +2,7 @@
 @using MedicDate.Client.Shared.Formularios.AppUser
 
 <h2 class="text-primary mb-2">Editar Usuario</h2>
-@if (_appUserModel is null)
+@if (_appUserModel is null || _appUserModel.Roles.Count == 0)
 {
     <CircularLoading/>
 }

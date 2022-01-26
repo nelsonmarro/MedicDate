@@ -1,0 +1,13 @@
+﻿@page "/clinicaCrear"
+
+<PageTitle>Agregar Clínica</PageTitle>
+
+<h2 class="text-primary mb-2">Agregar Clínica</h2>
+
+<ErrorBoundary>
+    <CascadingValue Value="_isBussy">
+        <ClinicaForm ClinicaModel="@_clinicaModel"
+                     OnSubmit="@CreateClinica" />
+    </CascadingValue>
+</ErrorBoundary>
+

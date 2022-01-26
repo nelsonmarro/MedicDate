@@ -18,9 +18,10 @@
             <RadzenPanelMenuItem Text="Actividades" Path="actividadList" Icon="assignment" />
             <RadzenPanelMenuItem Text="Grupos" Path="grupoList" Icon="groups" />
             <RadzenPanelMenuItem Text="Administración del Sistema" Icon="settings">
-                <AuthorizeView Roles=@($"{Sd.ROLE_ADMIN}")>
+                <AuthorizeView Roles=@($"{Sd.ROLE_ADMIN_GENERAL}")>
                     <Authorized Context="authState">
                         <RadzenPanelMenuItem Text="Usuarios" Path="usuarioList" Icon="person" />
+                        <RadzenPanelMenuItem Text="Clínicas" Path="clinicaList" Icon="local_hospital" />
                     </Authorized>
                 </AuthorizeView>
             </RadzenPanelMenuItem>

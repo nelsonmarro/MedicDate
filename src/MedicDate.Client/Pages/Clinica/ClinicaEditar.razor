@@ -1,0 +1,19 @@
+﻿@page "/clinicaEditar/{id}"
+
+<PageTitle>Editar Clínica</PageTitle>
+
+<h2 class="text-primary mb-2">Editar Clínica</h2>
+
+@if (_clinicaModel is null)
+{
+    <CircularLoading />
+}
+else
+{
+    <ErrorBoundary>
+        <CascadingValue Value="_isBussy">
+            <ClinicaForm ClinicaModel="@_clinicaModel"
+                     OnSubmit="@EditClinica" />
+        </CascadingValue>
+    </ErrorBoundary>
+}
