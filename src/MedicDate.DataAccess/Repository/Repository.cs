@@ -7,139 +7,144 @@ namespace MedicDate.DataAccess.Repository;
 
 public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
 {
-   private readonly ApplicationDbContext _context;
-   private readonly DbSet<TEntity> _dBSet;
+    private readonly ApplicationDbContext _context;
+    private readonly DbSet<TEntity> _dBSet;
 
-   public Repository(ApplicationDbContext context)
-   {
-      _context = context;
-      _dBSet = context.Set<TEntity>();
-   }
+    public Repository()
+    {
 
-   public async Task<TEntity?> FindAsync(string id)
-   {
-      return await _dBSet.FindAsync(id);
-   }
+    }
 
-   public async Task<List<TEntity>> GetAllAsync(
-     Expression<Func<TEntity, bool>>? filter = null,
-     Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
-     string? includeProperties = null,
-     bool isTracking = true
-   )
-   {
-      var query = EntityFetchQueryBuilder(filter, orderBy,
-        includeProperties, isTracking);
+    public Repository(ApplicationDbContext context)
+    {
+        _context = context;
+        _dBSet = context.Set<TEntity>();
+    }
 
-      return await query.ToListAsync();
-   }
+    public virtual async Task<TEntity?> FindAsync(string id)
+    {
+        return await _dBSet.FindAsync(id);
+    }
 
-   public async Task<List<TEntity>> GetAllWithPagingAsync(
-     Expression<Func<TEntity, bool>>? filter = null,
-     Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
-     string? includeProperties = null,
-     bool isTracking = true, int pageIndex = 0, int pageSize = 10)
-   {
-      var query = EntityFetchQueryBuilder(filter, orderBy,
-        includeProperties, isTracking);
+    public virtual async Task<List<TEntity>> GetAllAsync(
+      Expression<Func<TEntity, bool>>? filter = null,
+      Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
+      string? includeProperties = null,
+      bool isTracking = true
+    )
+    {
+        var query = EntityFetchQueryBuilder(filter, orderBy,
+          includeProperties, isTracking);
 
-      query = query.Paginate(pageIndex, pageSize);
+        return await query.ToListAsync();
+    }
 
-      return await query.ToListAsync();
-   }
+    public virtual async Task<List<TEntity>> GetAllWithPagingAsync(
+      Expression<Func<TEntity, bool>>? filter = null,
+      Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
+      string? includeProperties = null,
+      bool isTracking = true, int pageIndex = 0, int pageSize = 10)
+    {
+        var query = EntityFetchQueryBuilder(filter, orderBy,
+          includeProperties, isTracking);
 
-   public async Task<TEntity?> FirstOrDefaultAsync
-   (
-     Expression<Func<TEntity, bool>>? filter = null,
-     string? includeProperties = null,
-     bool isTracking = true
-   )
-   {
-      var query = EntityFetchQueryBuilder(filter, null,
-        includeProperties, isTracking);
+        query = query.Paginate(pageIndex, pageSize);
 
-      var entityDb = await query.FirstOrDefaultAsync();
+        return await query.ToListAsync();
+    }
 
-      return entityDb;
-   }
+    public virtual async Task<TEntity?> FirstOrDefaultAsync
+    (
+      Expression<Func<TEntity, bool>>? filter = null,
+      string? includeProperties = null,
+      bool isTracking = true
+    )
+    {
+        var query = EntityFetchQueryBuilder(filter, null,
+          includeProperties, isTracking);
 
-   public async Task AddAsync(TEntity entity)
-   {
-      await _dBSet.AddAsync(entity);
-   }
+        var entityDb = await query.FirstOrDefaultAsync();
 
-   public async Task<int> RemoveAsync(string id)
-   {
-      var resp = 1;
+        return entityDb;
+    }
 
-      var entity = await _dBSet.FindAsync(id);
+    public virtual async Task AddAsync(TEntity entity)
+    {
+        await _dBSet.AddAsync(entity);
+    }
 
-      if (entity is null)
-         resp = 0;
-      else
-         Remove(entity);
+    public virtual async Task<int> RemoveAsync(string id)
+    {
+        var resp = 1;
 
-      return resp;
-   }
+        var entity = await _dBSet.FindAsync(id);
 
-   public void Remove(TEntity entity)
-   {
-      _dBSet.Remove(entity);
-   }
+        if (entity is null)
+            resp = 0;
+        else
+            Remove(entity);
 
-   public void RemoveRange(List<TEntity> entities)
-   {
-      _dBSet.RemoveRange(entities);
-   }
+        return resp;
+    }
 
-   public async Task<int> CountResourcesAsync(Expression<Func<TEntity, bool>>? filter = null)
-   {
-      var query = _dBSet.AsQueryable();
+    public virtual void Remove(TEntity entity)
+    {
+        _dBSet.Remove(entity);
+    }
 
-      if (filter is not null)
-      {
-         query = query.Where(filter);
-      }
+    public virtual void RemoveRange(List<TEntity> entities)
+    {
+        _dBSet.RemoveRange(entities);
+    }
 
-      return await query.CountAsync();
-   }
+    public virtual async Task<int> CountResourcesAsync(Expression<Func<TEntity, bool>>? filter = null)
+    {
+        var query = _dBSet.AsQueryable();
 
-   public async Task<int> SaveAsync()
-   {
-      return await _context.SaveChangesAsync();
-   }
+        if (filter is not null)
+        {
+            query = query.Where(filter);
+        }
 
-   public async Task<bool> ResourceExists(string resourceId)
-   {
-      var resourse = await FindAsync(resourceId);
+        return await query.CountAsync();
+    }
 
-      return resourse != null;
-   }
+    public virtual async Task<int> SaveAsync()
+    {
+        return await _context.SaveChangesAsync();
+    }
 
-   private IQueryable<TEntity> EntityFetchQueryBuilder(
-     Expression<Func<TEntity, bool>>? filter = null,
-     Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
-     string? includeProperties = null,
-     bool isTracking = true)
-   {
-      IQueryable<TEntity> query = _dBSet;
+    public virtual async Task<bool> ResourceExists(string resourceId)
+    {
+        var resourse = await FindAsync(resourceId);
 
-      if (!isTracking) query = query.AsNoTracking();
+        return resourse != null;
+    }
 
-      if (filter != null) query = query.Where(filter);
+    private IQueryable<TEntity> EntityFetchQueryBuilder(
+      Expression<Func<TEntity, bool>>? filter = null,
+      Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
+      string? includeProperties = null,
+      bool isTracking = true)
+    {
+        IQueryable<TEntity> query = _dBSet;
 
-      if (includeProperties != null)
-         query = includeProperties
-           .Split(',', StringSplitOptions.RemoveEmptyEntries)
-           .Aggregate(query, (current, s) => current.Include(s));
+        if (!isTracking) query = query.AsNoTracking();
 
-      if (orderBy != null) query = orderBy(query);
+        if (filter != null) query = query.Where(filter);
 
-      return query;
-   }
+        if (includeProperties != null)
+            query = includeProperties
+              .Split(',', StringSplitOptions.RemoveEmptyEntries)
+              .Aggregate(query, (current, s) => current.Include(s));
 
-   public async Task AddRangeAsync(List<TEntity> entities)
-   {
-      await _dBSet.AddRangeAsync(entities);
-   }
+        if (orderBy != null) query = orderBy(query);
+
+        return query;
+    }
+
+    public virtual async Task AddRangeAsync(List<TEntity> entities)
+    {
+        await _dBSet.AddRangeAsync(entities);
+    }
 }

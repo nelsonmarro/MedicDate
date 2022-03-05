@@ -39,6 +39,7 @@ public static class ApplicationServicesExtensions
         services.AddScoped<IEntityValidator, EntityValidator>();
         services.AddTransient<IFileUpload, AzureStorageFileUpload>();
 
+        services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
         services.AddScoped<IAppUserRepository, AppUserRepository>();
         services.AddScoped<IActividadRepository, ActividadRepository>();
         services.AddScoped<IGrupoRepository, GrupoRepository>();

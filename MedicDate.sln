@@ -36,6 +36,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MedicDate.API.UnitTest", "MedicDate.API.UnitTest\MedicDate.API.UnitTest.csproj", "{6BBCB01A-03F4-439B-B7F5-BC2B76B8106E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -78,6 +80,10 @@ Global
 		{7B77C861-AE28-403E-B0A7-DD05648217F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7B77C861-AE28-403E-B0A7-DD05648217F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7B77C861-AE28-403E-B0A7-DD05648217F1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6BBCB01A-03F4-439B-B7F5-BC2B76B8106E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6BBCB01A-03F4-439B-B7F5-BC2B76B8106E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6BBCB01A-03F4-439B-B7F5-BC2B76B8106E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6BBCB01A-03F4-439B-B7F5-BC2B76B8106E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -95,6 +101,7 @@ Global
 		{33E8F5E9-97F8-4F83-941D-7D923569D4CC} = {28E7D74B-6BCF-479C-B89B-33280DF388CF}
 		{66D03029-BFB5-4B74-B85F-C9766C5DFC88} = {28E7D74B-6BCF-479C-B89B-33280DF388CF}
 		{297B39EC-C7F8-42BF-B3B7-44C0EF95C117} = {28E7D74B-6BCF-479C-B89B-33280DF388CF}
+		{6BBCB01A-03F4-439B-B7F5-BC2B76B8106E} = {C4E7FFB2-D3A9-4276-8AED-BDB7573B545B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {3F7ECB58-DC09-411F-B442-C8857F161A3F}
