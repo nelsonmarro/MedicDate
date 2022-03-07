@@ -4,14 +4,14 @@ using MedicDate.Utility.Interfaces;
 
 namespace MedicDate.DataAccess.Entities;
 
-public class Especialidad : IId
+public class Especialidad : BaseEntity, IId
 {
-  [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-  [Key]
-  public string Id { get; set; } = default!;
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    [Key]
+    public string Id { get; set; } = default!;
 
-  [StringLength(100)] public string NombreEspecialidad { get; set; } = default!;
+    [StringLength(100)] public string NombreEspecialidad { get; set; } = default!;
 
-  public List<MedicoEspecialidad> MedicosEspecialidades { get; set; } =
-    default!;
+    public List<MedicoEspecialidad> MedicosEspecialidades { get; set; } =
+      default!;
 }

@@ -4,7 +4,7 @@ using MedicDate.Utility.Interfaces;
 
 namespace MedicDate.DataAccess.Entities;
 
-public class Cita : IId
+public class Cita : BaseEntity, IId
 {
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     [Key]
@@ -13,7 +13,7 @@ public class Cita : IId
     [Required] public DateTime FechaInicio { get; set; }
     [Required] public DateTime FechaFin { get; set; }
 
-    [Required] [StringLength(100)] public string Estado { get; set; } = default!;
+    [Required][StringLength(100)] public string Estado { get; set; } = default!;
 
     public string PacienteId { get; set; } = default!;
     public string MedicoId { get; set; } = default!;

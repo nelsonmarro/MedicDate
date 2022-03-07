@@ -4,7 +4,7 @@ using MedicDate.Utility.Interfaces;
 
 namespace MedicDate.DataAccess.Entities;
 
-public class Grupo : IId
+public class Grupo : BaseEntity, IId
 {
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     [Key]

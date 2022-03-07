@@ -2,7 +2,7 @@
 
 namespace MedicDate.DataAccess.Entities;
 
-public class ActividadCita
+public class ActividadCita : BaseEntity
 {
     public string CitaId { get; set; } = default!;
     public string ActividadId { get; set; } = default!;
