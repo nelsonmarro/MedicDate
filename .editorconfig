@@ -180,12 +180,12 @@ indent_size = 3
 [*.{appxmanifest,axml,build,c,c++,cc,cginc,compute,config,cp,cpp,csproj,cu,cuh,cxx,dbml,discomap,dtd,h,hh,hlsl,hlsli,hlslinc,hpp,hxx,inc,inl,ino,ipp,jsproj,lsproj,mpp,mq4,mq5,mqh,njsproj,nuspec,proj,props,proto,resw,resx,StyleCop,targets,tasks,tpp,usf,ush,vbproj,xml,xsd}]
 indent_style = tab
 indent_size = tab
-tab_width = 3
+tab_width = 2
 
 [*.{asax,ascx,aspx,axaml,cs,cshtml,css,htm,html,js,jsx,master,paml,razor,skin,ts,tsx,vb,xaml,xamlx,xoml}]
 indent_style = space
-indent_size =4
-tab_width =4
+indent_size =2
+tab_width =2
 
 [*.{json,resjson}]
 indent_style = space

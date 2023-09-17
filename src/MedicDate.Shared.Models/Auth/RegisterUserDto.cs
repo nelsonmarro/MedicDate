@@ -28,5 +28,5 @@ public class RegisterUserDto
     [DataType(DataType.Password)]
     public string? ConfirmPassword { get; set; }
 
-    public List<string> RolesIds { get; set; } = new();
+    public List<string>? RolesIds { get; set; } = new();
 }

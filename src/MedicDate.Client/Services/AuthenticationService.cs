@@ -84,7 +84,7 @@ namespace MedicDate.Client.Services
                 return "";
             }
 
-            if (refreshResult.Response is null || refreshResult.Response.Token is null)
+            if (refreshResult.Response?.Token is null)
             {
                 await _localStorage.RemoveItemAsync(Sd.TOKEN_ACCESS);
                 await _localStorage.RemoveItemAsync(Sd.TOKEN_REFRESH);

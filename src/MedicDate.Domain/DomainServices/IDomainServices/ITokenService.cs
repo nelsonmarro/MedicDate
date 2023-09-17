@@ -6,5 +6,5 @@ namespace MedicDate.Bussines.DomainServices.IDomainServices;
 public interface ITokenService
 {
   public Task<OperationResult<LoginResponseDto>> RefreshTokenAsync(
-    RefreshTokenDto refreshTokenDto);
+    RefreshTokenDto? refreshTokenDto);
 }

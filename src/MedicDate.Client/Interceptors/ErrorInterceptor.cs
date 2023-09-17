@@ -38,34 +38,39 @@ public class ErrorInterceptor : IErrorInterceptor
         if (!e.Response.IsSuccessStatusCode)
         {
             var errorStatus = (int) e.Response.StatusCode;
-            var strResp = await e.Response.Content.ReadAsStringAsync();
-
+            var strResp = "";
             switch (errorStatus)
             {
                 case 400:
+                    strResp = await e.Response.Content.ReadAsStringAsync();
                     if (!strResp.Contains("[") && !strResp.Contains("{"))
                         await _notificationService.ShowError("Error!", strResp);
                     return;
 
                 case 401:
-                    if (string.IsNullOrEmpty(await _localStorage.GetItemAsStringAsync(Sd.TOKEN_ACCESS)))
+                    if (string.IsNullOrEmpty(
+                            await _localStorage.GetItemAsStringAsync(Sd.TOKEN_ACCESS)))
                     {
                         await _notificationService.ShowError("Error!",
-                        "Debe iniciar sesión para acceder a este recurso");
+                            "Debe iniciar sesión para acceder a este recurso");
                     }
+
                     return;
 
                 case 404:
+                    strResp = await e.Response.Content.ReadAsStringAsync();
                     await _notificationService.ShowError("Error!", strResp);
                     _navigationManager.NavigateTo("notFound");
                     return;
 
                 case 403:
+                    strResp = await e.Response.Content.ReadAsStringAsync();
                     await _notificationService.ShowError("Error!",
-                       "No esta autorizado para acceder a este recurso");
+                        "No esta autorizado para acceder a este recurso");
                     return;
 
                 case 500:
+                    strResp = await e.Response.Content.ReadAsStringAsync();
                     _navigationManager.NavigateTo($"serverError?rawError={strResp}");
                     return;
 

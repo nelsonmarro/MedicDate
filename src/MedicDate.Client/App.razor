@@ -1,28 +1,28 @@
 @using MedicDate.Client.Shared.Layouts
-@inject NavigationManager _navigationManager
+@inject NavigationManager NavigationManager
 
 <CascadingAuthenticationState>
-    <Router AppAssembly="@typeof(App).Assembly">
-        <Found Context="routeData">
-            <AuthorizeRouteView RouteData="@routeData"
-                DefaultLayout="@typeof(MainLayout)">
-                <NotAuthorized>
-                    @{
-                        _navigationManager.NavigateTo("login");
-                    }
-                </NotAuthorized>
-                <Authorizing>
-                    <p>Comprobando las credenciales del usuario...</p>
-                </Authorizing>
-            </AuthorizeRouteView>
-        </Found>
-        <NotFound>
-            <PageTitle>Not found</PageTitle>
-            <LayoutView Layout="@typeof(MainLayout)">
-                @{
-                    _navigationManager.NavigateTo("notFound");
-                }
-            </LayoutView>
-        </NotFound>
-    </Router>
+  <Router AppAssembly="@typeof(App).Assembly">
+    <Found Context="routeData">
+      <AuthorizeRouteView RouteData="@routeData"
+                          DefaultLayout="@typeof(MainLayout)">
+        <NotAuthorized>
+          @{
+            NavigationManager.NavigateTo("login");
+          }
+        </NotAuthorized>
+        <Authorizing>
+          <p>Comprobando las credenciales del usuario...</p>
+        </Authorizing>
+      </AuthorizeRouteView>
+    </Found>
+    <NotFound>
+      <PageTitle>Not found</PageTitle>
+      <LayoutView Layout="@typeof(MainLayout)">
+        @{
+          NavigationManager.NavigateTo("notFound");
+        }
+      </LayoutView>
+    </NotFound>
+  </Router>
 </CascadingAuthenticationState>

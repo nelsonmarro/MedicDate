@@ -17,7 +17,7 @@ public class TokenController : ControllerBase
 
     [HttpPost("refresh")]
     public async Task<ActionResult<LoginResponseDto>> RefreshAsync(
-      RefreshTokenDto refreshTokenDto)
+      RefreshTokenDto? refreshTokenDto)
     {
         var resp = await _tokenService.RefreshTokenAsync(refreshTokenDto);
 

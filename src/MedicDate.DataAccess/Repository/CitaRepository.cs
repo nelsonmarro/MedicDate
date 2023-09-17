@@ -16,77 +16,64 @@ public class CitaRepository : Repository<Cita>, ICitaRepository
     private readonly IMapper _mapper;
 
     public CitaRepository(ApplicationDbContext context, IMapper mapper) :
-      base(context)
+        base(context)
     {
         _context = context;
         _mapper = mapper;
     }
 
-    public async Task<bool> CheckIfCitaHoursAreValidAsync(CitaRequestDto citaReq)
+    public async Task<bool> CheckIfCitaHoursAreValidAsync(CitaRequestDto citaReq,
+        string citaId = "")
     {
         if (await _context.Cita.CountAsync() == 0)
         {
             return true;
         }
 
-        return await _context.Cita
-           .AsNoTracking()
-           .AnyAsync(c =>
-        (c.FechaFin != citaReq.FechaFin
-        && c.FechaFin != citaReq.FechaInicio
-        && c.FechaInicio != citaReq.FechaInicio
-        && c.FechaInicio != citaReq.FechaFin)
-        ||
-        (c.Estado == Sd.ESTADO_CITA_ANULADA
-        || c.Estado == Sd.ESTADO_CITA_CANCELADA
-        || c.Estado == Sd.ESTADO_CITA_NOASISTIOPACIENTE));
-    }
+        var citasConfictivas = await _context.Cita
+            .AsNoTracking()
+            .Where(x => (x.FechaInicio < citaReq.FechaFin && x.FechaFin > citaReq.FechaInicio)
+                        &&
+                        !(x.Estado == Sd.ESTADO_CITA_ANULADA
+                          || x.Estado == Sd.ESTADO_CITA_CANCELADA
+                          || x.Estado == Sd.ESTADO_CITA_NOASISTIOPACIENTE)
+                        && x.Id != citaId)
+            .ToListAsync();
 
-    public async Task<bool> CheckIfCitaHoursAreValidAsync(CitaRequestDto citaReq, string citaId)
-    {
-        if (await _context.Cita
-           .AsNoTracking()
-           .AnyAsync(x => x.FechaFin == citaReq.FechaFin
-        && x.FechaInicio == citaReq.FechaInicio && citaId == x.Id))
-        {
-            return true;
-        }
-
-        return await CheckIfCitaHoursAreValidAsync(citaReq);
+        return !citasConfictivas.Any();
     }
 
     public async Task<List<CitaCalendarDto>> GetCitasByDateRange(
-      DateTime startDate, DateTime endDate, Expression<Func<Cita, bool>>? filter = null)
+        DateTime startDate, DateTime endDate, Expression<Func<Cita, bool>>? filter = null)
     {
         var query = _context.Cita.AsQueryable();
 
         if (filter is not null) query = query.Where(filter);
 
         var citasListDb = await query.AsNoTracking()
-           .Include(x => x.Paciente)
-           .Include(x => x.Medico)
-           .Where(x => x.FechaInicio >= startDate && x.FechaFin <= endDate)
-           .ToListAsync();
+            .Include(x => x.Paciente)
+            .Include(x => x.Medico)
+            .Where(x => x.FechaInicio >= startDate && x.FechaFin <= endDate)
+            .ToListAsync();
 
         return _mapper.Map<List<CitaCalendarDto>>(citasListDb);
     }
 
     public async Task<OperationResult> UpdateCitaAsync(string citaId,
-     CitaRequestDto citaRequestDto)
+        CitaRequestDto citaRequestDto)
     {
         var citaDb = await FirstOrDefaultAsync(x => x.Id == citaId,
-          "ActividadesCita");
+            "ActividadesCita");
 
         if (citaDb is null)
-            return OperationResult.
-               Error(NotFound, "No se encotró la cita para actualiar");
+            return OperationResult.Error(NotFound, "No se encotró la cita para actualiar");
 
         var timeIsValid = await CheckIfCitaHoursAreValidAsync(citaRequestDto, citaId);
 
         if (!timeIsValid)
             return OperationResult
-               .Error(BadRequest,
-               "Ya existe registrada una cita en el rango de tiempo ingresado");
+                .Error(BadRequest,
+                    "Ya existe registrada una cita en el rango de tiempo ingresado");
 
         _mapper.Map(citaRequestDto, citaDb);
         await SaveAsync();
@@ -95,44 +82,45 @@ public class CitaRepository : Repository<Cita>, ICitaRepository
     }
 
     public async Task<OperationResult> UpdateEstadoCitaAsync(string id,
-      string newEstado)
+        string newEstado)
     {
         var citaDb = await FirstOrDefaultAsync(x => x.Id == id,
-           "ActividadesCita");
+            "ActividadesCita");
 
         if (citaDb is null)
             return OperationResult.Error(NotFound,
-              "No se encontro la cita para actualizar");
+                "No se encontro la cita para actualizar");
 
-        if (newEstado == Sd.ESTADO_CITA_COMPLETADA && !citaDb.ActividadesCita.TrueForAll(x => x.ActividadTerminada))
+        if (newEstado == Sd.ESTADO_CITA_COMPLETADA &&
+            !citaDb.ActividadesCita.TrueForAll(x => x.ActividadTerminada))
             return OperationResult.Error(BadRequest,
-               "No puede poner esta cita como completada. Debe marcar todas las actividades de la cita como terminada");
+                "No puede poner esta cita como completada. Debe marcar todas las actividades de la cita como terminada");
 
         if ((citaDb.Estado == Sd.ESTADO_CITA_ANULADA
-           || citaDb.Estado == Sd.ESTADO_CITA_CANCELADA
-           || citaDb.Estado == Sd.ESTADO_CITA_NOASISTIOPACIENTE)
-           && (newEstado != Sd.ESTADO_CITA_ANULADA
-           && newEstado != Sd.ESTADO_CITA_CANCELADA
-           && newEstado != Sd.ESTADO_CITA_NOASISTIOPACIENTE))
+             || citaDb.Estado == Sd.ESTADO_CITA_CANCELADA
+             || citaDb.Estado == Sd.ESTADO_CITA_NOASISTIOPACIENTE)
+            && (newEstado != Sd.ESTADO_CITA_ANULADA
+                && newEstado != Sd.ESTADO_CITA_CANCELADA
+                && newEstado != Sd.ESTADO_CITA_NOASISTIOPACIENTE))
         {
             var timeIsValid = await CheckIfCitaHoursAreValidAsync(
-               new CitaRequestDto
-               {
-                   FechaInicio = citaDb.FechaInicio,
-                   FechaFin = citaDb.FechaFin,
-               }
-               );
+                new CitaRequestDto
+                {
+                    FechaInicio = citaDb.FechaInicio,
+                    FechaFin = citaDb.FechaFin,
+                }
+            );
 
             if (!timeIsValid)
                 return OperationResult
-                   .Error(BadRequest,
-                   "Ya existe registrada una cita en el rango de tiempo ingresado");
+                    .Error(BadRequest,
+                        "Ya existe registrada una cita en el rango de tiempo ingresado");
         }
 
         citaDb.Estado = newEstado;
         await _context.SaveChangesAsync();
 
         return OperationResult
-          .Success(OK, "Cita actualizada correctamente");
+            .Success(OK, "Cita actualizada correctamente");
     }
 }

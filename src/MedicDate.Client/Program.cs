@@ -19,7 +19,7 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 
 builder.Services.AddScoped(sp => new HttpClient
 {
-    BaseAddress = new Uri(builder.Configuration.GetValue<string>("BaseAPIUrl"))
+    BaseAddress = new Uri(builder.Configuration.GetValue<string>("BaseAPIUrl") ?? string.Empty)
 }.EnableIntercept(sp));
 
 ConfigureServices(builder.Services);

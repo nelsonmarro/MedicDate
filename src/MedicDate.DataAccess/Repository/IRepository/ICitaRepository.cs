@@ -15,6 +15,5 @@ public interface ICitaRepository : IRepository<Cita>
 
     Task<OperationResult> UpdateEstadoCitaAsync(string id, string newEstado);
 
-    Task<bool> CheckIfCitaHoursAreValidAsync(CitaRequestDto citaReq);
-    Task<bool> CheckIfCitaHoursAreValidAsync(CitaRequestDto citaReq, string citaId);
+    Task<bool> CheckIfCitaHoursAreValidAsync(CitaRequestDto citaReq, string citaId = "");
 }

@@ -15,97 +15,93 @@ namespace MedicDate.API.Controllers;
 [ApiController]
 public class UsuarioController : BaseController<ApplicationUser>
 {
-   private readonly IAppUserRepository _appUserRepo;
+  private readonly IAppUserRepository _appUserRepo;
 
-   public UsuarioController(IAppUserRepository appUserRepo, IMapper mapper)
-     : base(appUserRepo, mapper)
-   {
-      _appUserRepo = appUserRepo;
-   }
+  public UsuarioController(IAppUserRepository appUserRepo, IMapper mapper)
+    : base(appUserRepo, mapper)
+  {
+    _appUserRepo = appUserRepo;
+  }
 
-   [HttpGet("listarConPaginacion")]
-   public async
-     Task<ActionResult<PaginatedResourceListDto<AppUserResponseDto>>>
-     GetAllUsersAsync
-     (
-       int pageIndex = 0,
-       int pageSize = 10,
-       [FromQuery] bool traerRoles = false,
-       [FromQuery] string? filterRolId = null
-     )
-   {
-      var includeProperties = traerRoles
-        ? "UserRoles.Role"
-        : "";
+  [HttpGet("listarConPaginacion")]
+  public async Task<ActionResult<PaginatedResourceListDto<AppUserResponseDto>>> GetAllUsersAsync(
+    int pageIndex = 0,
+    int pageSize = 10,
+    [FromQuery] bool traerRoles = false,
+    [FromQuery] string? filterRolId = null
+  )
+  {
+    var includeProperties = traerRoles ? "UserRoles.Role" : "";
 
-      if (!string.IsNullOrEmpty(filterRolId))
-         return await GetAllWithPagingAsync<AppUserResponseDto>
-         (
-           pageIndex,
-           pageSize,
-           includeProperties,
-           x => x.UserRoles.Any(ur => ur.RoleId == filterRolId)
-         );
-
-      return await GetAllWithPagingAsync<AppUserResponseDto>
-      (
+    if (!string.IsNullOrEmpty(filterRolId))
+      return await GetAllWithPagingAsync<AppUserResponseDto>(
         pageIndex,
         pageSize,
-        includeProperties
+        includeProperties,
+        x => x.UserRoles.Any(ur => ur.RoleId == filterRolId),
+        orderBy: x => x.OrderBy(u => u.UserName)
       );
-   }
 
-   [HttpGet("{id}")]
-   public async Task<ActionResult<AppUserResponseDto>> GetUserById(
-     string id)
-   {
-      return await GetByIdAsync<AppUserResponseDto>(id, "UserRoles.Role");
-   }
+    return await GetAllWithPagingAsync<AppUserResponseDto>(
+      pageIndex,
+      pageSize,
+      includeProperties,
+      orderBy: x => x.OrderBy(u => u.UserName)
+    );
+  }
 
-   [HttpGet("obtenerParaEditar/{id}")]
-   public async Task<ActionResult<AppUserRequestDto>> GetPutUserAsync(
-     string id)
-   {
-      return await GetByIdAsync<AppUserRequestDto>(id, "UserRoles.Role");
-   }
+  [HttpGet("{id}")]
+  public async Task<ActionResult<AppUserResponseDto>> GetUserById(string id)
+  {
+    return await GetByIdAsync<AppUserResponseDto>(id, "UserRoles.Role");
+  }
 
-   [HttpPut("editar/{id}")]
-   public async Task<ActionResult> PutAsync(string id,
-     AppUserRequestDto appUserRequestDto)
-   {
-      var resp =
-        await _appUserRepo.UpdateUserAsync(id, appUserRequestDto);
+  [HttpGet("obtenerParaEditar/{id}")]
+  public async Task<ActionResult<AppUserRequestDto>> GetPutUserAsync(string id)
+  {
+    return await GetByIdAsync<AppUserRequestDto>(id, "UserRoles.Role");
+  }
 
-      return resp.Succeeded
-        ? resp.SuccessResult
-        : resp.ErrorResult;
-   }
+  [HttpPut("editar/{id}")]
+  public async Task<ActionResult> PutAsync(string id, AppUserRequestDto appUserRequestDto)
+  {
+    var resp = await _appUserRepo.UpdateUserAsync(id, appUserRequestDto);
 
-   [HttpGet("roles")]
-   public async Task<ActionResult<List<RoleResponseDto>>> GetRolesAsync()
-   {
-      var rolesListDb = await _appUserRepo.GetRolesAsync();
+    return resp.Succeeded ? resp.SuccessResult : resp.ErrorResult;
+  }
 
-      return rolesListDb.Select(x => new RoleResponseDto
-      {
-         Id = x.Id,
-         Nombre = x.Name,
-         Descripcion = x.Descripcion
-      }).ToList();
-   }
+  [HttpGet("roles")]
+  public async Task<ActionResult<List<RoleResponseDto>>> GetRolesAsync()
+  {
+    var rolesListDb = await _appUserRepo.GetRolesAsync();
 
-   [HttpDelete("eliminar/{id}")]
-   public async Task<ActionResult> DeleteUserAsync(string id,
-     [FromServices] IUserService userService)
-   {
-      var esMasterResp =
-        await userService.CheckIfUserIsWebMasterAsync(id);
+    return rolesListDb
+      .Select(
+        x =>
+          new RoleResponseDto
+          {
+            Id = x.Id,
+            Nombre = x.Name,
+            Descripcion = x.Descripcion
+          }
+      )
+      .ToList();
+  }
 
-      if (!esMasterResp.Succeeded) return esMasterResp.ErrorResult;
+  [HttpDelete("eliminar/{id}")]
+  public async Task<ActionResult> DeleteUserAsync(
+    string id,
+    [FromServices] IUserService userService
+  )
+  {
+    var esMasterResp = await userService.CheckIfUserIsWebMasterAsync(id);
 
-      if (esMasterResp.DataResult)
-         return BadRequest("No puede eliminar al usuario Web Master");
+    if (!esMasterResp.Succeeded)
+      return esMasterResp.ErrorResult;
 
-      return await DeleteResourceAsync(id);
-   }
+    if (esMasterResp.DataResult)
+      return BadRequest("No puede eliminar al usuario Web Master");
+
+    return await DeleteResourceAsync(id);
+  }
 }

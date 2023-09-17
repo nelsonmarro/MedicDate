@@ -13,15 +13,16 @@ public class BaseListComponent<T> : ComponentBase
   public BaseListComponent()
   {
     if (NotificationService is null || HttpRepo is null)
-      throw new ArgumentNullException(nameof(NotificationService) +
-                                      nameof(HttpRepo));
+      throw new ArgumentNullException(nameof(NotificationService) + nameof(HttpRepo));
   }
 
-  [Inject] protected INotificationService NotificationService { get; set; }
-  [Inject] protected IHttpRepository HttpRepo { get; set; }
+  [Inject]
+  protected INotificationService NotificationService { get; set; }
 
-  protected async Task LoadItemListAsync
-  (
+  [Inject]
+  protected IHttpRepository HttpRepo { get; set; }
+
+  private async Task LoadItemListAsync(
     string getUrl,
     string? filterQuery = null,
     string? filterData = null
@@ -29,32 +30,27 @@ public class BaseListComponent<T> : ComponentBase
   {
     var filterRequestQuery = "";
 
-    if (!string.IsNullOrEmpty(filterQuery)
-        && !string.IsNullOrEmpty(filterData)
-        && filterData != "0")
+    if (
+      !string.IsNullOrEmpty(filterQuery) && !string.IsNullOrEmpty(filterData) && filterData != "0"
+    )
       filterRequestQuery = filterQuery + filterData;
 
-    var response =
-      await HttpRepo.Get<PaginatedResourceListDto<T>>(getUrl +
-        filterRequestQuery);
+    var response = await HttpRepo.Get<PaginatedResourceListDto<T>>(getUrl + filterRequestQuery);
 
-    if (!response.Error)
-      if (response.Response is not null)
-      {
-        ItemList = response.Response.DataResult;
-        TotalCount = response.Response.TotalCount;
-      }
+    if (response is { Error: false, Response: not null })
+    {
+      ItemList = response.Response.DataResult;
+      TotalCount = response.Response.TotalCount;
+    }
   }
 
-  protected async Task DeleteItem(string idString, string deleteUrl,
-    string getUrl)
+  protected async Task DeleteItem(string idString, string deleteUrl, string getUrl)
   {
     var httpResp = await HttpRepo.Delete($"{deleteUrl}/{idString}");
 
     if (!httpResp.Error)
     {
-      NotificationService.ShowSuccess("Operación Exitosa!",
-        await httpResp.GetResponseBody());
+      NotificationService.ShowSuccess("Operación Exitosa!", await httpResp.GetResponseBody());
 
       await LoadItemListAsync(getUrl);
     }

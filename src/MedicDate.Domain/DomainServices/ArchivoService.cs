@@ -39,6 +39,7 @@ public class ArchivoService : IArchivoService
 
     var resultRouteList =
       await _fileUpload.SaveFileListAsync(filesForAzStorage);
+
     var archivosToSave = archivosReq.Select(x => new ArchivoDbSaveDto
     {
       CitaId = x.CitaId ?? "",

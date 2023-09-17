@@ -19,7 +19,7 @@ namespace MedicDate.Client.Pages.AppUser
 
       private async Task CreateUser()
       {
-         if (_registerModel.RolesIds.Count == 0)
+         if (_registerModel.RolesIds!.Count == 0)
          {
             await DialogNotificationService.ShowError("Error!", "Debe seleccionar al menos un rol para el usuario");
 

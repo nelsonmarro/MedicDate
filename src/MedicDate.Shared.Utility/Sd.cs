@@ -19,26 +19,26 @@ public static class Sd
 
     public const string AZ_STORAGE_CONTAINER_PACIENTE = "pacientes";
 
-    public static List<string> ListadoEstadosCita = new List<string>
-  {
-    "Completada",
-    "Por Confirmar",
-    "Anulada",
-    "Confirmada",
-    "No asistió paciente",
-    "Cancelada"
-  };
+    public static List<string> ListadoEstadosCita = new()
+    {
+        "Completada",
+        "Por Confirmar",
+        "Anulada",
+        "Confirmada",
+        "No asistió paciente",
+        "Cancelada"
+    };
 
-    public static readonly DateTime Januay = new DateTime(DateTime.Now.Year, 1, 1);
-    public static readonly DateTime February = new DateTime(DateTime.Now.Year, 2, 1);
-    public static readonly DateTime March = new DateTime(DateTime.Now.Year, 3, 1);
-    public static readonly DateTime April = new DateTime(DateTime.Now.Year, 4, 1);
-    public static readonly DateTime May = new DateTime(DateTime.Now.Year, 5, 1);
-    public static readonly DateTime June = new DateTime(DateTime.Now.Year, 6, 1);
-    public static readonly DateTime July = new DateTime(DateTime.Now.Year, 7, 1);
-    public static readonly DateTime August = new DateTime(DateTime.Now.Year, 8, 1);
-    public static readonly DateTime September = new DateTime(DateTime.Now.Year, 9, 1);
-    public static readonly DateTime October = new DateTime(DateTime.Now.Year, 10, 1);
-    public static readonly DateTime November = new DateTime(DateTime.Now.Year, 11, 1);
-    public static readonly DateTime December = new DateTime(DateTime.Now.Year, 12, 1);
+    public static readonly DateTime Januay = new(DateTime.Now.Year, 1, 1);
+    public static readonly DateTime February = new(DateTime.Now.Year, 2, 1);
+    public static readonly DateTime March = new(DateTime.Now.Year, 3, 1);
+    public static readonly DateTime April = new(DateTime.Now.Year, 4, 1);
+    public static readonly DateTime May = new(DateTime.Now.Year, 5, 1);
+    public static readonly DateTime June = new(DateTime.Now.Year, 6, 1);
+    public static readonly DateTime July = new(DateTime.Now.Year, 7, 1);
+    public static readonly DateTime August = new(DateTime.Now.Year, 8, 1);
+    public static readonly DateTime September = new(DateTime.Now.Year, 9, 1);
+    public static readonly DateTime October = new(DateTime.Now.Year, 10, 1);
+    public static readonly DateTime November = new(DateTime.Now.Year, 11, 1);
+    public static readonly DateTime December = new(DateTime.Now.Year, 12, 1);
 }

@@ -17,7 +17,7 @@
     if (!string.IsNullOrEmpty(Error))
     {
       <div class="alert alert-danger animate__animated animate__fadeInUp"
-       role="alert">
+           role="alert">
         <span>@Error</span>
       </div>
     }
@@ -27,32 +27,32 @@
       <RadzenCard class="mb-3 mb-lg-0 animate__animated animate__fadeInUp">
         <h3 class="text-secondary text-center">Iniciar Sesión</h3>
         <EditForm Model="@_loginRequestDto" OnValidSubmit="ExecuteLogin">
-          <DataAnnotationsValidator />
+          <DataAnnotationsValidator/>
           <div class="mb-3">
-            <RadzenLabel Text="Email" />
+            <RadzenLabel Text="Email"/>
             <div class="mt-1">
               <RadzenTextBox @bind-Value="_loginRequestDto.Email"
-                             class="w-100" />
-              <ValidationMessage For="() => _loginRequestDto.Email" />
+                             class="w-100" AutoComplete="false"/>
+              <ValidationMessage For="() => _loginRequestDto.Email"/>
             </div>
           </div>
           <div class="mb-3">
-            <RadzenLabel Text="Contraseña" />
+            <RadzenLabel Text="Contraseña"/>
             <div class="mt-1">
               <RadzenPassword @bind-Value="_loginRequestDto.Password"
-                              class="w-100" />
-              <ValidationMessage For="() => _loginRequestDto.Password" />
+                              class="w-100" AutoComplete="false"/>
+              <ValidationMessage For="() => _loginRequestDto.Password"/>
             </div>
           </div>
           <div class="mb-2">
             <RadzenButton ButtonType="ButtonType.Submit"
-                          Text="Iniciar Sesión" Icon="login" />
+                          Text="Iniciar Sesión" Icon="login"/>
           </div>
         </EditForm>
 
         <div>
           <RadzenLink Text="¿Olvidó su contraseña?"
-                      Path="usuario/forgotPassword" />
+                      Path="usuario/forgotPassword"/>
         </div>
       </RadzenCard>
     </ErrorBoundary>

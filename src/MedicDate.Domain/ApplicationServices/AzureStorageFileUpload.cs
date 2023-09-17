@@ -8,7 +8,7 @@ namespace MedicDate.Bussines.ApplicationServices;
 
 public class AzureStorageFileUpload : IFileUpload
 {
-  private readonly string _connectionString;
+  private readonly string? _connectionString;
 
   public AzureStorageFileUpload(IConfiguration configuration)
   {

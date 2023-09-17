@@ -1,19 +1,21 @@
 html,
 body {
   font-family: 'Roboto', sans-serif;
+  height: 100%;
+  width: 100%;
 }
-
-h1,
-h2,
-h3,
-h4,
-h5 {
-  font-weight: 400 !important;
-}
-
+         
+h1,    
+h2,  
+h3,       
+h4, 
+h5 {  
+  font-weight: 400 !important; 
+}  
+    
 .header {
   left: 261px !important;
-}
+} 
 
 .header-expanded {
   left: 0 !important;
