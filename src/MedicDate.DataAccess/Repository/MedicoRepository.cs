@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using static System.Net.HttpStatusCode;
 
 namespace MedicDate.DataAccess.Repository;
-  
+
 public class MedicoRepository(ApplicationDbContext context, IMapper mapper)
   : Repository<Medico>(context),
     IMedicoRepository

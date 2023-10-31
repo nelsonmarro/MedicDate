@@ -5,6 +5,7 @@
 		<Nullable>enable</Nullable>
 		<RootNamespace>MedicDate.API</RootNamespace>
 		<IsPackable>false</IsPackable>
+		<LangVersion>preview</LangVersion>
 	</PropertyGroup>
 
 	<ItemGroup>

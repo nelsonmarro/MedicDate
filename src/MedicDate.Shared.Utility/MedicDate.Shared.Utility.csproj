@@ -5,6 +5,7 @@
     <RootNamespace>MedicDate.Utility</RootNamespace>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>preview</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>

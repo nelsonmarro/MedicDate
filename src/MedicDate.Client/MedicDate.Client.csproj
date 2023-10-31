@@ -4,6 +4,7 @@
 		<!--<EmccTotalMemory>16777216</EmccTotalMemory>-->
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
+		<LangVersion>preview</LangVersion>
 		<!--<BlazorCacheBootResources>false</BlazorCacheBootResources>
 		<EnableUnsafeBinaryFormatterSerialization>false</EnableUnsafeBinaryFormatterSerialization>-->
 	</PropertyGroup>
@@ -19,7 +20,7 @@
 		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" Version="7.0.13" />
 		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="7.0.13" PrivateAssets="all" />
 		<PackageReference Include="Microsoft.Extensions.Http" Version="7.0.0" />
-		<PackageReference Include="Radzen.Blazor" Version="4.19.0" />
+		<PackageReference Include="Radzen.Blazor" Version="4.19.1" />
 		<PackageReference Include="System.Net.Http.Json" Version="7.0.1" />
 		<PackageReference Include="Toolbelt.Blazor.HttpClientInterceptor" Version="10.2.0" />
 	</ItemGroup>

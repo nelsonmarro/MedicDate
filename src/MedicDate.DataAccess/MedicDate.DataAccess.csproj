@@ -3,13 +3,12 @@
 		<TargetFramework>net7.0</TargetFramework>
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
-		<LangVersion>latest</LangVersion>
+		<LangVersion>preview</LangVersion>
 	</PropertyGroup>
 	<ItemGroup>
 		<PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
 		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="7.0.13" />
 		<PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="7.0.13" />
-		<PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.DynamicLinq" Version="7.3.5" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.13" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.13">
