@@ -1,12 +1,12 @@
 ﻿using System.Net;
 using System.Text.Json;
-using MedicDate.Bussines.ApplicationServices;
-using MedicDate.Bussines.ApplicationServices.IApplicationServices;
-using MedicDate.Bussines.DomainServices;
-using MedicDate.Bussines.DomainServices.IDomainServices;
 using MedicDate.DataAccess;
 using MedicDate.DataAccess.Entities;
 using MedicDate.DataAccess.Helpers;
+using MedicDate.Domain.ApplicationServices;
+using MedicDate.Domain.ApplicationServices.IApplicationServices;
+using MedicDate.Domain.DomainServices;
+using MedicDate.Domain.DomainServices.IDomainServices;
 using MedicDate.Shared.Models.Auth;
 using MedicDate.Test.Shared;
 using MedicDate.Utility;

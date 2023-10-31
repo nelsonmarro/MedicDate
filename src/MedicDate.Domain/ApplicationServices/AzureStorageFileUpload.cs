@@ -1,10 +1,10 @@
 ﻿using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
-using MedicDate.Bussines.ApplicationServices.IApplicationServices;
+using MedicDate.Domain.ApplicationServices.IApplicationServices;
 using MedicDate.Shared.Models.Common;
 using Microsoft.Extensions.Configuration;
 
-namespace MedicDate.Bussines.ApplicationServices;
+namespace MedicDate.Domain.ApplicationServices;
 
 public class AzureStorageFileUpload : IFileUpload
 {

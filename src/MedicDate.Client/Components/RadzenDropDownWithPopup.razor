@@ -5,22 +5,16 @@
 <RadzenStack Orientation="Orientation.Horizontal" Gap="5px" AlignItems="AlignItems.Center">
   <div>
     <RadzenButton @ref="_button" Text="Agregar" Icon="add" Click="@(args => _popup.ToggleAsync(_button.Element))"
-                  Size="ButtonSize.Small" Variant="Variant.Text"/>
+                  Size="ButtonSize.Small" Variant="Variant.Text" />
   </div>
-  <RadzenDropDown TValue="TValue" Data="@DataList"
-                  AllowFiltering="true" AllowClear="true"
-                  AllowVirtualization="true"
-                  Multiple="@DropDownAllowMultipleSelection"
-                  FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
-                  ValueProperty="Id" TextProperty="@DropDownTextProperty"
-                  class="w-100" Placeholder="Seleccione"
-                  @bind-Value:get="Value!"
-                  @bind-Value:set="@((value) => ValueChanged.InvokeAsync(value))"/>
+  <RadzenDropDown TValue="TValue" Data="@DataList" AllowFiltering="true" AllowClear="true" AllowVirtualization="true"
+                  Multiple="@DropDownAllowMultipleSelection" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                  ValueProperty="Id" TextProperty="@DropDownTextProperty" class="w-100" Placeholder="Seleccione"
+                  @bind-Value:get="Value!" @bind-Value:set="@((value) => ValueChanged.InvokeAsync(value))" />
 
 </RadzenStack>
 
-<Popup @ref="_popup" Lazy="true"
-       class="popup popup-doctor">
+<Popup @ref="_popup" Lazy="true" class="popup">
   @ChildContend
 </Popup>
 
@@ -33,7 +27,7 @@
   [Parameter]
   [EditorRequired]
   public string DropDownTextProperty { get; set; } = string.Empty;
-  
+
   [Parameter]
   public bool DropDownAllowMultipleSelection { get; set; }
 

@@ -1,6 +1,9 @@
-﻿namespace MedicDate.Bussines.Models;
+﻿using MedicDate.DataAccess.Entities;
 
-public class SendAppoimentReminderEmailRequest
+namespace MedicDate.Domain.Models
 {
-  
+  public class SendAppoimentReminderEmailRequest
+  {
+    public Cita Cita { get; set; }
+  }
 }

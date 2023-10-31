@@ -1,7 +1,7 @@
 using AutoMapper;
-using MedicDate.Bussines.DomainServices.IDomainServices;
 using MedicDate.DataAccess.Entities;
 using MedicDate.DataAccess.Repository.IRepository;
+using MedicDate.Domain.DomainServices.IDomainServices;
 using MedicDate.Shared.Models.Common;
 using MedicDate.Shared.Models.Paciente;
 using Microsoft.AspNetCore.Authorization;

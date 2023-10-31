@@ -1,4 +1,4 @@
-﻿using MedicDate.Bussines.DomainServices.IDomainServices;
+﻿using MedicDate.Domain.DomainServices.IDomainServices;
 using MedicDate.Shared.Models.Auth;
 using Microsoft.AspNetCore.Mvc;
 

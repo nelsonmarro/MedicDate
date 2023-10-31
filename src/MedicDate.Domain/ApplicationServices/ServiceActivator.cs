@@ -1,6 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
 
-namespace MedicDate.Bussines.ApplicationServices;
+namespace MedicDate.Domain.ApplicationServices;
 
 public class ServiceActivator
 {

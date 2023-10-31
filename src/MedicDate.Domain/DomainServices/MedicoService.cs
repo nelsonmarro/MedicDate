@@ -1,28 +1,18 @@
-﻿using MedicDate.Bussines.ApplicationServices.IApplicationServices;
-using MedicDate.Bussines.DomainServices.IDomainServices;
-using MedicDate.DataAccess.Entities;
+﻿using MedicDate.DataAccess.Entities;
+using MedicDate.Domain.ApplicationServices.IApplicationServices;
+using MedicDate.Domain.DomainServices.IDomainServices;
 
-namespace MedicDate.Bussines.DomainServices;
+namespace MedicDate.Domain.DomainServices;
 
-public class MedicoService : IMedicoService
+public class MedicoService(IEntityValidator entityValidator) : IMedicoService
 {
-  private readonly IEntityValidator _entityValidator;
-
-  public MedicoService(IEntityValidator entityValidator)
-  {
-    _entityValidator = entityValidator;
-  }
-
   public async Task<bool> ValidatCedulaForCreateAsync(string numeroCedula)
   {
-    return await _entityValidator
-      .CheckValueExistsAsync<Medico>("Cedula", numeroCedula);
+    return await entityValidator.CheckValueExistsAsync<Medico>("Cedula", numeroCedula);
   }
 
-  public async Task<bool> ValidateCedulaForEditAsync(string numCedula,
-    string id)
+  public async Task<bool> ValidateCedulaForEditAsync(string numCedula, string id)
   {
-    return await _entityValidator
-      .CheckValueExistsForEditAsync<Medico>("Cedula", numCedula, id);
+    return await entityValidator.CheckValueExistsForEditAsync<Medico>("Cedula", numCedula, id);
   }
 }

@@ -90,6 +90,20 @@ public class BaseController<TEntity> : ControllerBase
   )
     where TResponse : IId
   {
+    var responseEntity = await CreateRecordAsync<TRequest, TResponse>(
+      entityRequest,
+      includeProperties
+    );
+
+    return CreatedAtRoute(routeResultName, new { id = responseEntity?.Id }, responseEntity);
+  }
+
+  protected async Task<TResponse> CreateRecordAsync<TRequest, TResponse>(
+    TRequest entityRequest,
+    string? includeProperties = null
+  )
+    where TResponse : IId
+  {
     var entityDb = _mapper.Map<TEntity>(entityRequest);
     await _repository.AddAsync(entityDb);
     await _repository.SaveAsync();
@@ -111,7 +125,7 @@ public class BaseController<TEntity> : ControllerBase
       responseEntity = _mapper.Map<TResponse>(entityDb);
     }
 
-    return CreatedAtRoute(routeResultName, new { id = responseEntity.Id }, responseEntity);
+    return responseEntity;
   }
 
   protected async Task<ActionResult> DeleteResourceAsync(string id)

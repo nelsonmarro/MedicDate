@@ -7,33 +7,22 @@ using Microsoft.EntityFrameworkCore;
 using static System.Net.HttpStatusCode;
 
 namespace MedicDate.DataAccess.Repository;
-
-public class MedicoRepository : Repository<Medico>, IMedicoRepository
+  
+public class MedicoRepository(ApplicationDbContext context, IMapper mapper)
+  : Repository<Medico>(context),
+    IMedicoRepository
 {
-  private readonly ApplicationDbContext _context;
-  private readonly IMapper _mapper;
-
-  public MedicoRepository(
-    ApplicationDbContext context, IMapper mapper) : base(context)
+  public async Task<OperationResult> UpdateMedicoAsync(string id, MedicoRequestDto medicoRequestDto)
   {
-    _context = context;
-    _mapper = mapper;
-    ;
-  }
-
-  public async Task<OperationResult> UpdateMedicoAsync(string id,
-    MedicoRequestDto medicoRequestDto)
-  {
-    var medicoDb = await _context.Medico
+    var medicoDb = await context.Medico
       .Include(x => x.MedicosEspecialidades)
       .FirstOrDefaultAsync(x => x.Id == id);
 
     if (medicoDb is null)
-      return OperationResult.Error(NotFound,
-        "No se encontró el doctor ha actualizar");
+      return OperationResult.Error(NotFound, "No se encontró el doctor ha actualizar");
 
-    _mapper.Map(medicoRequestDto, medicoDb);
-    await _context.SaveChangesAsync();
+    mapper.Map(medicoRequestDto, medicoDb);
+    await context.SaveChangesAsync();
 
     return OperationResult.Success(OK, "Doctor actualizado con éxito");
   }

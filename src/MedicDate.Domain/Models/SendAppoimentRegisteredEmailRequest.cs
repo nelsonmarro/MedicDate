@@ -1,6 +1,6 @@
-﻿namespace MedicDate.Bussines.Models;
+﻿namespace MedicDate.Domain.Models;
 
-public class RegisteredAppoimentEmailContent
+public class AppoimentEmailContent
 {
   public string AppointmentDate { get; set; } = string.Empty;
   public string DoctorInfo { get; set; } = string.Empty;
@@ -8,7 +8,7 @@ public class RegisteredAppoimentEmailContent
   public List<string> Treatments { get; set; } = new();
 }
 
-public class SendRegisteredEmailRequest
+public class SendRegisteredAppoimentEmailRequest
 {
   public string AppoimentId { get; set; }
 }

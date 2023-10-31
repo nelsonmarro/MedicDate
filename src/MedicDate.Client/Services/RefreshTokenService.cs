@@ -19,18 +19,17 @@ namespace MedicDate.Client.Services
             var authState = await _authProvider.GetAuthenticationStateAsync();
             var user = authState?.User;
 
-            if (user is not null)
+            if (user is null) return string.Empty;
+            
+            var exp = user.FindFirst(c => c.Type.Equals("exp"))?.Value;
+            var expTime = DateTimeOffset.FromUnixTimeSeconds(Convert.ToInt64(exp));
+
+            var timeUtcNow = DateTime.UtcNow;
+
+            var diff = expTime - timeUtcNow;
+            if (diff.TotalMinutes <= 2)
             {
-                var exp = user.FindFirst(c => c.Type.Equals("exp"))?.Value;
-                var expTime = DateTimeOffset.FromUnixTimeSeconds(Convert.ToInt64(exp));
-
-                var timeUtcNow = DateTime.UtcNow;
-
-                var diff = expTime - timeUtcNow;
-                if (diff.TotalMinutes <= 2)
-                {
-                    return await _authService.RefreshToken();
-                }
+              return await _authService.RefreshToken();
             }
 
             return string.Empty;

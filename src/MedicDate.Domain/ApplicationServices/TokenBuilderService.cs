@@ -2,12 +2,12 @@
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
-using MedicDate.Bussines.ApplicationServices.IApplicationServices;
 using MedicDate.DataAccess.Entities;
+using MedicDate.Domain.ApplicationServices.IApplicationServices;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 
-namespace MedicDate.Bussines.ApplicationServices;
+namespace MedicDate.Domain.ApplicationServices;
 
 public class TokenBuilderService : ITokenBuilderService
 {
@@ -104,9 +104,7 @@ public class TokenBuilderService : ITokenBuilderService
         StringComparison.InvariantCultureIgnoreCase
       )
     )
-    {
       throw new SecurityTokenException("Invalid token");
-    }
 
     return principal;
   }

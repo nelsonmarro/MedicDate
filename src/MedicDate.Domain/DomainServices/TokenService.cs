@@ -1,15 +1,15 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using MedicDate.Bussines.ApplicationServices.IApplicationServices;
-using MedicDate.Bussines.DomainServices.IDomainServices;
 using MedicDate.DataAccess.Entities;
 using MedicDate.DataAccess.Helpers;
+using MedicDate.Domain.ApplicationServices.IApplicationServices;
+using MedicDate.Domain.DomainServices.IDomainServices;
 using MedicDate.Shared.Models.Auth;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using static System.Net.HttpStatusCode;
 
-namespace MedicDate.Bussines.DomainServices;
+namespace MedicDate.Domain.DomainServices;
 
 public class TokenService : ITokenService
 {
@@ -33,12 +33,10 @@ public class TokenService : ITokenService
   )
   {
     if (refreshTokenDto is null)
-    {
       return OperationResult<LoginResponseDto>.Error(
         NotFound,
         "Error al validar la sesión del usuario"
       );
-    }
 
     var principal = _tokenBuilderService.GetPrincipalFromExpiredToken(
       refreshTokenDto.Token,
@@ -51,18 +49,15 @@ public class TokenService : ITokenService
     var user = await _userManager.FindByEmailAsync(emailClaim?.Value ?? string.Empty);
 
     if (string.IsNullOrEmpty(user?.RefreshToken))
-    {
       return OperationResult<LoginResponseDto>.Error(
         NotFound,
         "No se encotró un refresh token en la DB"
       );
-    }
 
     if (
       user.RefreshToken != refreshTokenDto.RefreshToken
       || user.RefreshTokenExpiryTime <= DateTime.Now
     )
-    {
       return OperationResult<LoginResponseDto>.Error(
         BadRequest,
         new LoginResponseDto
@@ -71,7 +66,6 @@ public class TokenService : ITokenService
           ErrorMessage = "Petición inválida al servidor"
         }
       );
-    }
 
     var signinCreds = _tokenBuilderService.GetSigningCredentials(_jwtSettings.SecretKey);
 

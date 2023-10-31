@@ -3,7 +3,7 @@ using System.Security.Claims;
 using MedicDate.DataAccess.Entities;
 using Microsoft.IdentityModel.Tokens;
 
-namespace MedicDate.Bussines.ApplicationServices.IApplicationServices;
+namespace MedicDate.Domain.ApplicationServices.IApplicationServices;
 
 public interface ITokenBuilderService
 {

@@ -1,4 +1,4 @@
-﻿namespace MedicDate.Bussines.ApplicationServices.IApplicationServices;
+﻿namespace MedicDate.Domain.ApplicationServices.IApplicationServices;
 
 public interface ISuccessResultBuilder<T>
 {

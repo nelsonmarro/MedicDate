@@ -1,5 +1,6 @@
-﻿using MedicDate.Bussines.DomainServices;
-using MedicDate.Bussines.DomainServices.IDomainServices;
+﻿using MedicDate.Domain.DomainServices.IDomainServices;
+using MedicDate.Domain.DomainServices;
+using MedicDate.Domain.DomainServices.IDomainServices;
 
 namespace MedicDate.API.Extensions;
 

@@ -1,6 +1,6 @@
-﻿using MedicDate.Bussines.ApplicationServices.IApplicationServices;
+﻿using MedicDate.Domain.ApplicationServices.IApplicationServices;
 
-namespace MedicDate.Bussines.ApplicationServices;
+namespace MedicDate.Domain.ApplicationServices;
 
 public class ISuccessDataResultBuilder<T> : ISuccessResultBuilder<T>
 {

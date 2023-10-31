@@ -1,22 +1,24 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<TargetFramework>net7.0</TargetFramework>
-		<RootNamespace>MedicDate.Bussines</RootNamespace>
+		<RootNamespace>MedicDate.Domain</RootNamespace>
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
+		<LangVersion>latest</LangVersion>
 	</PropertyGroup>
 	<ItemGroup>
-		<PackageReference Include="AutoMapper" Version="12.0.1"/>
-		<PackageReference Include="Azure.Storage.Blobs" Version="12.18.0"/>
-		<PackageReference Include="Mailjet.Api" Version="3.0.0"/>
-		<PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="7.0.11"/>
-		<PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5"/>
-		<PackageReference Include="Microsoft.IdentityModel.Tokens" Version="7.0.0"/>
-		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.0.0"/>
-		<PackageReference Include="System.Linq.Dynamic.Core" Version="1.3.5"/>
-		<PackageReference Include="Microsoft.EntityFrameworkCore.DynamicLinq" Version="7.3.5"/>
+		<PackageReference Include="AutoMapper" Version="12.0.1" />
+		<PackageReference Include="Azure.Storage.Blobs" Version="12.18.0" />
+		<PackageReference Include="Fluid.Core" Version="2.5.0" />
+		<PackageReference Include="Mailjet.Api" Version="3.0.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="7.0.13" />
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
+		<PackageReference Include="Microsoft.IdentityModel.Tokens" Version="7.0.3" />
+		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.0.3" />
+		<PackageReference Include="System.Linq.Dynamic.Core" Version="1.3.5" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.DynamicLinq" Version="7.3.5" />
 	</ItemGroup>
 	<ItemGroup>
-		<ProjectReference Include="..\MedicDate.DataAccess\MedicDate.DataAccess.csproj"/>
+		<ProjectReference Include="..\MedicDate.DataAccess\MedicDate.DataAccess.csproj" />
 	</ItemGroup>
 </Project>

@@ -1,50 +1,70 @@
-﻿<RadzenCard>
-	<EditForm Model="@MedicoRequestDto" OnValidSubmit="OnSubmit">
-		<DataAnnotationsValidator />
-		<div class="mb-3">
-			<RadzenLabel Text="Nombres" />
-			<div class="mt-1">
-				<RadzenTextBox @bind-Value="MedicoRequestDto.Nombre" class="w-100" />
-				<ValidationMessage For="() => MedicoRequestDto.Nombre" />
-			</div>
-		</div>
-		<div class="mb-3">
-			<RadzenLabel Text="Apellidos" />
-			<div class="mt-1">
-				<RadzenTextBox @bind-Value="MedicoRequestDto.Apellidos" class="w-100" />
-				<ValidationMessage For="() => MedicoRequestDto.Apellidos" />
-			</div>
-		</div>
-		<div class="mb-3">
-			<RadzenLabel Text="Cédula" />
-			<div class="mt-1">
-				<RadzenTextBox @bind-Value="MedicoRequestDto.Cedula" class="w-100" />
-				<ValidationMessage For="() => MedicoRequestDto.Cedula" />
-			</div>
-		</div>
-		<div class="mb-3">
-			<RadzenLabel Text="Teléfono de contacto" />
-			<div class="mt-1">
-				<RadzenTextBox @bind-Value="MedicoRequestDto.PhoneNumber" class="w-100" />
-				<ValidationMessage For="() => MedicoRequestDto.PhoneNumber" />
-			</div>
-		</div>
-		<div class="mb-3">
-			<RadzenLabel Text="Especialidades" />
-			<div class="mt-1">
-				@if (_especialidades is not null)
-				{
-					<RadzenDropDown AllowClear="true" Style="width: 100%" Data="@_especialidades" AllowVirtualization="true"
-					Placeholder="Seleccione" Change="@SelectEspecialidad" TextProperty="NombreEspecialidad"
-					ValueProperty="Id" Multiple="true" AllowFiltering="true" TValue="IEnumerable<string>"
-					Value="_especialidadesIds" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" />
-				}
-				else
-				{
-					<span>Cargando...</span>
-				}
-			</div>
-		</div>
+﻿@using MedicDate.Shared.Models.Especialidad;
+
+<RadzenCard>
+  <EditForm Model="@MedicoRequestDto" OnValidSubmit="OnSubmit">
+    <DataAnnotationsValidator/>
+    <div class="mb-3">
+      <RadzenLabel Text="Nombres"/>
+      <div class="mt-1">
+        <RadzenTextBox @bind-Value="MedicoRequestDto.Nombre" class="w-100"/>
+        <ValidationMessage For="() => MedicoRequestDto.Nombre"/>
+      </div>
+    </div>
+    <div class="mb-3">
+      <RadzenLabel Text="Apellidos"/>
+      <div class="mt-1">
+        <RadzenTextBox @bind-Value="MedicoRequestDto.Apellidos" class="w-100"/>
+        <ValidationMessage For="() => MedicoRequestDto.Apellidos"/>
+      </div>
+    </div>
+    <div class="mb-3">
+      <RadzenLabel Text="Cédula"/>
+      <div class="mt-1">
+        <RadzenTextBox @bind-Value="MedicoRequestDto.Cedula" class="w-100"/>
+        <ValidationMessage For="() => MedicoRequestDto.Cedula"/>
+      </div>
+    </div>
+    <div class="mb-3">
+      <RadzenLabel Text="Email"/>
+      <div class="mt-1">
+        <RadzenTextBox @bind-Value="MedicoRequestDto.Email" class="w-100"/>
+        <ValidationMessage For="() => MedicoRequestDto.Email"/>
+      </div>
+    </div>
+    <div class="mb-3">
+      <RadzenLabel Text="Teléfono de contacto"/>
+      <div class="mt-1">
+        <RadzenTextBox @bind-Value="MedicoRequestDto.PhoneNumber" class="w-100"/>
+        <ValidationMessage For="() => MedicoRequestDto.PhoneNumber"/>
+      </div>
+    </div>
+    <div class="mb-3">
+      <RadzenLabel Text="Especialidades"/>
+      <div class="mt-1">
+        @if (_especialidades is not null)
+        {
+          <RadzenDropDownWithPopup @ref="_especialidadDropdown"
+                                   DataList="@_especialidades"
+                                   Value="_especialidadesIds" ValueChanged="@SelectEspecialidad"
+                                   TValue="List<string>" TSource="EspecialidadResponseDto"
+                                   DropDownTextProperty="NombreEspecialidad"
+                                   DropDownAllowMultipleSelection="true">
+            <ChildContend>
+              <CascadingValue Value="_isBussy">
+                <EspecialidadForm EspecialidadModel="_especialidadRequestDto"
+                                  OnSubmit="AddEspecialidad"
+                                  ShowCancelLink="false"
+                                  OnCancel="@(async () =>{ await RadzenPopupHelper.ClosePopup(_especialidadDropdown); _especialidadRequestDto = new();})"/>
+              </CascadingValue>
+            </ChildContend>
+          </RadzenDropDownWithPopup>
+        }
+        else
+        {
+          <span>Cargando...</span>
+        }
+      </div>
+    </div>
     <div class="mb-2">
       @if (ShowCancelLink)
       {
@@ -56,5 +76,5 @@
                      OnCloseBtnClicked="OnCancel"/>
       }
     </div>
-	</EditForm>
+  </EditForm>
 </RadzenCard>

@@ -1,10 +1,10 @@
 using System.Linq.Dynamic.Core;
-using MedicDate.Bussines.ApplicationServices.IApplicationServices;
 using MedicDate.DataAccess;
+using MedicDate.Domain.ApplicationServices.IApplicationServices;
 using MedicDate.Utility.Validators;
 using Microsoft.EntityFrameworkCore.DynamicLinq;
 
-namespace MedicDate.Bussines.ApplicationServices;
+namespace MedicDate.Domain.ApplicationServices;
 
 public class EntityValidator : IEntityValidator
 {

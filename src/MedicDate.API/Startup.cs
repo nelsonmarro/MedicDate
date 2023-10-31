@@ -2,7 +2,8 @@ using System.Globalization;
 using MedicDate.API.Extensions;
 using MedicDate.API.Helpers;
 using MedicDate.API.Middlewares;
-using MedicDate.Bussines.ApplicationServices.IApplicationServices;
+using MedicDate.Domain.ApplicationServices.IApplicationServices;
+using MedicDate.Domain.BackgroundServices;
 using Microsoft.AspNetCore.Localization;
 
 namespace MedicDate.API;
@@ -21,6 +22,7 @@ public class Startup
   {
     services.AddApplicationServices(Configuration);
     services.AddDomainServices();
+    services.AddHostedService<EmailReminderService>(sp => new EmailReminderService(sp));
     services.AddIdentityServices(Configuration);
     services.AddControllers(opts =>
     {
@@ -63,7 +65,7 @@ public class Startup
 
     app.UseHttpsRedirection();
 
-    dbInitializer.Initialize();
+    //dbInitializer.Initialize();
 
     app.UseRouting();
     app.UseCors();

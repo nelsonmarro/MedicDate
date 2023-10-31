@@ -1,22 +1,26 @@
-﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="es">
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Medic Date - CIDEMAX</title>
   <style type="text/css">
     @import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@700&display=swap');
+
     body {
       margin: 0;
       padding: 0;
       font-family: 'Roboto Condensed', sans-serif;
       background-color: #12a4f5;
     }
+
     .wrapper {
       width: 100%;
       table-layout: fixed;
     }
+
     .main {
       max-width: 700px;
       margin: 0 auto;
@@ -24,19 +28,23 @@
       border-radius: 10px;
       padding: 20px;
     }
+
     h1 {
       font-size: 24px;
       text-align: center;
     }
+
     p {
       font-size: 16px;
       margin-bottom: 10px;
     }
+
     ul {
       list-style: none;
       padding-left: 0;
       margin-top: 10px;
     }
+
     li {
       margin-bottom: 5px;
     }
@@ -48,13 +56,14 @@
     <!-- HEADER -->
     <tr>
       <td align="center">
-        <h1>Medic Date - CIDEMAX</h1>
+        <h1 style="color: #0c63e4">Medic Date - CIDEMAX</h1>
+        <h2 style="color: #e3b023">Recordatorio de Asistencia</h2>
       </td>
     </tr>
     <!-- CONTENT -->
     <tr>
       <td>
-        <p>Cita Agendada.</p>
+        <h3 style="color: #0c63e4">Cita Agendada.</h3>
         <p>Clinica: CIDEMAX</p>
         <p>Fecha y Hora: {{ AppointmentDate }}</p>
         <p>Doctor/a: {{ DoctorInfo }}</p>
@@ -70,9 +79,9 @@
     <!-- REMINDER -->
     <tr>
       <td>
-        <p>Recordatorio:</p>
-        <p>Estimado cliente, le enviaremos otro email antes de su cita como 
-          recordatorio, por favor consulte el buzon de email recibidos.</p>
+        <h3 style="color: #0c63e4">Recordatorio:</h3>
+        <p>Estimado cliente, le recordamos asistir con puntualidad a la hora
+          registrada de su cita.</p>
         <p>Gracias por preferirnos.</p>
       </td>
     </tr>

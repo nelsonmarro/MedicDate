@@ -7,11 +7,35 @@
 
   @if (_citasCanceladas is null)
   {
-    <CircularLoading/>
+    <CircularLoading />
   }
   else
   {
     <div class="row">
+      <div class="col-md-12 my-3 order-3 order-lg-0">
+        <RadzenCard Variant="Variant.Filled">
+          <div class="row text-center">
+            <div class="col-12 col-lg-4 mb-2 mb-lg-0">
+              <NavLink href="@_initialCitasReq">
+                <RadzenButton Variant="Variant.Outlined" Size="ButtonSize.Large"
+                              Icon="date_range" Text="Calendario Citas" />
+              </NavLink>
+            </div>
+            <div class="col-12 col-lg-4 mb-2 mb-lg-0">
+              <NavLink href="pacienteList">
+                <RadzenButton Variant="Variant.Outlined" Size="ButtonSize.Large"
+                              Icon="personal_injury" Text="Listado de Pacientes" />
+              </NavLink>
+            </div>
+            <div class="col-12 col-lg-4 mb-2 mb-lg-0">
+              <NavLink href="medicoList">
+                <RadzenButton Variant="Variant.Outlined" Size="ButtonSize.Large"
+                              Icon="supervisor_account" Text="Listado de Doctores" />
+              </NavLink>
+            </div>
+          </div>
+        </RadzenCard>
+      </div>
       <div class="col-12">
         <RadzenCard>
           <h3 class="text-secondary">
@@ -24,21 +48,19 @@
                 <RadzenColumnSeries Data="@_citasCompletadas"
                                     CategoryProperty="RegisterationDate"
                                     Title="@Sd.ESTADO_CITA_COMPLETADA"
-                                    ValueProperty="TotalCitas"/>
+                                    ValueProperty="TotalCitas"
+                                    Fill="#3E7C17" />
                 <RadzenColumnSeries Data="@_citasCanceladas"
                                     CategoryProperty="RegisterationDate"
                                     Title="@Sd.ESTADO_CITA_CANCELADA"
-                                    ValueProperty="TotalCitas"/>
-                <RadzenColumnSeries Data="@_citasNoAsistdas"
-                                    CategoryProperty="RegisterationDate"
-                                    Title="@Sd.ESTADO_CITA_NOASISTIOPACIENTE"
-                                    ValueProperty="TotalCitas"/>
+                                    ValueProperty="TotalCitas"
+                                    Fill="#d62828" />
 
-                <RadzenCategoryAxis FormatString="{0:MMM}" Padding="20"/>
-                <RadzenColumnOptions Radius="3"/>
+                <RadzenCategoryAxis FormatString="{0:MMM}" Padding="20" />
+                <RadzenColumnOptions Radius="3" />
                 <RadzenValueAxis>
-                  <RadzenGridLines Visible="true"/>
-                  <RadzenAxisTitle Text="Cantidad de citas"/>
+                  <RadzenGridLines Visible="true" />
+                  <RadzenAxisTitle Text="Cantidad de citas" />
                 </RadzenValueAxis>
               </RadzenChart>
             </ErrorBoundary>
@@ -57,7 +79,7 @@
                                 Title=@($"{DateTime.Now.AddYears(-1).Year}")
                                 LineType="LineType.Solid"
                                 ValueProperty="TotalRegisteration">
-                <RadzenMarkers MarkerType="MarkerType.Circle"/>
+                <RadzenMarkers MarkerType="MarkerType.Circle" />
               </RadzenLineSeries>
 
               <RadzenLineSeries Data="@_pacientesPresentYear"
@@ -65,13 +87,13 @@
                                 Title=@($"{DateTime.Now.Year}")
                                 LineType="LineType.Solid"
                                 ValueProperty="TotalRegisteration">
-                <RadzenMarkers MarkerType="MarkerType.Circle"/>
+                <RadzenMarkers MarkerType="MarkerType.Circle" />
               </RadzenLineSeries>
 
-              <RadzenCategoryAxis FormatString="{0:MMM}"/>
+              <RadzenCategoryAxis FormatString="{0:MMM}" />
               <RadzenValueAxis>
-                <RadzenGridLines Visible="true"/>
-                <RadzenAxisTitle Text="Pacientes Registrados"/>
+                <RadzenGridLines Visible="true" />
+                <RadzenAxisTitle Text="Pacientes Registrados" />
               </RadzenValueAxis>
             </RadzenChart>
           </RadzenCard>
@@ -88,33 +110,11 @@
               <RadzenPieSeries Data="@_citasRegisteredQuarter"
                                Title="Registradas"
                                CategoryProperty="Quarter"
-                               ValueProperty="TotalCitas"/>
+                               ValueProperty="TotalCitas">
+                <RadzenSeriesDataLabels Visible="true" />
+              </RadzenPieSeries>
             </RadzenChart>
           </ErrorBoundary>
-        </RadzenCard>
-      </div>
-      <div class="col-md-5">
-        <RadzenCard>
-          <h3 class="text-primary">
-            Accesos directos
-          </h3>
-          <div class="row row-cols-2 g-3">
-            <div class="col">
-              <RadzenLink Icon="date_range"
-                          Text="Calendario Citas"
-                          Path=@($"calendarioCitas?StartDate={DateTime.Today}&EndDate={DateTime.Today.AddMonths(1)}")/>
-            </div>
-            <div class="col">
-              <RadzenLink Path="pacienteList"
-                          Icon="personal_injury"
-                          Text="Listado de Pacientes"/>
-            </div>
-            <div class="col">
-              <RadzenLink Path="medicoList"
-                          Icon="supervisor_account"
-                          Text="Listado de Doctores"/>
-            </div>
-          </div>
         </RadzenCard>
       </div>
     </div>

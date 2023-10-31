@@ -1,4 +1,4 @@
-﻿namespace MedicDate.Bussines.DomainServices.IDomainServices;
+﻿namespace MedicDate.Domain.DomainServices.IDomainServices;
 
 public interface IMedicoService
 {

@@ -1,8 +1,8 @@
 using System.Linq.Expressions;
 using AutoMapper;
-using MedicDate.Bussines.DomainServices.IDomainServices;
 using MedicDate.DataAccess.Entities;
 using MedicDate.DataAccess.Repository.IRepository;
+using MedicDate.Domain.DomainServices.IDomainServices;
 using MedicDate.Shared.Models.Cita;
 using MedicDate.Shared.Models.Common;
 using Microsoft.AspNetCore.Authorization;
@@ -13,18 +13,11 @@ namespace MedicDate.API.Controllers;
 [Authorize]
 [Route("api/[controller]")]
 [ApiController]
-public class CitaController : BaseController<Cita>
+public class CitaController(ICitaRepository citaRepo, IMapper mapper, ICitaService citaService)
+  : BaseController<Cita>(citaRepo, mapper)
 {
-  private readonly ICitaRepository _citaRepo;
-
-  public CitaController(ICitaRepository citaRepo, IMapper mapper)
-    : base(citaRepo, mapper)
-  {
-    _citaRepo = citaRepo;
-  }
-
   [HttpGet("listarPorFechas")]
-  public async Task<List<CitaCalendarDto>> GetCitasByDates(
+  public Task<List<CitaCalendarDto>> GetCitasByDates(
     [FromQuery] CitaByDatesParams citaByDatesParams,
     [FromQuery] string? medicoId = null,
     [FromQuery] string? pacienteId = null
@@ -41,7 +34,7 @@ public class CitaController : BaseController<Cita>
     if (pacienteId is not null && medicoId is not null)
       filter = c => c.PacienteId == pacienteId && c.MedicoId == medicoId;
 
-    return await _citaRepo.GetCitasByDateRange(
+    return citaRepo.GetCitasByDateRange(
       citaByDatesParams.StartDate,
       citaByDatesParams.EndDate,
       filter
@@ -49,9 +42,7 @@ public class CitaController : BaseController<Cita>
   }
 
   [HttpGet("listarConPaginacion")]
-  public async Task<
-    ActionResult<PaginatedResourceListDto<CitaCalendarDto>>
-  > GetAllCitasWithPagingAsync(
+  public Task<ActionResult<PaginatedResourceListDto<CitaCalendarDto>>> GetAllCitasWithPagingAsync(
     int pageIndex = 0,
     int pageSize = 10,
     [FromQuery] string? medicoId = null,
@@ -69,7 +60,7 @@ public class CitaController : BaseController<Cita>
     if (pacienteId is not null && medicoId is not null)
       filter = c => c.PacienteId == pacienteId && c.MedicoId == medicoId;
 
-    return await GetAllWithPagingAsync<CitaCalendarDto>(
+    return GetAllWithPagingAsync<CitaCalendarDto>(
       pageIndex,
       pageSize,
       "Medico,Paciente",
@@ -79,23 +70,19 @@ public class CitaController : BaseController<Cita>
   }
 
   [HttpGet("{id}", Name = "GetCitaDetails")]
-  public async Task<ActionResult<CitaDetailsDto>> GetCitaDetailsAsync(string id)
+  public Task<ActionResult<CitaDetailsDto>> GetCitaDetailsAsync(string id)
   {
-    return await GetByIdAsync<CitaDetailsDto>(
-      id,
-      "Medico,Paciente,Archivos,ActividadesCita.Actividad"
-    );
+    return GetByIdAsync<CitaDetailsDto>(id, "Medico,Paciente,Archivos,ActividadesCita.Actividad");
   }
 
   [HttpGet("obtenerParaEditar/{id}")]
-  public async Task<ActionResult<CitaRequestDto>> GetPutCitaAsyc(string id)
+  public Task<ActionResult<CitaRequestDto>> GetPutCitaAsyc(string id)
   {
-    return await GetByIdAsync<CitaRequestDto>(id, "Medico,Paciente,ActividadesCita.Actividad");
+    return GetByIdAsync<CitaRequestDto>(id, "Medico,Paciente,ActividadesCita.Actividad");
   }
 
   [HttpGet("getQuarterReview/{requestedYear}")]
   public async Task<ActionResult<List<CitaRegisteredQuarterReviewDto>>> GetAnualQuarterReviewAsync(
-    [FromServices] ICitaService citaService,
     int requestedYear
   )
   {
@@ -104,7 +91,6 @@ public class CitaController : BaseController<Cita>
 
   [HttpGet("getEstadoReview/{requestedYear:int}/{estadoName}")]
   public async Task<ActionResult<List<CitaEstadoMonthReviewDto>>> GetCitasEstadoReviewAsync(
-    [FromServices] ICitaService citaService,
     string estadoName,
     int requestedYear
   )
@@ -118,7 +104,7 @@ public class CitaController : BaseController<Cita>
     [FromBody] string newEstado
   )
   {
-    var result = await _citaRepo.UpdateEstadoCitaAsync(id, newEstado);
+    var result = await citaRepo.UpdateEstadoCitaAsync(id, newEstado);
 
     return result.Succeeded ? result.SuccessResult : result.ErrorResult;
   }
@@ -126,24 +112,27 @@ public class CitaController : BaseController<Cita>
   [HttpPost("crear")]
   public async Task<ActionResult> CreateCitaAsync(CitaRequestDto citaRequestDto)
   {
-    var isValidCita = await _citaRepo.CheckIfCitaHoursAreValidAsync(citaRequestDto);
+    var isValidCita = await citaRepo.CheckIfCitaHoursAreValidAsync(citaRequestDto);
     if (!isValidCita)
       return BadRequest("Ya existe registrada una cita en el rango de tiempo ingresado");
 
-    return await AddResourceAsync<CitaRequestDto, CitaDetailsDto>(citaRequestDto, "GetCitaDetails");
+    var createdRecord = await CreateRecordAsync<CitaRequestDto, CitaDetailsDto>(citaRequestDto);
+
+    await citaService.SendRegisterationEmailAsync(new() { AppoimentId = createdRecord.Id });
+    return CreatedAtRoute("GetCitaDetails", new { id = createdRecord.Id }, createdRecord);
   }
 
   [HttpPut("editar/{id}")]
   public async Task<ActionResult> UpdateCitaAsync(string id, CitaRequestDto citaRequestDto)
   {
-    var result = await _citaRepo.UpdateCitaAsync(id, citaRequestDto);
+    var result = await citaRepo.UpdateCitaAsync(id, citaRequestDto);
 
     return result.Succeeded ? result.SuccessResult : result.ErrorResult;
   }
 
   [HttpDelete("eliminar/{id}")]
-  public async Task<ActionResult> DeleteCitaAsync(string id)
+  public Task<ActionResult> DeleteCitaAsync(string id)
   {
-    return await DeleteResourceAsync(id);
+    return DeleteResourceAsync(id);
   }
 }

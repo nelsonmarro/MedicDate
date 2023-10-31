@@ -1,15 +1,15 @@
 ﻿using AutoMapper;
-using MedicDate.Bussines.ApplicationServices.IApplicationServices;
-using MedicDate.Bussines.DomainServices.IDomainServices;
 using MedicDate.DataAccess.Entities;
 using MedicDate.DataAccess.Helpers;
 using MedicDate.DataAccess.Repository.IRepository;
+using MedicDate.Domain.ApplicationServices.IApplicationServices;
+using MedicDate.Domain.DomainServices.IDomainServices;
 using MedicDate.Shared.Models.Archivo;
 using MedicDate.Shared.Models.Common;
 using MedicDate.Utility;
 using static System.Net.HttpStatusCode;
 
-namespace MedicDate.Bussines.DomainServices;
+namespace MedicDate.Domain.DomainServices;
 
 public class ArchivoService : IArchivoService
 {

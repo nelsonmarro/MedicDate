@@ -10,5 +10,6 @@ public class MedicoResponseDto : IId
   public string Apellidos { get; set; } = string.Empty;
   public string Cedula { get; set; } = string.Empty;
   public string? PhoneNumber { get; set; }
+  public string? Email { get; set; }
   public List<EspecialidadResponseDto> Especialidades { get; set; } = new();
 }

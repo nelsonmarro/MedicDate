@@ -1,87 +1,87 @@
 ﻿using System.Net;
-using MedicDate.Bussines.ApplicationServices.IApplicationServices;
-using MedicDate.Bussines.DomainServices.IDomainServices;
 using MedicDate.DataAccess.Entities;
 using MedicDate.DataAccess.Helpers;
 using MedicDate.DataAccess.Repository.IRepository;
+using MedicDate.Domain.ApplicationServices.IApplicationServices;
+using MedicDate.Domain.DomainServices.IDomainServices;
 using MedicDate.Shared.Models.Paciente;
 using MedicDate.Utility;
 
-namespace MedicDate.Bussines.DomainServices;
+namespace MedicDate.Domain.DomainServices;
 
 public class PacienteService : IPacienteService
 {
-   private readonly IEntityValidator _entityValidator;
-   private readonly IPacienteRepository _pacienteRepo;
+  private readonly IEntityValidator _entityValidator;
+  private readonly IPacienteRepository _pacienteRepo;
 
-   public PacienteService(IEntityValidator entityValidator, IPacienteRepository pacienteRepo)
-   {
-      _entityValidator = entityValidator;
-      _pacienteRepo = pacienteRepo;
-   }
+  public PacienteService(IEntityValidator entityValidator, IPacienteRepository pacienteRepo)
+  {
+    _entityValidator = entityValidator;
+    _pacienteRepo = pacienteRepo;
+  }
 
-   public async Task<bool> ValidateNumHistoriaForCreateAsync(
-    string numHistoria)
-   {
-      return await _entityValidator.CheckValueExistsAsync<Paciente>(
-        "NumHistoria", numHistoria);
-   }
+  public async Task<bool> ValidateNumHistoriaForCreateAsync(
+   string numHistoria)
+  {
+    return await _entityValidator.CheckValueExistsAsync<Paciente>(
+      "NumHistoria", numHistoria);
+  }
 
-   public async Task<bool> ValidatCedulaForCreateAsync(string numeroCedula)
-   {
-      return await _entityValidator.CheckValueExistsAsync<Paciente>(
-        "Cedula", numeroCedula);
-   }
+  public async Task<bool> ValidatCedulaForCreateAsync(string numeroCedula)
+  {
+    return await _entityValidator.CheckValueExistsAsync<Paciente>(
+      "Cedula", numeroCedula);
+  }
 
-   public async Task<bool> ValidateCedulaForEditAsync(string numCedula
-     , string id)
-   {
-      return await
-        _entityValidator.CheckValueExistsForEditAsync<Paciente>("Cedula"
-          , numCedula, id);
-   }
+  public async Task<bool> ValidateCedulaForEditAsync(string numCedula
+    , string id)
+  {
+    return await
+      _entityValidator.CheckValueExistsForEditAsync<Paciente>("Cedula"
+        , numCedula, id);
+  }
 
-   public async Task<bool> ValidateNumHistoriaForEditAsync(
-     string numHistoria, string id)
-   {
-      return await
-        _entityValidator.CheckValueExistsForEditAsync<Paciente>(
-          "NumHistoria"
-          , numHistoria, id);
-   }
+  public async Task<bool> ValidateNumHistoriaForEditAsync(
+    string numHistoria, string id)
+  {
+    return await
+      _entityValidator.CheckValueExistsForEditAsync<Paciente>(
+        "NumHistoria"
+        , numHistoria, id);
+  }
 
-   public async Task<OperationResult> ValidatePacienteForCreate(
-     string numHistoria, string numCedula)
-   {
-      if (await ValidatCedulaForCreateAsync(numCedula))
-         return OperationResult.Error(HttpStatusCode.BadRequest
-           , "Ya existe otro paciente registrado con la cédula ingresada");
+  public async Task<OperationResult> ValidatePacienteForCreate(
+    string numHistoria, string numCedula)
+  {
+    if (await ValidatCedulaForCreateAsync(numCedula))
+      return OperationResult.Error(HttpStatusCode.BadRequest
+        , "Ya existe otro paciente registrado con la cédula ingresada");
 
-      if (await ValidateNumHistoriaForCreateAsync(numHistoria))
-         return OperationResult.Error(HttpStatusCode.BadRequest
-           , "Ya existe otro paciente registrado con el número de historia ingresado");
+    if (await ValidateNumHistoriaForCreateAsync(numHistoria))
+      return OperationResult.Error(HttpStatusCode.BadRequest
+        , "Ya existe otro paciente registrado con el número de historia ingresado");
 
-      return OperationResult.Success();
-   }
+    return OperationResult.Success();
+  }
 
-   public async Task<OperationResult> ValidatePacienteForEdit(
-     string numHistoria, string numCedula, string id)
-   {
-      if (await ValidateCedulaForEditAsync(numCedula, id))
-         return OperationResult.Error(HttpStatusCode.BadRequest
-           , "Ya existe otro paciente registrado con la cédula ingresada");
+  public async Task<OperationResult> ValidatePacienteForEdit(
+    string numHistoria, string numCedula, string id)
+  {
+    if (await ValidateCedulaForEditAsync(numCedula, id))
+      return OperationResult.Error(HttpStatusCode.BadRequest
+        , "Ya existe otro paciente registrado con la cédula ingresada");
 
-      if (await ValidateNumHistoriaForEditAsync(numHistoria, id))
-         return OperationResult.Error(HttpStatusCode.BadRequest
-           , "Ya existe otro paciente registrado con el número de historia ingresado");
+    if (await ValidateNumHistoriaForEditAsync(numHistoria, id))
+      return OperationResult.Error(HttpStatusCode.BadRequest
+        , "Ya existe otro paciente registrado con el número de historia ingresado");
 
-      return OperationResult.Success();
-   }
+    return OperationResult.Success();
+  }
 
-   public async Task<List<PacienteMonthReviewDto>>
-      GetPacientesMonthRegisterationReview(int requestedYear)
-   {
-      return new List<PacienteMonthReviewDto>
+  public async Task<List<PacienteMonthReviewDto>>
+     GetPacientesMonthRegisterationReview(int requestedYear)
+  {
+    return new List<PacienteMonthReviewDto>
       {
          new()
          {
@@ -167,5 +167,5 @@ public class PacienteService : IPacienteService
             x.DateRegistered >= Sd.December && x.DateRegistered.Year == requestedYear)
          },
       };
-   }
+  }
 }

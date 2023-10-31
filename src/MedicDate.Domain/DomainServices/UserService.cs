@@ -1,9 +1,9 @@
-﻿using MedicDate.Bussines.DomainServices.IDomainServices;
-using MedicDate.DataAccess.Helpers;
+﻿using MedicDate.DataAccess.Helpers;
 using MedicDate.DataAccess.Repository.IRepository;
+using MedicDate.Domain.DomainServices.IDomainServices;
 using static System.Net.HttpStatusCode;
 
-namespace MedicDate.Bussines.DomainServices;
+namespace MedicDate.Domain.DomainServices;
 
 public class UserService : IUserService
 {

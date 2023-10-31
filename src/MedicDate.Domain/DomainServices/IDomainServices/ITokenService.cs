@@ -1,7 +1,7 @@
 ﻿using MedicDate.DataAccess.Helpers;
 using MedicDate.Shared.Models.Auth;
 
-namespace MedicDate.Bussines.DomainServices.IDomainServices;
+namespace MedicDate.Domain.DomainServices.IDomainServices;
 
 public interface ITokenService
 {
