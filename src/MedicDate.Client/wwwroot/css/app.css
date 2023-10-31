@@ -5,12 +5,8 @@ body {
   width: 100%;
 }
 
-h1,
-h2,
-h3,
-h4,
-h5 {
-  font-weight: 400 !important;
+.rz-header {
+  border-bottom: none !important;
 }
 
 .header {
@@ -43,14 +39,12 @@ a {
 
 .sidebar-toggle {
   transition: color 300ms;
-  border-right: none !important;
   color: #fff;
   background-color: #262526;
 }
 
 .rz-sidebar {
-  bottom: 0 !important;
-  top: 0 !important;
+  min-height: 100vh;
 }
 
 .sidebar-toggle:hover {
@@ -242,6 +236,25 @@ a {
     left: 41%;
     top: 30%;
     transform: translate -41%, -30%;
+  }
+}
+/* Calendario Citas */
+.popup {
+  display: none;
+  position: absolute;
+  height: 410px;
+  width: 670px;
+  padding: 10px;
+  border: solid 1px #1151f3;
+  background: #fff;
+  overflow: auto;
+}
+
+@media only screen and (max-width: 768px) {
+  .popup {
+    height: 410px;
+    width: 350px;
+    left: 21px !important;
   }
 }
 

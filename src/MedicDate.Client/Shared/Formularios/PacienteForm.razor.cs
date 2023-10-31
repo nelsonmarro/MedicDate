@@ -10,7 +10,9 @@ public partial class PacienteForm : ComponentBase
 {
   private List<GrupoResponseDto>? _grupos;
   private IEnumerable<string>? _gruposIds;
-  [Inject] public IHttpRepository HttpRepo { get; set; } = default!;
+
+  [Inject]
+  public IHttpRepository HttpRepo { get; set; } = default!;
 
   [Inject]
   public INotificationService NotificationService { get; set; } = default!;
@@ -18,14 +20,21 @@ public partial class PacienteForm : ComponentBase
   [Parameter]
   public PacienteRequestDto PacienteRequestDto { get; set; } = new();
 
-  [Parameter] public EventCallback OnSubmit { get; set; }
+  [Parameter]
+  public EventCallback OnSubmit { get; set; }
+
+  [Parameter]
+  public bool ShowCancelLink { get; set; } = true;
+
+  [Parameter]
+  public EventCallback OnCancel { get; set; }
 
   protected override async Task OnInitializedAsync()
   {
-    var httpResponse =
-      await HttpRepo.Get<List<GrupoResponseDto>>("api/Grupo/listar");
+    var httpResponse = await HttpRepo.Get<List<GrupoResponseDto>>("api/Grupo/listar");
 
-    if (!httpResponse.Error) _grupos = httpResponse.Response;
+    if (!httpResponse.Error)
+      _grupos = httpResponse.Response;
   }
 
   protected override void OnParametersSet()
@@ -38,8 +47,9 @@ public partial class PacienteForm : ComponentBase
   {
     PacienteRequestDto.GruposId.Clear();
 
-    var gruposIds = (IEnumerable<string>) value;
+    var gruposIds = (IEnumerable<string>)value;
 
-    if (gruposIds is not null) PacienteRequestDto.GruposId.AddRange(gruposIds);
+    if (gruposIds is not null)
+      PacienteRequestDto.GruposId.AddRange(gruposIds);
   }
 }

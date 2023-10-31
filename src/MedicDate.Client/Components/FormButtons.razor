@@ -1,15 +1,23 @@
 ﻿<RadzenButton ButtonType="ButtonType.Submit" ButtonStyle="ButtonStyle.Secondary" Text="@SaveButtonText"
 	Icon="@SaveButtonIcon" class="mb-1 mb-md-0" IsBusy="IsBussy" BusyText="Salvando" />
 
-<NavLink href="@NavLinkRoute">
-	<RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="close" Text="Cancelar" />
-</NavLink>
+@if (ShowCancelLink)
+{
+  <NavLink href="@CancelLinkRoute">
+    <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="close" Text="Cancelar" />
+  </NavLink>
+}
+else
+{
+  <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="close" Text="Cancelar"
+                Click="OnCloseBtnClicked"/>
+}
 
 @code {
 
 	[CascadingParameter]
 	public bool IsBussy { get; set; }
-
+  
 	[Parameter]
 	public string SaveButtonText { get; set; } = "Guardar";
 
@@ -17,11 +25,17 @@
 	public string SaveButtonIcon { get; set; } = "save";
 
 	[Parameter]
-	public string NavLinkText { get; set; } = "Cancelar";
+	public string CancelLinkText { get; set; } = "Cancelar";
 
 	[Parameter]
-	public string NavlinkIcon { get; set; } = "close";
+	public string CancellinkIcon { get; set; } = "close";
 
 	[Parameter]
-	public string? NavLinkRoute { get; set; }
+	public string? CancelLinkRoute { get; set; }
+  
+  [Parameter]
+  public bool ShowCancelLink { get; set; } = true;
+  
+  [Parameter]
+  public EventCallback OnCloseBtnClicked { get; set; }
 }

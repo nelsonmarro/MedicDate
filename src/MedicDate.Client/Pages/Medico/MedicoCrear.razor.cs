@@ -29,7 +29,6 @@ public partial class MedicoCrear
         "Registro creado con éxito");
 
       NavigationManager.NavigateTo("medicoList");
-      ;
     }
   }
 }

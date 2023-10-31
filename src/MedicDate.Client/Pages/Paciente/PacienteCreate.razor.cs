@@ -7,35 +7,36 @@ namespace MedicDate.Client.Pages.Paciente;
 
 public partial class PacienteCreate
 {
-    private readonly PacienteRequestDto _pacienteModel = new();
-    private bool _isBussy;
-    [Inject]
-    public IHttpRepository HttpRepo { get; set; } = default!;
-    [Inject]
-    public NavigationManager NavigationManager { get; set; } = default!;
+  private readonly PacienteRequestDto _pacienteModel = new();
+  private bool _isBussy;
 
-    [Inject]
-    public INotificationService NotificationService { get; set; } = default!;
+  [Inject]
+  public IHttpRepository HttpRepo { get; set; } = default!;
 
-    [Inject]
-    public IDialogNotificationService DialogNotificationService { get; set; } = default!;
+  [Inject]
+  public NavigationManager NavigationManager { get; set; } = default!;
 
-    private async Task CreatePaciente()
+  [Inject]
+  public INotificationService NotificationService { get; set; } = default!;
+
+  [Inject]
+  public IDialogNotificationService DialogNotificationService { get; set; } = default!;
+
+  private async Task CreatePaciente()
+  {
+    _pacienteModel.DateRegistered = DateTime.Now;
+
+    _isBussy = true;
+
+    var httpResp = await HttpRepo.Post("api/Paciente/crear", _pacienteModel);
+
+    _isBussy = false;
+
+    if (!httpResp.Error)
     {
-        _pacienteModel.DateRegistered = DateTime.Now;
+      NotificationService.ShowSuccess("Operacion exitosa!", "Registro creado con éxito");
 
-        _isBussy = true;
-
-        var httpResp = await HttpRepo.Post("api/Paciente/crear", _pacienteModel);
-
-        _isBussy = false;
-
-        if (!httpResp.Error)
-        {
-            NotificationService.ShowSuccess("Operacion exitosa!", "Registro creado con éxito");
-
-            NavigationManager.NavigateTo("pacienteList");
-            ;
-        }
+      NavigationManager.NavigateTo("pacienteList");
     }
+  }
 }

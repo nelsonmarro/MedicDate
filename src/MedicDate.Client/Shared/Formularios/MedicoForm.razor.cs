@@ -8,26 +8,33 @@ namespace MedicDate.Client.Shared.Formularios;
 
 public partial class MedicoForm
 {
-  private List<EspecialidadResponseDto>? _especialidades;
-  private IEnumerable<string>? _especialidadesIds;
-  [Inject] public IHttpRepository HttpRepo { get; set; } = default!;
+  [Inject]
+  public IHttpRepository HttpRepo { get; set; } = default!;
 
   [Inject]
   public INotificationService NotificationService { get; set; } = default!;
 
-  [Parameter] public MedicoRequestDto MedicoRequestDto { get; set; } = new();
+  [Parameter]
+  public MedicoRequestDto MedicoRequestDto { get; set; } = new();
 
-  [Parameter] public EventCallback OnSubmit { get; set; }
+  [Parameter]
+  public EventCallback OnSubmit { get; set; }
+
+  [Parameter]
+  public bool ShowCancelLink { get; set; } = true;
+
+  [Parameter]
+  public EventCallback OnCancel { get; set; }
+
+  private List<EspecialidadResponseDto>? _especialidades;
+  private IEnumerable<string>? _especialidadesIds;
 
   protected override async Task OnInitializedAsync()
   {
-    var httpResponse =
-      await HttpRepo.Get<List<EspecialidadResponseDto>>(
-        "api/Especialidad/listar");
+    var httpResponse = await HttpRepo.Get<List<EspecialidadResponseDto>>("api/Especialidad/listar");
 
     if (httpResponse.Error)
-      NotificationService.ShowError("Error!",
-        await httpResponse.GetResponseBody());
+      NotificationService.ShowError("Error!", await httpResponse.GetResponseBody());
     else
       _especialidades = httpResponse.Response;
   }
@@ -42,7 +49,7 @@ public partial class MedicoForm
   {
     MedicoRequestDto.EspecialidadesId.Clear();
 
-    var especialidades = (IEnumerable<string>) value;
+    var especialidades = (IEnumerable<string>)value;
 
     if (especialidades is not null)
       MedicoRequestDto.EspecialidadesId.AddRange(especialidades);

@@ -16,7 +16,13 @@ namespace MedicDate.Client.Pages.Cita.CalendarioCitas;
 public partial class CalendarioCitas : IDisposable
 {
   private List<CitaCalendarDto>? _citasCalendar;
+  private string _endDate = "";
+
+  private string? _medicoId;
+  private string? _pacienteId;
+  private bool _refreshForFilter;
   private RadzenScheduler<CitaCalendarDto> _scheduler = default!;
+  private string _startDate = "";
 
   [Inject]
   public IHttpRepository HttpRepo { get; set; } = default!;
@@ -47,11 +53,12 @@ public partial class CalendarioCitas : IDisposable
   [SupplyParameterFromQuery]
   public string? EndDate { get; set; }
 
-  private string? _medicoId;
-  private string? _pacienteId;
-  private string _startDate = "";
-  private string _endDate = "";
-  private bool _refreshForFilter = false;
+  public void Dispose()
+  {
+    var jsInProcess = (IJSInProcessRuntime)jsRuntime;
+    jsInProcess.InvokeVoid("changeBodyContainerHeightToMaxVh");
+    ContextMenuService.Close();
+  }
 
   protected override void OnAfterRender(bool firstRender)
   {
@@ -67,9 +74,7 @@ public partial class CalendarioCitas : IDisposable
     _endDate = EndDate ?? "";
 
     if (_refreshForFilter)
-    {
       await LoadCitas();
-    }
 
     _refreshForFilter = false;
   }
@@ -101,9 +106,7 @@ public partial class CalendarioCitas : IDisposable
       );
 
       if (!httpResp.Error)
-      {
         _citasCalendar = httpResp.Response;
-      }
     }
   }
 
@@ -112,13 +115,31 @@ public partial class CalendarioCitas : IDisposable
     if (e.View.Text == "Año")
       return;
 
+    var dialogOptions = new DialogOptions { Width = "780px", Height = "420px" };
+
     var citaToSave = await DialogService.OpenAsync<AddCitaDialog>(
       "Agregar Cita",
-      new Dictionary<string, object> { { "StartDate", e.Start }, { "EndDate", e.End } }
+      new Dictionary<string, object> { { "StartDate", e.Start }, { "EndDate", e.End } },
+      dialogOptions
     );
 
     if (citaToSave is not null)
       await SaveSelectedCita(citaToSave);
+  }
+
+  private void OnSlotRender(SchedulerSlotRenderEventArgs args)
+  {
+    // Highlight today in month view
+    if (args.View.Text == "Month" && args.Start.Date == DateTime.Today)
+      args.Attributes["style"] = "background: rgba(255,220,40,.2);";
+
+    // Highlight working hours (9-18)
+    if (
+      (args.View.Text == "Week" || args.View.Text == "Day")
+      && args.Start.Hour > 8
+      && args.Start.Hour < 21
+    )
+      args.Attributes["style"] = "background: rgba(255,220,40,.2);";
   }
 
   private async Task SaveSelectedCita(CitaRequestDto citaRequestDto)
@@ -143,9 +164,7 @@ public partial class CalendarioCitas : IDisposable
     );
 
     if (permitirEliminar)
-    {
       await SendDeleteCitaReqAsync(citaId);
-    }
   }
 
   private async Task<bool> OpenChangeCitaCompletadaEstadoDialogAsync()
@@ -192,10 +211,8 @@ public partial class CalendarioCitas : IDisposable
     }
 
     if (cita.Estado == Sd.ESTADO_CITA_COMPLETADA)
-    {
       if (!await OpenChangeCitaCompletadaEstadoDialogAsync())
         return;
-    }
 
     switch (args.Value.ToString())
     {
@@ -274,9 +291,7 @@ public partial class CalendarioCitas : IDisposable
     var result = await HttpRepo.Put($"api/Cita/actualizarEstado/{citaId}", newEstado);
 
     if (!result.Error)
-    {
       await _scheduler.Reload();
-    }
   }
 
   private async Task<bool> TryUpdateCitaEstadoAsync(string? citaId, string? newEstado)
@@ -309,12 +324,5 @@ public partial class CalendarioCitas : IDisposable
     var newUri = NavigationManager.GetUriWithQueryParameters(queryStrings);
     NavigationManager.NavigateTo(newUri);
     _refreshForFilter = true;
-  }
-
-  public void Dispose()
-  {
-    var jsInProcess = (IJSInProcessRuntime)jsRuntime;
-    jsInProcess.InvokeVoid("changeBodyContainerHeightToMaxVh");
-    ContextMenuService.Close();
   }
 }

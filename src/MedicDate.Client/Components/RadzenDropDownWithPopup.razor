@@ -1,0 +1,58 @@
+﻿@using Radzen.Blazor.Rendering
+@typeparam TValue
+@typeparam TSource where TSource : class
+
+<RadzenStack Orientation="Orientation.Horizontal" Gap="5px" AlignItems="AlignItems.Center">
+  <div>
+    <RadzenButton @ref="_button" Text="Agregar" Icon="add" Click="@(args => _popup.ToggleAsync(_button.Element))"
+                  Size="ButtonSize.Small" Variant="Variant.Text"/>
+  </div>
+  <RadzenDropDown TValue="TValue" Data="@DataList"
+                  AllowFiltering="true" AllowClear="true"
+                  AllowVirtualization="true"
+                  Multiple="@DropDownAllowMultipleSelection"
+                  FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                  ValueProperty="Id" TextProperty="@DropDownTextProperty"
+                  class="w-100" Placeholder="Seleccione"
+                  @bind-Value:get="Value!"
+                  @bind-Value:set="@((value) => ValueChanged.InvokeAsync(value))"/>
+
+</RadzenStack>
+
+<Popup @ref="_popup" Lazy="true"
+       class="popup popup-doctor">
+  @ChildContend
+</Popup>
+
+@code {
+
+  [Parameter]
+  [EditorRequired]
+  public List<TSource> DataList { get; set; } = new();
+
+  [Parameter]
+  [EditorRequired]
+  public string DropDownTextProperty { get; set; } = string.Empty;
+  
+  [Parameter]
+  public bool DropDownAllowMultipleSelection { get; set; }
+
+  [Parameter]
+  [EditorRequired]
+  public TValue? Value { get; set; }
+
+  [Parameter]
+  public EventCallback<TValue> ValueChanged { get; set; }
+
+  [Parameter]
+  public RenderFragment ChildContend { get; set; } = default!;
+
+  private Popup _popup = default!;
+  RadzenButton _button = default!;
+
+  public async Task ClosePopup()
+  {
+    await _popup.CloseAsync();
+  }
+
+}

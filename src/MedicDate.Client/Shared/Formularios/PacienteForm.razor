@@ -1,5 +1,4 @@
 @using MedicDate.Shared.Models.Common
-
 <RadzenCard>
   <EditForm Model="@PacienteRequestDto" OnValidSubmit="OnSubmit">
     <DataAnnotationsValidator/>
@@ -43,7 +42,7 @@
         <div class="mt-1">
           <RadzenDatePicker @bind-Value="PacienteRequestDto.FechaNacimiento"
                             class="w-100" DateFormat="d"
-                            TValue="DateTime"/>
+                            TValue="DateTime" Min="DateTime.Now.AddYears(-120)"/>
           <ValidationMessage For="() => PacienteRequestDto.FechaNacimiento"/>
         </div>
       </div>
@@ -98,7 +97,15 @@
       </div>
     </div>
     <div class="mb-2">
-      <FormButtons NavLinkRoute="pacienteList"/>
+      @if (ShowCancelLink)
+      {
+        <FormButtons CancelLinkRoute="pacienteList"/>
+      }
+      else
+      {
+        <FormButtons ShowCancelLink="false"
+                     OnCloseBtnClicked="OnCancel"/>
+      }
     </div>
   </EditForm>
 </RadzenCard>

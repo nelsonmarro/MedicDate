@@ -20,5 +20,5 @@ public class PacienteResponseDto : IId
   public string? Telefono { get; set; }
   public string? Direccion { get; set; }
 
-  public List<GrupoResponseDto> Grupos { get; set; } = new();
+  public List<GrupoResponseDto> GruposPacientes { get; set; } = new();
 }

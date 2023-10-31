@@ -17,10 +17,13 @@ var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
-builder.Services.AddScoped(sp => new HttpClient
-{
-    BaseAddress = new Uri(builder.Configuration.GetValue<string>("BaseAPIUrl") ?? string.Empty)
-}.EnableIntercept(sp));
+builder.Services.AddScoped(
+  sp =>
+    new HttpClient
+    {
+      BaseAddress = new Uri(builder.Configuration.GetValue<string>("BaseAPIUrl") ?? string.Empty)
+    }.EnableIntercept(sp)
+);
 
 ConfigureServices(builder.Services);
 
@@ -28,24 +31,22 @@ await builder.Build().RunAsync();
 
 static void ConfigureServices(IServiceCollection services)
 {
-    services.AddHttpClientInterceptor();
-    services.AddAuthorizationCore();
+  services.AddHttpClientInterceptor();
+  services.AddAuthorizationCore();
 
-    services.AddBlazoredLocalStorage();
-    services.AddScoped<AuthenticationStateProvider, AuthStateProvider>();
-    services.AddScoped<IHttpRepository, HttpRepository>();
+  services.AddBlazoredLocalStorage();
+  services.AddScoped<AuthenticationStateProvider, AuthStateProvider>();
+  services.AddScoped<IHttpRepository, HttpRepository>();
 
-    services.AddScoped<DialogService>();
-    services.AddScoped<NotificationService>();
-    services.AddScoped<TooltipService>();
-    services.AddScoped<ContextMenuService>();
+  services.AddScoped<DialogService>();
+  services.AddScoped<NotificationService>();
+  services.AddScoped<TooltipService>();
+  services.AddScoped<ContextMenuService>();
 
-    services.AddScoped<INotificationService, RadzenNotificationService>();
-    services
-      .AddScoped<IDialogNotificationService, DialogNotificationService>();
-    services.AddScoped<IAuthenticationService, AuthenticationService>();
-    services.AddScoped<IRefreshTokenService, RefreshTokenService>();
-    services.AddScoped<IHttpInterceptorProvider, HttpInterceptorProvider>();
-    services
-      .AddScoped<IBaseListComponentOperations, BaseListComponentOperations>();
+  services.AddScoped<INotificationService, RadzenNotificationService>();
+  services.AddScoped<IDialogNotificationService, DialogNotificationService>();
+  services.AddScoped<IAuthenticationService, AuthenticationService>();
+  services.AddScoped<IRefreshTokenService, RefreshTokenService>();
+  services.AddScoped<IHttpInterceptorProvider, HttpInterceptorProvider>();
+  services.AddScoped<IBaseListComponentOperations, BaseListComponentOperations>();
 }

@@ -1,15 +1,13 @@
-﻿@using System.Globalization
-
-<RadzenPanelMenu style="height: 100%">
-  <p class="py-3 mb-0 text-center">
-    <RadzenLink Path="/" Text="Medic Date" class="text-white"
-                Style="font-size: 25px; text-decoration: none;"
-                Icon="medical_services">
-    </RadzenLink>
-  </p>
+﻿<RadzenPanelMenu Style="">
+  <div class="d-flex flex-row justify-content-center align-items-center py-3 border-bottom">
+    <RadzenText TextStyle="TextStyle.H4" class="text-white" Style="font-size: 32px">Medic Date</RadzenText>
+    <div class="ms-3">
+      <RadzenIcon Icon="monitor_heart" Style="font-size: 30px;"/>
+    </div>
+  </div>
   <AuthorizeView>
     <Authorized>
-      <RadzenPanelMenuItem Text="Inicio" Icon="home" Path="/" class="mt-2"/>
+      <RadzenPanelMenuItem Text="Inicio" Icon="home" Path="/"/>
       <RadzenPanelMenuItem Text="Citas" Icon="event_note">
         <RadzenPanelMenuItem Text="Calendario Citas" Path="@_initialCitasReq"
                              Icon="date_range"/>

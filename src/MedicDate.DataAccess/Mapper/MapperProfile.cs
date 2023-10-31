@@ -37,7 +37,7 @@ public class MapperProfile : Profile
       .ForMember(x => x.GruposPacientes, opts => opts.MapFrom(MapGruposPacientes));
 
     CreateMap<Paciente, PacienteResponseDto>()
-      .ForMember(x => x.Grupos, opts => opts.MapFrom(MapGrupos));
+      .ForMember(x => x.GruposPacientes, opts => opts.MapFrom(MapGrupos));
 
     CreateMap<Paciente, PacienteCitaResponseDto>()
       .ForMember(x => x.FullInfo, opts => opts.Ignore());
@@ -235,6 +235,16 @@ public class MapperProfile : Profile
   )
   {
     var result = new List<GrupoResponseDto>();
+
+    if (paciente.GruposPacientes is null)
+    {
+      return result;
+    }
+
+    if (paciente.GruposPacientes.Any() && paciente.GruposPacientes.First().Grupo is null)
+    {
+      return result;
+    }
 
     result.AddRange(
       paciente.GruposPacientes.Select(

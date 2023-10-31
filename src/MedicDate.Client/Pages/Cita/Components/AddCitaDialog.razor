@@ -1,107 +1,133 @@
 ﻿@using System.Globalization
-@inject DialogService _dialogService
-@inject IHttpRepository _httpRepo
+@inject DialogService DialogService
+@inject IHttpRepository HttpRepo
 @inject INotificationService NotificationService
 
-<EditForm Model="_citaRequest"
-          OnValidSubmit="AddCita"
-          class="mx-3">
+<div class="container-fluid">
+  <EditForm Model="_citaRequest"
+            OnValidSubmit="AddCita">
 
-  @if (_errorList.Count > 0)
-  {
-    <div class="mb-2">
-      <ul class="text-danger">
-        @foreach (var error in _errorList)
+    @if (_errorList.Count > 0)
+    {
+      <div class="mb-2">
+        <ul class="text-danger">
+          @foreach (var error in _errorList)
+          {
+            <li>@error</li>
+          }
+        </ul>
+      </div>
+    }
+    <div class="mb-3 row">
+      <div class="col-md-3">
+        <RadzenLabel Text="Fecha Inicio"/>
+      </div>
+      <div class="col-md-9">
+        <RadzenDatePicker @bind-Value="_citaRequest.FechaInicio"
+                          Name="Fecha Inicio"
+                          ShowTime="true" class="w-100"
+                          DateFormat="g"
+                          Culture="CultureInfo.CurrentCulture"/>
+      </div>
+    </div>
+    <div class="mb-3 row">
+      <div class="col-md-3">
+        <RadzenLabel Text="Fecha Finalización"/>
+      </div>
+      <div class="col-md-9">
+        <RadzenDatePicker @bind-Value="_citaRequest.FechaFin"
+                          Name="Fecha Finalización"
+                          ShowTime="true" class="w-100"
+                          DateFormat="g"
+                          Culture="CultureInfo.CurrentCulture"/>
+      </div>
+    </div>
+    <div class="mb-3 row">
+      <div class="col-md-3">
+        <RadzenLabel Text="Doctor o Especialista"/>
+      </div>
+      <div class="col-md-9">
+        <RadzenDropDownWithPopup @ref="_medicoDropDown" DataList="_medicos"
+                                 @bind-Value="_citaRequest.MedicoId"
+                                 DropDownTextProperty="FullInfo">
+          <ChildContend>
+            <CascadingValue Value="_isBussy">
+              <MedicoForm MedicoRequestDto="_medicoRequest"
+                          OnSubmit="AddDoctor"
+                          ShowCancelLink="false"
+                          OnCancel="@(async () => { await ClosePopup(_medicoDropDown); _medicoRequest = new(); })"/>
+            </CascadingValue>
+          </ChildContend>
+        </RadzenDropDownWithPopup>
+      </div>
+    </div>
+    <div class="mb-3 row">
+      <div class="col-md-3">
+        <RadzenLabel Text="Paciente"/>
+      </div>
+      <div class="col-md-9">
+        <RadzenDropDownWithPopup @ref="_pacienteDropDown" DataList="_pacientes"
+                                 @bind-Value="_citaRequest.PacienteId"
+                                 DropDownTextProperty="FullInfo">
+          <ChildContend>
+            <CascadingValue Value="_isBussy">
+              <PacienteForm PacienteRequestDto="_pacienteRequest"
+                            OnSubmit="AddPaciente"
+                            ShowCancelLink="false"
+                            OnCancel="@(async () => { await ClosePopup(_pacienteDropDown); _pacienteRequest = new(); })"/>
+            </CascadingValue>
+          </ChildContend>
+        </RadzenDropDownWithPopup>
+      </div>
+    </div>
+    <div class="mb-3 row">
+      <div class="col-md-3">
+        <RadzenLabel Text="Actividades"/>
+      </div>
+      <div class="col-md-9">
+        @if (_actividades is not null)
         {
-          <li>@error</li>
+          <RadzenDropDownWithPopup @ref="_actividadesDropDown" DataList="_actividades"
+                                   DropDownTextProperty="Nombre"
+                                   TValue="List<string>"
+                                   TSource="ActividadResponseDto"
+                                   Value="_actividadesIds"
+                                   DropDownAllowMultipleSelection="true"
+                                   ValueChanged="SelectActividad">
+            <ChildContend>
+              <CascadingValue Value="_isBussy">
+                <ActividadForm ActividadModel="_actividadRequest"
+                               OnSubmit="AddActividad"
+                               ShowCancelLink="false"
+                               OnCancel="@(async () => { await ClosePopup(_actividadesDropDown); _actividadRequest = new(); })"/>
+              </CascadingValue>
+            </ChildContend>
+          </RadzenDropDownWithPopup>
         }
-      </ul>
+      </div>
     </div>
-  }
-  <div class="mb-3 row">
-    <div class="col-md-4">
-      <RadzenLabel Text="Fecha Inicio"/>
-    </div>
-    <div class="col-md-8">
-      <RadzenDatePicker @bind-Value="_citaRequest.FechaInicio"
-                        Name="Fecha Inicio"
-                        ShowTime="true" class="w-100"
-                        DateFormat="g"
-                        Culture="CultureInfo.CurrentCulture"/>
-    </div>
-  </div>
-  <div class="mb-3 row">
-    <div class="col-md-4">
-      <RadzenLabel Text="Fecha Finalización"/>
-    </div>
-    <div class="col-md-8">
-      <RadzenDatePicker @bind-Value="_citaRequest.FechaFin"
-                        Name="Fecha Finalización"
-                        ShowTime="true" class="w-100"
-                        DateFormat="g"
-                        Culture="CultureInfo.CurrentCulture"/>
-    </div>
-  </div>
-  <div class="mb-3 row">
-    <div class="col-md-4">
-      <RadzenLabel Text="Doctor o Especialista"/>
-    </div>
-    <div class="col-md-8">
-      <RadzenDropDown TValue="string" Data="@_medicos"
-                      ValueProperty="Id" TextProperty="FullInfo"
-                      class="w-100" Placeholder="Seleccione"
-                      @bind-Value="_citaRequest.MedicoId"/>
-    </div>
-  </div>
-  <div class="mb-3 row">
-    <div class="col-md-4">
-      <RadzenLabel Text="Paciente"/>
-    </div>
-    <div class="col-md-8">
-      <RadzenDropDown TValue="string" Data="@_pacientes"
-                      ValueProperty="Id" TextProperty="FullInfo"
-                      class="w-100" Placeholder="Seleccione"
-                      @bind-Value="_citaRequest.PacienteId"/>
-    </div>
-  </div>
-  <div class="mb-3 row">
-    <div class="col-md-4">
-      <RadzenLabel Text="Actividades"/>
-    </div>
-    <div class="col-md-8">
-      @if (_actividades is not null)
-      {
-        <RadzenDropDown AllowClear="true" class="w-100"
-                        Data="@_actividades" AllowVirtualization="true"
-                        Placeholder="Seleccione" Change="@SelectActividad"
-                        TextProperty="Nombre" ValueProperty="Id"
-                        Multiple="true" AllowFiltering="true"
-                        TValue="IEnumerable<string>" Value="_actividadesIds"
-                        FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"/>
-      }
-    </div>
-  </div>
-  <div class="mb-3 row">
-    <div class="col-md-4"></div>
-    <div class="col-md-8">
-      <div class="row">
-        <div class="col-6">
-          <RadzenButton ButtonType="@ButtonType.Submit"
-                        Text="Guardar"
-                        Style="width: 100%"
-                        Icon="save"/>
-        </div>
-        <div class="col-6">
-          <RadzenButton Text="Cancelar"
-                        Icon="cancel"
-                        ButtonStyle="ButtonStyle.Danger"
-                        Style="width: 100%"
-                        Click="@(() => _dialogService.Close())"/>
+    <div class="mt-4 row">
+      <div class="col-md-3"></div>
+      <div class="col-md-9">
+        <div class="row">
+          <div class="col-6">
+            <RadzenButton ButtonType="@ButtonType.Submit"
+                          Text="Guardar"
+                          Style="width: 100%"
+                          Icon="save"/>
+          </div>
+          <div class="col-6">
+            <RadzenButton Text="Cancelar"
+                          Icon="cancel"
+                          ButtonStyle="ButtonStyle.Danger"
+                          Style="width: 100%"
+                          Click="@(() => DialogService.Close())"/>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-</EditForm>
+  </EditForm>
+</div>
 
 @code {
 
@@ -111,12 +137,24 @@
   [Parameter]
   public DateTime EndDate { get; set; }
 
-  private CitaRequestDto _citaRequest = new();
+  private RadzenDropDownWithPopup<string, MedicoCitaResponseDto> _medicoDropDown = default!;
+  private RadzenDropDownWithPopup<string, PacienteCitaResponseDto> _pacienteDropDown = default!;
+  private RadzenDropDownWithPopup<List<string>, ActividadResponseDto> _actividadesDropDown = default!;
+
   private List<MedicoCitaResponseDto>? _medicos;
   private List<PacienteCitaResponseDto>? _pacientes;
   private List<ActividadResponseDto>? _actividades;
-  private IEnumerable<string>? _actividadesIds;
-  private List<string> _errorList = new();
+  private List<string>? _actividadesIds;
+  private readonly List<string> _errorList = new();
+
+  private readonly CitaRequestDto _citaRequest = new();
+  private MedicoRequestDto _medicoRequest = new();
+  private PacienteRequestDto _pacienteRequest = new();
+  private ActividadRequestDto _actividadRequest = new();
+
+  private bool _isBussy;
+
+  #region Lifecycle Methods
 
   protected override void OnParametersSet()
   {
@@ -131,9 +169,13 @@
     _medicos = await RequestResourceListAsync<MedicoCitaResponseDto>("api/Medico/listar");
   }
 
+  #endregion
+
+  #region Appointment Methods
+
   private async Task<List<T>?> RequestResourceListAsync<T>(string? reqUrl)
   {
-    var httpResp = await _httpRepo.Get<List<T>>(reqUrl ?? "");
+    var httpResp = await HttpRepo.Get<List<T>>(reqUrl ?? "");
     return httpResp.Response;
   }
 
@@ -155,22 +197,17 @@
       return false;
     }
 
-    if (_citaRequest.FechaInicio > _citaRequest.FechaFin)
-    {
-      _errorList.Add("La fecha de inicio debe ser menor que la fecha de finalización");
+    if (_citaRequest.FechaInicio <= _citaRequest.FechaFin) return true;
+    _errorList.Add("La fecha de inicio debe ser menor que la fecha de finalización");
 
-      return false;
-    }
-
-    return true;
+    return false;
   }
 
   private bool ValidateCitaRequest()
   {
     var result = true;
 
-    if (_citaRequest.ActividadesCita is null
-        || _citaRequest.ActividadesCita.Count == 0)
+    if (_citaRequest.ActividadesCita.Count == 0)
     {
       _errorList.Add("Debe seleccionar al menos una Actividad");
       result = false;
@@ -199,7 +236,7 @@
     if (!ValidateCitaRequest())
       return;
 
-    _dialogService.Close(_citaRequest);
+    DialogService.Close(_citaRequest);
   }
 
   private void SelectActividad(object value)
@@ -214,5 +251,71 @@
         ActividadId = actId
       }));
   }
+
+  #endregion
+
+  #region Add Shortcut Methods
+
+  private async Task AddDoctor()
+  {
+    _isBussy = true;
+
+    var httpResp = await HttpRepo.Post("api/Medico/crear", _medicoRequest);
+
+    _isBussy = false;
+
+    if (!httpResp.Error)
+    {
+      NotificationService.ShowSuccess("Operacion exitosa!",
+        "Registro creado con éxito");
+      _medicos = await RequestResourceListAsync<MedicoCitaResponseDto>("api/Medico/listar");
+      await ClosePopup(_medicoDropDown);
+      _medicoRequest = new();
+    }
+  }
+
+  private async Task AddPaciente()
+  {
+    _pacienteRequest.DateRegistered = DateTime.Now;
+
+    _isBussy = true;
+
+    var httpResp = await HttpRepo.Post("api/Paciente/crear", _pacienteRequest);
+
+    _isBussy = false;
+
+    if (!httpResp.Error)
+    {
+      NotificationService.ShowSuccess("Operacion exitosa!", "Registro creado con éxito");
+      _pacientes = await RequestResourceListAsync<PacienteCitaResponseDto>("api/Paciente/listar");
+      await ClosePopup(_pacienteDropDown);
+      _pacienteRequest = new();
+    }
+  }
+
+  private async Task AddActividad()
+  {
+    _isBussy = true;
+
+    var httpResp = await HttpRepo.Post("api/Actividad/crear", _actividadRequest);
+
+    _isBussy = false;
+
+    if (!httpResp.Error)
+    {
+      NotificationService.ShowSuccess("Operación Exitosa!", "Actividad creada con éxito");
+      _actividades = await RequestResourceListAsync<ActividadResponseDto>("api/Actividad/listar");
+      await ClosePopup(_actividadesDropDown);
+      _actividadRequest = new();
+    }
+  }
+
+  private async Task ClosePopup<TResponse, TDropDownValue>(RadzenDropDownWithPopup<TDropDownValue,
+    TResponse> dropDown) where TResponse : class
+  {
+    await dropDown.ClosePopup();
+  }
+
+  #endregion
 
 }

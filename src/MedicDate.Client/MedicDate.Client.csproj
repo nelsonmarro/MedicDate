@@ -8,38 +8,38 @@
 		<EnableUnsafeBinaryFormatterSerialization>false</EnableUnsafeBinaryFormatterSerialization>
 	</PropertyGroup>
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-	  <Optimize>False</Optimize>
+		<Optimize>False</Optimize>
 	</PropertyGroup>
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-	  <Optimize>True</Optimize>
+		<Optimize>True</Optimize>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<Content Remove="bundleconfig.json" />
+		<Content Remove="bundleconfig.json"/>
 	</ItemGroup>
 	<ItemGroup>
-		<None Remove="App.razor~RF160248f.TMP" />
+		<None Remove="App.razor~RF160248f.TMP"/>
 	</ItemGroup>
 	<ItemGroup>
-		<None Include="bundleconfig.json" />
+		<None Include="bundleconfig.json"/>
 	</ItemGroup>
 	<ItemGroup>
-		<PackageReference Include="Blazored.LocalStorage" Version="4.4.0" />
-		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="7.0.11" />
-		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" Version="7.0.11" />
-		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="7.0.11" PrivateAssets="all" />
-		<PackageReference Include="Microsoft.Extensions.Http" Version="7.0.0" />
-		<PackageReference Include="Radzen.Blazor" Version="4.16.0" />
-		<PackageReference Include="System.Net.Http.Json" Version="7.0.1" />
-		<PackageReference Include="Toolbelt.Blazor.HttpClientInterceptor" Version="10.2.0" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<ProjectReference Include="..\MedicDate.Shared.Models\MedicDate.Shared.Models.csproj" />
-		<ProjectReference Include="..\MedicDate.Shared.Utility\MedicDate.Shared.Utility.csproj" />
+		<PackageReference Include="Blazored.LocalStorage" Version="4.4.0"/>
+		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="7.0.11"/>
+		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" Version="7.0.11"/>
+		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="7.0.11" PrivateAssets="all"/>
+		<PackageReference Include="Microsoft.Extensions.Http" Version="7.0.0"/>
+		<PackageReference Include="Radzen.Blazor" Version="4.16.2"/>
+		<PackageReference Include="System.Net.Http.Json" Version="7.0.1"/>
+		<PackageReference Include="Toolbelt.Blazor.HttpClientInterceptor" Version="10.2.0"/>
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="wwwroot\css\" />
+		<ProjectReference Include="..\MedicDate.Shared.Models\MedicDate.Shared.Models.csproj"/>
+		<ProjectReference Include="..\MedicDate.Shared.Utility\MedicDate.Shared.Utility.csproj"/>
+	</ItemGroup>
+
+	<ItemGroup>
+		<Folder Include="wwwroot\css\"/>
 	</ItemGroup>
 </Project>

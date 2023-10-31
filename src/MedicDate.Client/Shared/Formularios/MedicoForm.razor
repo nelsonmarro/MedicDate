@@ -45,8 +45,16 @@
 				}
 			</div>
 		</div>
-		<div class="mb-2">
-			<FormButtons NavLinkRoute="medicoList" />
-		</div>
+    <div class="mb-2">
+      @if (ShowCancelLink)
+      {
+        <FormButtons CancelLinkRoute="medicoList"/>
+      }
+      else
+      {
+        <FormButtons ShowCancelLink="false"
+                     OnCloseBtnClicked="OnCancel"/>
+      }
+    </div>
 	</EditForm>
 </RadzenCard>
