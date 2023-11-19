@@ -2,7 +2,7 @@
 
 public class CitaEstadoMonthReviewDto
 {
-   public DateTime RegisterationDate { get; set; }
+   public DateTimeOffset RegisterationDate { get; set; }
    public string? NombreEstado { get; set; }
    public int TotalCitas { get; set; }
 }

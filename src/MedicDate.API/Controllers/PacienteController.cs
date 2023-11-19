@@ -1,7 +1,7 @@
 using AutoMapper;
-using MedicDate.DataAccess.Entities;
-using MedicDate.DataAccess.Repository.IRepository;
-using MedicDate.Domain.DomainServices.IDomainServices;
+using MedicDate.Domain.Entities;
+using MedicDate.Domain.Interfaces.DataAccess;
+using MedicDate.Domain.Services.IDomainServices;
 using MedicDate.Shared.Models.Common;
 using MedicDate.Shared.Models.Paciente;
 using Microsoft.AspNetCore.Authorization;
@@ -42,7 +42,7 @@ public class PacienteController : BaseController<Paciente>
               pageIndex,
               pageSize,
               includeProperties,
-              p => p.GruposPacientes
+              p => p.GruposPacientes!
                 .Any(gp => gp.GrupoId == filtrarGrupoId),
               x => x.OrderBy(p => p.Nombres)
             );

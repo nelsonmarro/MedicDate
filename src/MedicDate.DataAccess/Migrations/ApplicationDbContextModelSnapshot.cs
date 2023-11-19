@@ -17,12 +17,12 @@ namespace MedicDate.DataAccess.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.0-rc.2.23480.1")
+                .HasAnnotation("ProductVersion", "7.0.13")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("MedicDate.DataAccess.Entities.Actividad", b =>
+            modelBuilder.Entity("MedicDate.Domain.Entities.Actividad", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
@@ -56,7 +56,7 @@ namespace MedicDate.DataAccess.Migrations
                     b.ToTable("Actividad");
                 });
 
-            modelBuilder.Entity("MedicDate.DataAccess.Entities.ActividadCita", b =>
+            modelBuilder.Entity("MedicDate.Domain.Entities.ActividadCita", b =>
                 {
                     b.Property<string>("CitaId")
                         .IsUnicode(false)
@@ -97,7 +97,7 @@ namespace MedicDate.DataAccess.Migrations
                     b.ToTable("ActividadCita");
                 });
 
-            modelBuilder.Entity("MedicDate.DataAccess.Entities.AppRole", b =>
+            modelBuilder.Entity("MedicDate.Domain.Entities.AppRole", b =>
                 {
                     b.Property<string>("Id")
                         .IsUnicode(false)
@@ -149,7 +149,7 @@ namespace MedicDate.DataAccess.Migrations
                     b.ToTable("AspNetRoles", (string)null);
                 });
 
-            modelBuilder.Entity("MedicDate.DataAccess.Entities.ApplicationUser", b =>
+            modelBuilder.Entity("MedicDate.Domain.Entities.ApplicationUser", b =>
                 {
                     b.Property<string>("Id")
                         .IsUnicode(false)
@@ -257,7 +257,7 @@ namespace MedicDate.DataAccess.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("MedicDate.DataAccess.Entities.ApplicationUserRole", b =>
+            modelBuilder.Entity("MedicDate.Domain.Entities.ApplicationUserRole", b =>
                 {
                     b.Property<string>("UserId")
                         .IsUnicode(false)
@@ -290,7 +290,7 @@ namespace MedicDate.DataAccess.Migrations
                     b.ToTable("AspNetUserRoles", (string)null);
                 });
 
-            modelBuilder.Entity("MedicDate.DataAccess.Entities.Archivo", b =>
+            modelBuilder.Entity("MedicDate.Domain.Entities.Archivo", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
@@ -336,7 +336,7 @@ namespace MedicDate.DataAccess.Migrations
                     b.ToTable("Archivo");
                 });
 
-            modelBuilder.Entity("MedicDate.DataAccess.Entities.Cita", b =>
+            modelBuilder.Entity("MedicDate.Domain.Entities.Cita", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
@@ -348,6 +348,12 @@ namespace MedicDate.DataAccess.Migrations
 
                     b.Property<DateTime>("DateRegistered")
                         .HasColumnType("datetime2");
+
+                    b.Property<bool>("EmailDayBeforeConfirm")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("EmailHoursBeforeConfirm")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Estado")
                         .IsRequired()
@@ -390,7 +396,7 @@ namespace MedicDate.DataAccess.Migrations
                     b.ToTable("Cita");
                 });
 
-            modelBuilder.Entity("MedicDate.DataAccess.Entities.Especialidad", b =>
+            modelBuilder.Entity("MedicDate.Domain.Entities.Especialidad", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
@@ -424,7 +430,7 @@ namespace MedicDate.DataAccess.Migrations
                     b.ToTable("Especialidad");
                 });
 
-            modelBuilder.Entity("MedicDate.DataAccess.Entities.Grupo", b =>
+            modelBuilder.Entity("MedicDate.Domain.Entities.Grupo", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
@@ -458,7 +464,7 @@ namespace MedicDate.DataAccess.Migrations
                     b.ToTable("Grupo");
                 });
 
-            modelBuilder.Entity("MedicDate.DataAccess.Entities.GrupoPaciente", b =>
+            modelBuilder.Entity("MedicDate.Domain.Entities.GrupoPaciente", b =>
                 {
                     b.Property<string>("GrupoId")
                         .IsUnicode(false)
@@ -491,7 +497,7 @@ namespace MedicDate.DataAccess.Migrations
                     b.ToTable("GrupoPaciente");
                 });
 
-            modelBuilder.Entity("MedicDate.DataAccess.Entities.Medico", b =>
+            modelBuilder.Entity("MedicDate.Domain.Entities.Medico", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
@@ -552,7 +558,7 @@ namespace MedicDate.DataAccess.Migrations
                     b.ToTable("Medico");
                 });
 
-            modelBuilder.Entity("MedicDate.DataAccess.Entities.MedicoEspecialidad", b =>
+            modelBuilder.Entity("MedicDate.Domain.Entities.MedicoEspecialidad", b =>
                 {
                     b.Property<string>("MedicoId")
                         .IsUnicode(false)
@@ -585,7 +591,7 @@ namespace MedicDate.DataAccess.Migrations
                     b.ToTable("MedicoEspecialidad");
                 });
 
-            modelBuilder.Entity("MedicDate.DataAccess.Entities.Paciente", b =>
+            modelBuilder.Entity("MedicDate.Domain.Entities.Paciente", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
@@ -773,15 +779,15 @@ namespace MedicDate.DataAccess.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("MedicDate.DataAccess.Entities.ActividadCita", b =>
+            modelBuilder.Entity("MedicDate.Domain.Entities.ActividadCita", b =>
                 {
-                    b.HasOne("MedicDate.DataAccess.Entities.Actividad", "Actividad")
+                    b.HasOne("MedicDate.Domain.Entities.Actividad", "Actividad")
                         .WithMany("ActividadesCitas")
                         .HasForeignKey("ActividadId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("MedicDate.DataAccess.Entities.Cita", "Cita")
+                    b.HasOne("MedicDate.Domain.Entities.Cita", "Cita")
                         .WithMany("ActividadesCita")
                         .HasForeignKey("CitaId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -792,15 +798,15 @@ namespace MedicDate.DataAccess.Migrations
                     b.Navigation("Cita");
                 });
 
-            modelBuilder.Entity("MedicDate.DataAccess.Entities.ApplicationUserRole", b =>
+            modelBuilder.Entity("MedicDate.Domain.Entities.ApplicationUserRole", b =>
                 {
-                    b.HasOne("MedicDate.DataAccess.Entities.AppRole", "Role")
+                    b.HasOne("MedicDate.Domain.Entities.AppRole", "Role")
                         .WithMany("UserRoles")
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("MedicDate.DataAccess.Entities.ApplicationUser", "User")
+                    b.HasOne("MedicDate.Domain.Entities.ApplicationUser", "User")
                         .WithMany("UserRoles")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -811,9 +817,9 @@ namespace MedicDate.DataAccess.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("MedicDate.DataAccess.Entities.Archivo", b =>
+            modelBuilder.Entity("MedicDate.Domain.Entities.Archivo", b =>
                 {
-                    b.HasOne("MedicDate.DataAccess.Entities.Cita", "Cita")
+                    b.HasOne("MedicDate.Domain.Entities.Cita", "Cita")
                         .WithMany("Archivos")
                         .HasForeignKey("CitaId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -822,15 +828,15 @@ namespace MedicDate.DataAccess.Migrations
                     b.Navigation("Cita");
                 });
 
-            modelBuilder.Entity("MedicDate.DataAccess.Entities.Cita", b =>
+            modelBuilder.Entity("MedicDate.Domain.Entities.Cita", b =>
                 {
-                    b.HasOne("MedicDate.DataAccess.Entities.Medico", "Medico")
+                    b.HasOne("MedicDate.Domain.Entities.Medico", "Medico")
                         .WithMany("Citas")
                         .HasForeignKey("MedicoId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("MedicDate.DataAccess.Entities.Paciente", "Paciente")
+                    b.HasOne("MedicDate.Domain.Entities.Paciente", "Paciente")
                         .WithMany("Citas")
                         .HasForeignKey("PacienteId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -841,15 +847,15 @@ namespace MedicDate.DataAccess.Migrations
                     b.Navigation("Paciente");
                 });
 
-            modelBuilder.Entity("MedicDate.DataAccess.Entities.GrupoPaciente", b =>
+            modelBuilder.Entity("MedicDate.Domain.Entities.GrupoPaciente", b =>
                 {
-                    b.HasOne("MedicDate.DataAccess.Entities.Grupo", "Grupo")
+                    b.HasOne("MedicDate.Domain.Entities.Grupo", "Grupo")
                         .WithMany("GruposPacientes")
                         .HasForeignKey("GrupoId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("MedicDate.DataAccess.Entities.Paciente", "Paciente")
+                    b.HasOne("MedicDate.Domain.Entities.Paciente", "Paciente")
                         .WithMany("GruposPacientes")
                         .HasForeignKey("PacienteId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -860,15 +866,15 @@ namespace MedicDate.DataAccess.Migrations
                     b.Navigation("Paciente");
                 });
 
-            modelBuilder.Entity("MedicDate.DataAccess.Entities.MedicoEspecialidad", b =>
+            modelBuilder.Entity("MedicDate.Domain.Entities.MedicoEspecialidad", b =>
                 {
-                    b.HasOne("MedicDate.DataAccess.Entities.Especialidad", "Especialidad")
+                    b.HasOne("MedicDate.Domain.Entities.Especialidad", "Especialidad")
                         .WithMany("MedicosEspecialidades")
                         .HasForeignKey("EspecialidadId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("MedicDate.DataAccess.Entities.Medico", "Medico")
+                    b.HasOne("MedicDate.Domain.Entities.Medico", "Medico")
                         .WithMany("MedicosEspecialidades")
                         .HasForeignKey("MedicoId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -881,7 +887,7 @@ namespace MedicDate.DataAccess.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
-                    b.HasOne("MedicDate.DataAccess.Entities.AppRole", null)
+                    b.HasOne("MedicDate.Domain.Entities.AppRole", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -890,7 +896,7 @@ namespace MedicDate.DataAccess.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("MedicDate.DataAccess.Entities.ApplicationUser", null)
+                    b.HasOne("MedicDate.Domain.Entities.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -899,7 +905,7 @@ namespace MedicDate.DataAccess.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("MedicDate.DataAccess.Entities.ApplicationUser", null)
+                    b.HasOne("MedicDate.Domain.Entities.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -908,53 +914,53 @@ namespace MedicDate.DataAccess.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("MedicDate.DataAccess.Entities.ApplicationUser", null)
+                    b.HasOne("MedicDate.Domain.Entities.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("MedicDate.DataAccess.Entities.Actividad", b =>
+            modelBuilder.Entity("MedicDate.Domain.Entities.Actividad", b =>
                 {
                     b.Navigation("ActividadesCitas");
                 });
 
-            modelBuilder.Entity("MedicDate.DataAccess.Entities.AppRole", b =>
+            modelBuilder.Entity("MedicDate.Domain.Entities.AppRole", b =>
                 {
                     b.Navigation("UserRoles");
                 });
 
-            modelBuilder.Entity("MedicDate.DataAccess.Entities.ApplicationUser", b =>
+            modelBuilder.Entity("MedicDate.Domain.Entities.ApplicationUser", b =>
                 {
                     b.Navigation("UserRoles");
                 });
 
-            modelBuilder.Entity("MedicDate.DataAccess.Entities.Cita", b =>
+            modelBuilder.Entity("MedicDate.Domain.Entities.Cita", b =>
                 {
                     b.Navigation("ActividadesCita");
 
                     b.Navigation("Archivos");
                 });
 
-            modelBuilder.Entity("MedicDate.DataAccess.Entities.Especialidad", b =>
+            modelBuilder.Entity("MedicDate.Domain.Entities.Especialidad", b =>
                 {
                     b.Navigation("MedicosEspecialidades");
                 });
 
-            modelBuilder.Entity("MedicDate.DataAccess.Entities.Grupo", b =>
+            modelBuilder.Entity("MedicDate.Domain.Entities.Grupo", b =>
                 {
                     b.Navigation("GruposPacientes");
                 });
 
-            modelBuilder.Entity("MedicDate.DataAccess.Entities.Medico", b =>
+            modelBuilder.Entity("MedicDate.Domain.Entities.Medico", b =>
                 {
                     b.Navigation("Citas");
 
                     b.Navigation("MedicosEspecialidades");
                 });
 
-            modelBuilder.Entity("MedicDate.DataAccess.Entities.Paciente", b =>
+            modelBuilder.Entity("MedicDate.Domain.Entities.Paciente", b =>
                 {
                     b.Navigation("Citas");
 

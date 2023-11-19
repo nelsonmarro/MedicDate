@@ -1,6 +1,6 @@
 ﻿using System.Linq.Expressions;
-using MedicDate.DataAccess.Repository.IRepository;
-using MedicDate.Utility.Extensions;
+using MedicDate.Domain.Interfaces.DataAccess;
+using MedicDate.Shared.Models.Common.Extensions;
 using Microsoft.EntityFrameworkCore;
 
 namespace MedicDate.DataAccess.Repository;

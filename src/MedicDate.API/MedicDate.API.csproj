@@ -5,15 +5,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
 		<LangVersion>preview</LangVersion>
   </PropertyGroup>
-  <ItemGroup>
-    <Compile Remove="Filters\**" />
-    <Content Remove="Filters\**" />
-    <EmbeddedResource Remove="Filters\**" />
-    <None Remove="Filters\**" />
-  </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.13" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="7.0.13" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.13">
       <PrivateAssets>all</PrivateAssets>
@@ -28,8 +21,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\MedicDate.DataAccess\MedicDate.DataAccess.csproj" />
     <ProjectReference Include="..\MedicDate.Domain\MedicDate.Domain.csproj" />
     <ProjectReference Include="..\MedicDate.Shared.Models\MedicDate.Shared.Models.csproj" />
+    <ProjectReference Include="..\MedicDate.Shared.Utility\MedicDate.Infrastructure.csproj" />
   </ItemGroup>
 
   <ItemGroup>

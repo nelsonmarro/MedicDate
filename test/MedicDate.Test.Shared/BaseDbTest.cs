@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using MedicDate.DataAccess;
-using MedicDate.DataAccess.Mapper;
+using MedicDate.Domain.Mapper;
 using Microsoft.EntityFrameworkCore;
 
 namespace MedicDate.Test.Shared;

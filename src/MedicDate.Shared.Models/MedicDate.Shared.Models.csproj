@@ -8,10 +8,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <SupportedPlatform Include="browser" />
+
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MedicDate.Shared.Utility\MedicDate.Shared.Utility.csproj" />
+    <SupportedPlatform Include="browser" />
   </ItemGroup>
 </Project>

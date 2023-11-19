@@ -1,5 +1,5 @@
-﻿using MedicDate.DataAccess.Entities;
-using MedicDate.DataAccess.EntityConfig;
+﻿using MedicDate.DataAccess.EntityConfig;
+using MedicDate.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;

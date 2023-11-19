@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using MedicDate.DataAccess.Repository.IRepository;
+using MedicDate.Shared.Models.Common.Interfaces;
 using MedicDate.Test.Shared;
 using MedicDate.Utility.Interfaces;
 using Xunit;

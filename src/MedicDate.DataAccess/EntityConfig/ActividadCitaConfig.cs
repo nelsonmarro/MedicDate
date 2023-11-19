@@ -1,4 +1,4 @@
-using MedicDate.DataAccess.Entities;
+using MedicDate.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

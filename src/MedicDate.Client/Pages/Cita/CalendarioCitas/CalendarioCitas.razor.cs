@@ -4,7 +4,7 @@ using MedicDate.Client.Data.HttpRepository.IHttpRepository;
 using MedicDate.Client.Pages.Cita.Components;
 using MedicDate.Client.Services.IServices;
 using MedicDate.Shared.Models.Cita;
-using MedicDate.Utility;
+using MedicDate.Shared.Models.Common;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.JSInterop;
@@ -55,7 +55,7 @@ public partial class CalendarioCitas : IDisposable
 
   public void Dispose()
   {
-    var jsInProcess = (IJSInProcessRuntime)jsRuntime;
+    var jsInProcess = (IJSInProcessRuntime) jsRuntime;
     jsInProcess.InvokeVoid("changeBodyContainerHeightToMaxVh");
     ContextMenuService.Close();
   }
@@ -64,7 +64,7 @@ public partial class CalendarioCitas : IDisposable
   {
     if (!firstRender)
       return;
-    var jsInProcess = (IJSInProcessRuntime)jsRuntime;
+    var jsInProcess = (IJSInProcessRuntime) jsRuntime;
     jsInProcess.InvokeVoid("changeBodyContainerHeight");
   }
 
@@ -79,6 +79,17 @@ public partial class CalendarioCitas : IDisposable
     _refreshForFilter = false;
   }
 
+  private List<CitaCalendarDto>? ConvertCitasDateToLocal(List<CitaCalendarDto> citaCalendars)
+  {
+    foreach (var cita in citaCalendars)
+    {
+      cita.FechaFin = cita.FechaFin.ToLocalTime();
+      cita.FechaInicio = cita.FechaInicio.ToLocalTime();
+    }
+
+    return citaCalendars;
+  }
+
   private async Task LoadCitas(SchedulerLoadDataEventArgs? e = null)
   {
     if (!string.IsNullOrEmpty(_startDate) && !string.IsNullOrEmpty(_endDate))
@@ -87,9 +98,13 @@ public partial class CalendarioCitas : IDisposable
         $"api/Cita/listarPorFechas?startDate={_startDate}&endDate={_endDate}&medicoId={_medicoId}&pacienteId={_pacienteId}"
       );
 
-      if (!httpResp.Error)
+      if (httpResp.Response is null)
+        throw new NullReferenceException("Error al cargar las citas");
+
+      if (httpResp.Error)
       {
         _citasCalendar = httpResp.Response;
+        _citasCalendar = ConvertCitasDateToLocal(_citasCalendar);
 
         if (!string.IsNullOrEmpty(_startDate) && !string.IsNullOrEmpty(_endDate))
         {

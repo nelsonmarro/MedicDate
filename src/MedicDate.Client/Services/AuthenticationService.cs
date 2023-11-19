@@ -5,7 +5,7 @@ using MedicDate.Client.Auth;
 using MedicDate.Client.Data.HttpRepository;
 using MedicDate.Client.Services.IServices;
 using MedicDate.Shared.Models.Auth;
-using MedicDate.Utility;
+using MedicDate.Shared.Models.Common;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 

@@ -1,8 +1,8 @@
 ﻿using System.Threading.Tasks;
 using AutoMapper;
 using FluentAssertions;
-using MedicDate.DataAccess.Entities;
-using MedicDate.DataAccess.Repository.IRepository;
+using MedicDate.Domain.Entities;
+using MedicDate.Domain.Interfaces.DataAccess;
 using MedicDate.Shared.Models.Medico;
 using Moq;
 using Xunit;

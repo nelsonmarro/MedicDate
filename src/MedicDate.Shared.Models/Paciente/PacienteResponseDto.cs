@@ -1,6 +1,6 @@
-﻿using MedicDate.Shared.Models.Grupo;
-using MedicDate.Utility.Extensions;
-using MedicDate.Utility.Interfaces;
+﻿using MedicDate.Shared.Models.Common.Extensions;
+using MedicDate.Shared.Models.Common.Interfaces;
+using MedicDate.Shared.Models.Grupo;
 
 namespace MedicDate.Shared.Models.Paciente;
 

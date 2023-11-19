@@ -1,4 +1,4 @@
-using MedicDate.Utility.Enums;
+using MedicDate.Shared.Models.Common.Enums;
 
 namespace MedicDate.Shared.Models.Common;
 

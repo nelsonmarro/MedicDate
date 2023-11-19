@@ -5,10 +5,10 @@ using MedicDate.Client.ViewModels;
 using MedicDate.Shared.Models.Actividad;
 using MedicDate.Shared.Models.Archivo;
 using MedicDate.Shared.Models.Cita;
+using MedicDate.Shared.Models.Common;
+using MedicDate.Shared.Models.Common.Extensions;
 using MedicDate.Shared.Models.Medico;
 using MedicDate.Shared.Models.Paciente;
-using MedicDate.Utility;
-using MedicDate.Utility.Extensions;
 using Microsoft.AspNetCore.Components;
 
 namespace MedicDate.Client.Pages.Cita.CalendarioCitas;
@@ -93,8 +93,8 @@ public partial class EditCita : ComponentBase
     if (_citaRequest is null)
       return false;
 
-    var timeInicio = TimeOnly.FromDateTime(_citaRequest.FechaInicio);
-    var timeFin = TimeOnly.FromDateTime(_citaRequest.FechaFin);
+    var timeInicio = TimeOnly.FromDateTime(_citaRequest.FechaInicio.LocalDateTime);
+    var timeFin = TimeOnly.FromDateTime(_citaRequest.FechaFin.LocalDateTime);
     if (timeInicio.Hour < 8 || timeFin.Hour > 20)
     {
       NotificationService.ShowError(
@@ -104,7 +104,7 @@ public partial class EditCita : ComponentBase
       return false;
     }
 
-    if (_citaRequest.FechaInicio.IsTimeEquals(_citaRequest.FechaFin))
+    if (_citaRequest.FechaInicio.LocalDateTime.IsTimeEquals(_citaRequest.FechaFin.LocalDateTime))
     {
       NotificationService.ShowError(
         "Error!",

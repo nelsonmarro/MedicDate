@@ -1,7 +1,7 @@
 ﻿using Blazored.LocalStorage;
 using MedicDate.Client.Interceptors.IInterceptors;
 using MedicDate.Client.Services.IServices;
-using MedicDate.Utility;
+using MedicDate.Shared.Models.Common;
 using Microsoft.AspNetCore.Components;
 using Toolbelt.Blazor;
 

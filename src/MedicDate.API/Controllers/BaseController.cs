@@ -1,8 +1,8 @@
 ﻿using System.Linq.Expressions;
 using AutoMapper;
-using MedicDate.DataAccess.Repository.IRepository;
+using MedicDate.Domain.Interfaces.DataAccess;
 using MedicDate.Shared.Models.Common;
-using MedicDate.Utility.Interfaces;
+using MedicDate.Shared.Models.Common.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MedicDate.API.Controllers;

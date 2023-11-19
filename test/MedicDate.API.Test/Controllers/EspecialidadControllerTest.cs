@@ -1,9 +1,9 @@
 ﻿using System.Net;
 using AutoMapper;
-using MedicDate.DataAccess.Entities;
-using MedicDate.DataAccess.Helpers;
 using MedicDate.DataAccess.Repository;
-using MedicDate.DataAccess.Repository.IRepository;
+using MedicDate.Domain.Entities;
+using MedicDate.Domain.Interfaces.DataAccess;
+using MedicDate.Shared.Models.Common.Results;
 using MedicDate.Shared.Models.Especialidad;
 using MedicDate.Test.Shared;
 using Microsoft.AspNetCore.Mvc;

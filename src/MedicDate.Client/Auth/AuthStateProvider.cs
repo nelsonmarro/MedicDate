@@ -3,7 +3,7 @@ using System.Security.Claims;
 using Blazored.LocalStorage;
 using MedicDate.Client.Data.HttpRepository.IHttpRepository;
 using MedicDate.Client.Helpers;
-using MedicDate.Utility;
+using MedicDate.Shared.Models.Common;
 using Microsoft.AspNetCore.Components.Authorization;
 
 namespace MedicDate.Client.Auth;

@@ -1,9 +1,9 @@
 ﻿using System.Net;
 using MedicDate.DataAccess.Entities;
-using MedicDate.DataAccess.Helpers;
 using MedicDate.DataAccess.Repository;
 using MedicDate.DataAccess.Repository.IRepository;
 using MedicDate.Shared.Models.Actividad;
+using MedicDate.Shared.Models.Common.Results;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
 

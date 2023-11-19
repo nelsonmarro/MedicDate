@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using MedicDate.DataAccess.Entities;
-using MedicDate.DataAccess.Repository.IRepository;
+using MedicDate.Domain.Entities;
+using MedicDate.Domain.Interfaces.DataAccess;
 using MedicDate.Shared.Models.Common;
 using MedicDate.Shared.Models.Especialidad;
 using Microsoft.AspNetCore.Authorization;

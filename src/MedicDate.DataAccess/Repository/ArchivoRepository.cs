@@ -1,6 +1,6 @@
-﻿using MedicDate.DataAccess.Entities;
-using MedicDate.DataAccess.Helpers;
-using MedicDate.DataAccess.Repository.IRepository;
+﻿using MedicDate.Domain.Entities;
+using MedicDate.Domain.Interfaces.DataAccess;
+using MedicDate.Domain.Results;
 using MedicDate.Shared.Models.Archivo;
 using static System.Net.HttpStatusCode;
 

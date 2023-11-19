@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
-using MedicDate.DataAccess.Entities;
-using MedicDate.DataAccess.Helpers;
-using MedicDate.DataAccess.Repository.IRepository;
+using MedicDate.Domain.Entities;
+using MedicDate.Domain.Interfaces.DataAccess;
+using MedicDate.Domain.Results;
 using MedicDate.Shared.Models.AppUser;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;

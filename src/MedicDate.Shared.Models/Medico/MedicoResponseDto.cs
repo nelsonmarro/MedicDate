@@ -1,5 +1,5 @@
-﻿using MedicDate.Shared.Models.Especialidad;
-using MedicDate.Utility.Interfaces;
+﻿using MedicDate.Shared.Models.Common.Interfaces;
+using MedicDate.Shared.Models.Especialidad;
 
 namespace MedicDate.Shared.Models.Medico;
 

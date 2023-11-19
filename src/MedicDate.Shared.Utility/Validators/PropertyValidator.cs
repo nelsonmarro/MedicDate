@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
 
-namespace MedicDate.Utility.Validators;
+namespace MedicDate.Infrastructure.Validators;
 
 public static class PropertyValidator
 {

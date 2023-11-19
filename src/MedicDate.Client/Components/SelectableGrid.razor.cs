@@ -1,4 +1,4 @@
-﻿using MedicDate.Utility.Interfaces;
+﻿using MedicDate.Shared.Models.Common.Interfaces;
 using Microsoft.AspNetCore.Components;
 using Radzen.Blazor;
 

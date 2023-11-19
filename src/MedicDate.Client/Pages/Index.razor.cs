@@ -1,8 +1,8 @@
 using MedicDate.Client.Data.HttpRepository.IHttpRepository;
 using MedicDate.Client.Services.IServices;
 using MedicDate.Shared.Models.Cita;
+using MedicDate.Shared.Models.Common;
 using MedicDate.Shared.Models.Paciente;
-using MedicDate.Utility;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 

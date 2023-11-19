@@ -6,11 +6,11 @@ namespace MedicDate.Shared.Models.Cita;
 public class CitaRequestDto
 {
     [Required]
-    public DateTime FechaInicio { get; set; } = new DateTime(DateTime.Now.Year, DateTime.Now.Month,
+    public DateTimeOffset FechaInicio { get; set; } = new DateTime(DateTime.Now.Year, DateTime.Now.Month,
         DateTime.Now.Day, 10, 0, 0);
 
     [Required]
-    public DateTime FechaFin { get; set; } = new DateTime(DateTime.Now.Year, DateTime.Now.Month,
+    public DateTimeOffset FechaFin { get; set; } = new DateTime(DateTime.Now.Year, DateTime.Now.Month,
         DateTime.Now.Day, 17, 0, 0);
 
     public string Estado { get; set; } = string.Empty;

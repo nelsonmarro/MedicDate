@@ -27,7 +27,6 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\MedicDate.Shared.Models\MedicDate.Shared.Models.csproj" />
-		<ProjectReference Include="..\MedicDate.Shared.Utility\MedicDate.Shared.Utility.csproj" />
 	</ItemGroup>
 	
 </Project>

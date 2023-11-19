@@ -1,4 +1,4 @@
-﻿using MedicDate.DataAccess.Repository.IRepository;
+﻿using MedicDate.Domain.Interfaces.DataAccess;
 using MedicDate.Shared.Models.Actividad;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

@@ -2,7 +2,7 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace MedicDate.Utility.JsonCoverters;
+namespace MedicDate.Infrastructure.JsonCoverters;
 
 public class CustomDateTimeJsonConverter : JsonConverter<DateTime>
 {

@@ -1,8 +1,8 @@
 using System.Linq.Expressions;
 using AutoMapper;
-using MedicDate.DataAccess.Entities;
-using MedicDate.DataAccess.Repository.IRepository;
-using MedicDate.Domain.DomainServices.IDomainServices;
+using MedicDate.Domain.Entities;
+using MedicDate.Domain.Interfaces.DataAccess;
+using MedicDate.Domain.Services.IDomainServices;
 using MedicDate.Shared.Models.Cita;
 using MedicDate.Shared.Models.Common;
 using Microsoft.AspNetCore.Authorization;
@@ -33,6 +33,9 @@ public class CitaController(ICitaRepository citaRepo, IMapper mapper, ICitaServi
 
     if (pacienteId is not null && medicoId is not null)
       filter = c => c.PacienteId == pacienteId && c.MedicoId == medicoId;
+
+    citaByDatesParams.StartDate = citaByDatesParams.StartDate.ToUniversalTime();
+    citaByDatesParams.EndDate = citaByDatesParams.EndDate.ToUniversalTime();
 
     return citaRepo.GetCitasByDateRange(
       citaByDatesParams.StartDate,
@@ -116,15 +119,21 @@ public class CitaController(ICitaRepository citaRepo, IMapper mapper, ICitaServi
     if (!isValidCita)
       return BadRequest("Ya existe registrada una cita en el rango de tiempo ingresado");
 
+    citaRequestDto.FechaFin = citaRequestDto.FechaFin.ToUniversalTime();
+    citaRequestDto.FechaInicio = citaRequestDto.FechaInicio.ToUniversalTime();
+
     var createdRecord = await CreateRecordAsync<CitaRequestDto, CitaDetailsDto>(citaRequestDto);
 
-    await citaService.SendRegisterationEmailAsync(new() { AppoimentId = createdRecord.Id });
+    await citaService.SendRegistrationEmailAsync(createdRecord.Id );
     return CreatedAtRoute("GetCitaDetails", new { id = createdRecord.Id }, createdRecord);
   }
 
   [HttpPut("editar/{id}")]
   public async Task<ActionResult> UpdateCitaAsync(string id, CitaRequestDto citaRequestDto)
   {
+    citaRequestDto.FechaFin = citaRequestDto.FechaFin.ToUniversalTime();
+    citaRequestDto.FechaInicio = citaRequestDto.FechaInicio.ToUniversalTime();
+
     var result = await citaRepo.UpdateCitaAsync(id, citaRequestDto);
 
     return result.Succeeded ? result.SuccessResult : result.ErrorResult;

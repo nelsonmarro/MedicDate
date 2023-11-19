@@ -158,8 +158,8 @@
   {
     _errorList.Clear();
 
-    var timeInicio = TimeOnly.FromDateTime(_citaRequest.FechaInicio);
-    var timeFin = TimeOnly.FromDateTime(_citaRequest.FechaFin);
+    var timeInicio = TimeOnly.FromDateTime(_citaRequest.FechaInicio.LocalDateTime);
+    var timeFin = TimeOnly.FromDateTime(_citaRequest.FechaFin.LocalDateTime);
     if (timeInicio.Hour < 8 || timeFin.Hour > 22)
     {
       _errorList.Add("Los tiempos de inicio y fin deben esta en el rango de 8:00 - 20:00");
