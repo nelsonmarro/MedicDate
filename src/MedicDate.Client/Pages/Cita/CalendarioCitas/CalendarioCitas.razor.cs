@@ -103,8 +103,7 @@ public partial class CalendarioCitas : IDisposable
 
       if (httpResp.Error)
       {
-        _citasCalendar = httpResp.Response;
-        _citasCalendar = ConvertCitasDateToLocal(_citasCalendar);
+        _citasCalendar = ConvertCitasDateToLocal(httpResp.Response);
 
         if (!string.IsNullOrEmpty(_startDate) && !string.IsNullOrEmpty(_endDate))
         {
@@ -121,7 +120,9 @@ public partial class CalendarioCitas : IDisposable
       );
 
       if (!httpResp.Error)
-        _citasCalendar = httpResp.Response;
+      {
+        _citasCalendar = ConvertCitasDateToLocal(httpResp.Response!);
+      }
     }
   }
 

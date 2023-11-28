@@ -107,8 +107,8 @@ public class CitaRepository : Repository<Cita>, ICitaRepository
       var timeIsValid = await CheckIfCitaHoursAreValidAsync(
           new CitaRequestDto
           {
-            FechaInicio = citaDb.FechaInicio,
-            FechaFin = citaDb.FechaFin,
+            FechaInicio = citaDb.FechaInicio.ToLocalTime().DateTime,
+            FechaFin = citaDb.FechaFin.ToLocalTime().DateTime,
           }
       );
 

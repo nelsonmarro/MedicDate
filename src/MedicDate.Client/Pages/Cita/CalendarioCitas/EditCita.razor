@@ -5,69 +5,69 @@
     <RadzenTabsItem Text="Editar Cita">
       @if (_citaRequest is null)
       {
-        <CircularLoading/>
+        <CircularLoading />
       }
       else
       {
         <ErrorBoundary>
           <EditForm Model="_citaRequest" OnValidSubmit="UpdateCita">
-            <DataAnnotationsValidator/>
+            <DataAnnotationsValidator />
             <div class="mb-3 row">
               <div class="col-md-3">
-                <RadzenLabel Text="Fecha Inicio"/>
+                <RadzenLabel Text="Fecha Inicio" />
               </div>
               <div class="col-md-7">
                 <RadzenDatePicker @bind-Value="_citaRequest.FechaInicio"
                                   Name="Fecha Inicio" ShowTime="true"
                                   class="w-100"
-                                  DateFormat="g"/>
+                                  DateFormat="g" />
               </div>
             </div>
             <div class="mb-3 row">
               <div class="col-md-3">
-                <RadzenLabel Text="Fecha Finalización"/>
+                <RadzenLabel Text="Fecha Finalización" />
               </div>
               <div class="col-md-7">
                 <RadzenDatePicker @bind-Value="_citaRequest.FechaFin"
                                   Name="Fecha Finalización" ShowTime="true"
                                   class="w-100"
-                                  DateFormat="g"/>
+                                  DateFormat="g" />
               </div>
             </div>
             <div class="mb-3 row">
               <div class="col-md-3">
-                <RadzenLabel Text="Estado"/>
+                <RadzenLabel Text="Estado" />
               </div>
               <div class="col-md-7">
                 <RadzenTextBox Value="@_citaRequest.Estado"
-                               Disabled="true" class="w-100"/>
+                               Disabled="true" class="w-100" />
               </div>
             </div>
             <div class="mb-3 row">
               <div class="col-md-3">
-                <RadzenLabel Text="Doctor o Especialista"/>
+                <RadzenLabel Text="Doctor o Especialista" />
               </div>
               <div class="col-md-7">
                 <RadzenDropDown TValue="string" Data="@_medicos"
                                 ValueProperty="Id" TextProperty="FullInfo"
                                 class="w-100" Placeholder="Seleccione"
-                                @bind-Value="_citaRequest.MedicoId"/>
+                                @bind-Value="_citaRequest.MedicoId" />
               </div>
             </div>
             <div class="mb-3 row">
               <div class="col-md-3">
-                <RadzenLabel Text="Paciente"/>
+                <RadzenLabel Text="Paciente" />
               </div>
               <div class="col-md-7">
                 <RadzenDropDown TValue="string" Data="@_pacientes"
                                 ValueProperty="Id" TextProperty="FullInfo"
                                 class="w-100" Placeholder="Seleccione"
-                                @bind-Value="_citaRequest.PacienteId"/>
+                                @bind-Value="_citaRequest.PacienteId" />
               </div>
             </div>
             <div class="mb-3 row">
               <div class="col-md-3">
-                <RadzenLabel Text="Actividades"/>
+                <RadzenLabel Text="Actividades" />
               </div>
               <div class="col-md-7">
                 @if (_actividades is not null)
@@ -79,7 +79,7 @@
                                   TextProperty="Nombre" ValueProperty="Id"
                                   Multiple="true" AllowFiltering="true"
                                   TValue="IEnumerable<string>" Value="_actividadesIds"
-                                  FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"/>
+                                  FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" />
                 }
               </div>
             </div>
@@ -87,19 +87,19 @@
               <ActividadesTable ActividadList="_selectedActividades"
                                 IsBussy="_isBussy"
                                 OnActividadRemove="RemoveActividadFromTableAsync"
-                                @ref="_actividadesTable"/>
+                                @ref="_actividadesTable" />
             </div>
             <div class="mb-3 row justify-content-center">
               <div class="col-md-3 col-12 mb-3 mb-md-0">
                 <RadzenButton ButtonType="@ButtonType.Submit"
                               Text="Guardar" Icon="save"
-                              class="w-100"/>
+                              class="w-100" />
               </div>
               <div class="col-md-3 col-12">
                 <RadzenButton ButtonStyle="ButtonStyle.Secondary"
                               Text="Cancelar" Icon="cancel"
                               class="w-100"
-                              Click="NavigateToCalendarioCitas"/>
+                              Click="NavigateToCalendarioCitas" />
 
               </div>
             </div>
@@ -112,7 +112,7 @@
         <PacienteImg OnSaveImages="SavePacienteImagesAsync"
                      SavedArchivos="_loadedArchivosPaciente"
                      OnImageDelete="LoadPacienteImages"
-                     OnImageUpdate="LoadPacienteImages"/>
+                     OnImageUpdate="LoadPacienteImages" />
       </ErrorBoundary>
 
     </RadzenTabsItem>

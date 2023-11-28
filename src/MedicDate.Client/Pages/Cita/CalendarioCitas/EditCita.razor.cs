@@ -93,8 +93,8 @@ public partial class EditCita : ComponentBase
     if (_citaRequest is null)
       return false;
 
-    var timeInicio = TimeOnly.FromDateTime(_citaRequest.FechaInicio.LocalDateTime);
-    var timeFin = TimeOnly.FromDateTime(_citaRequest.FechaFin.LocalDateTime);
+    var timeInicio = TimeOnly.FromDateTime(_citaRequest.FechaInicio);
+    var timeFin = TimeOnly.FromDateTime(_citaRequest.FechaFin);
     if (timeInicio.Hour < 8 || timeFin.Hour > 20)
     {
       NotificationService.ShowError(
@@ -104,7 +104,7 @@ public partial class EditCita : ComponentBase
       return false;
     }
 
-    if (_citaRequest.FechaInicio.LocalDateTime.IsTimeEquals(_citaRequest.FechaFin.LocalDateTime))
+    if (_citaRequest.FechaInicio.IsTimeEquals(_citaRequest.FechaFin))
     {
       NotificationService.ShowError(
         "Error!",
@@ -175,7 +175,7 @@ public partial class EditCita : ComponentBase
   private async Task SelectActividad(object? value)
   {
     _citaRequest?.ActividadesCita.Clear();
-    _actividadesIds = (IEnumerable<string>?)value ?? Array.Empty<string>();
+    _actividadesIds = (IEnumerable<string>?) value ?? Array.Empty<string>();
 
     var actividadesIds = _actividadesIds.ToList();
 

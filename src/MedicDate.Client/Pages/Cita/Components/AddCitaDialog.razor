@@ -23,7 +23,7 @@
       </div>
       <div class="col-md-9">
         <RadzenDatePicker @bind-Value="_citaRequest.FechaInicio" Name="Fecha Inicio" ShowTime="true" class="w-100"
-          DateFormat="g" Culture="CultureInfo.CurrentCulture" />
+                          DateFormat="g" Culture="CultureInfo.CurrentCulture" />
       </div>
     </div>
     <div class="mb-3 row">
@@ -32,7 +32,7 @@
       </div>
       <div class="col-md-9">
         <RadzenDatePicker @bind-Value="_citaRequest.FechaFin" Name="Fecha Finalización" ShowTime="true" class="w-100"
-          DateFormat="g" Culture="CultureInfo.CurrentCulture" />
+                          DateFormat="g" Culture="CultureInfo.CurrentCulture" />
       </div>
     </div>
     <div class="mb-3 row">
@@ -41,11 +41,11 @@
       </div>
       <div class="col-md-9">
         <RadzenDropDownWithPopup @ref="_medicoDropDown" DataList="_medicos" @bind-Value="_citaRequest.MedicoId"
-          DropDownTextProperty="FullInfo">
+                                 DropDownTextProperty="FullInfo">
           <ChildContend>
             <CascadingValue Value="_isBussy">
               <MedicoForm MedicoRequestDto="_medicoRequest" OnSubmit="AddDoctor" ShowCancelLink="false"
-                OnCancel="@(async () => { await RadzenPopupHelper.ClosePopup(_medicoDropDown); _medicoRequest = new(); })" />
+                          OnCancel="@(async () => { await RadzenPopupHelper.ClosePopup(_medicoDropDown); _medicoRequest = new(); })" />
             </CascadingValue>
           </ChildContend>
         </RadzenDropDownWithPopup>
@@ -57,11 +57,11 @@
       </div>
       <div class="col-md-9">
         <RadzenDropDownWithPopup @ref="_pacienteDropDown" DataList="_pacientes" @bind-Value="_citaRequest.PacienteId"
-          DropDownTextProperty="FullInfo">
+                                 DropDownTextProperty="FullInfo">
           <ChildContend>
             <CascadingValue Value="_isBussy">
               <PacienteForm PacienteRequestDto="_pacienteRequest" OnSubmit="AddPaciente" ShowCancelLink="false"
-                OnCancel="@(async () => { await RadzenPopupHelper.ClosePopup(_pacienteDropDown); _pacienteRequest = new(); })" />
+                            OnCancel="@(async () => { await RadzenPopupHelper.ClosePopup(_pacienteDropDown); _pacienteRequest = new(); })" />
             </CascadingValue>
           </ChildContend>
         </RadzenDropDownWithPopup>
@@ -75,12 +75,12 @@
         @if (_actividades is not null)
         {
           <RadzenDropDownWithPopup @ref="_actividadesDropDown" DataList="_actividades" DropDownTextProperty="Nombre"
-            TValue="List<string>" TSource="ActividadResponseDto" Value="_actividadesIds"
-            DropDownAllowMultipleSelection="true" ValueChanged="SelectActividad">
+                                   TValue="List<string>" TSource="ActividadResponseDto" Value="_actividadesIds"
+                                   DropDownAllowMultipleSelection="true" ValueChanged="SelectActividad">
             <ChildContend>
               <CascadingValue Value="_isBussy">
                 <ActividadForm ActividadModel="_actividadRequest" OnSubmit="AddActividad" ShowCancelLink="false"
-                  OnCancel="@(async () => { await RadzenPopupHelper.ClosePopup(_actividadesDropDown); _actividadRequest = new(); })" />
+                               OnCancel="@(async () => { await RadzenPopupHelper.ClosePopup(_actividadesDropDown); _actividadRequest = new(); })" />
               </CascadingValue>
             </ChildContend>
           </RadzenDropDownWithPopup>
@@ -96,7 +96,7 @@
           </div>
           <div class="col-6">
             <RadzenButton Text="Cancelar" Icon="cancel" ButtonStyle="ButtonStyle.Danger" Style="width: 100%"
-              Click="@(() => DialogService.Close())" />
+                          Click="@(() => DialogService.Close())" />
           </div>
         </div>
       </div>
@@ -158,8 +158,8 @@
   {
     _errorList.Clear();
 
-    var timeInicio = TimeOnly.FromDateTime(_citaRequest.FechaInicio.LocalDateTime);
-    var timeFin = TimeOnly.FromDateTime(_citaRequest.FechaFin.LocalDateTime);
+    var timeInicio = TimeOnly.FromDateTime(_citaRequest.FechaInicio);
+    var timeFin = TimeOnly.FromDateTime(_citaRequest.FechaFin);
     if (timeInicio.Hour < 8 || timeFin.Hour > 22)
     {
       _errorList.Add("Los tiempos de inicio y fin deben esta en el rango de 8:00 - 20:00");
@@ -172,7 +172,8 @@
       return false;
     }
 
-    if (_citaRequest.FechaInicio <= _citaRequest.FechaFin) return true;
+    if (_citaRequest.FechaInicio <= _citaRequest.FechaFin)
+      return true;
     _errorList.Add("La fecha de inicio debe ser menor que la fecha de finalización");
 
     return false;
